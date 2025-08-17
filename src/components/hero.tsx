@@ -4,7 +4,7 @@
 import { Calculator, TrendingUp, Shield } from "lucide-react"
 import { useLanguage } from "./language-context"
 import { Button } from "./ui/button"
-
+import { ServiceRequestDialog } from "./serviceRequestDialog"
 export function Hero() {
   const { t } = useLanguage()
 
@@ -19,11 +19,7 @@ export function Hero() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
-              style={{ backgroundColor: "#34A853" }}
-              >
-                {t("hero.cta1")}
-              </Button>
+              <ServiceRequestDialog />
               <Button
                 variant="outline"
                 size="lg"
