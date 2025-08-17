@@ -5,6 +5,9 @@ import { Calendar, ArrowRight } from "lucide-react"
 import { useLanguage } from "./language-context"
 import { Button } from "./ui/button"
 import { CardTitle, CardHeader, Card, CardContent, CardDescription } from "./ui/card"
+import placeHolder from "../assets/img/placeholder.png"
+import documentCalendar from "../assets/img/tax-documents-calendar.png"
+import accountingDocument from "../assets/img/accounting-software-screen.png"
 
 export function Blog() {
   const { t, language } = useLanguage()
@@ -20,7 +23,7 @@ export function Blog() {
           ? "Descubre los errores más frecuentes que cometen los emprendedores y cómo evitarlos para mantener finanzas saludables."
           : "Discover the most common mistakes entrepreneurs make and how to avoid them to maintain healthy finances.",
       date: "2024-01-15",
-      image: "./src/assets/img/placeholder.png",
+      image: placeHolder,
     },
     {
       title:
@@ -32,7 +35,7 @@ export function Blog() {
           ? "Una guía paso a paso para organizar tus documentos y maximizar tus deducciones fiscales este año."
           : "A step-by-step guide to organize your documents and maximize your tax deductions this year.",
       date: "2024-01-10",
-      image: "./src/assets/img/tax-documents-calendar.png",
+      image: documentCalendar,
     },
     {
       title:
@@ -44,7 +47,7 @@ export function Blog() {
           ? "Comparamos las ventajas y desventajas de cada método para ayudarte a tomar la mejor decisión."
           : "We compare the advantages and disadvantages of each method to help you make the best decision.",
       date: "2024-01-05",
-      image: "./src/assets/img/accounting-software-screen.png",
+      image: accountingDocument,
     },
   ]
 

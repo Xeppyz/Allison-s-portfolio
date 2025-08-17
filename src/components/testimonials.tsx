@@ -3,6 +3,9 @@
 import { useLanguage } from "./language-context"
 import { Card, CardContent } from "./ui/card"
 import { Star } from "lucide-react"
+import professionalMan from "../assets/img/professional-man-glasses.png"
+import professsionalWoman from "../assets/img/professional-woman-smiling.png"
+import professionalWomanEntrepreneur from "../assets/img/professional-woman-entrepreneur.png"
 
 export function Testimonials() {
   const { t, language } = useLanguage()
@@ -16,7 +19,7 @@ export function Testimonials() {
         language === "es"
           ? "Allison transformó completamente la organización financiera de mi café. Ahora puedo enfocarme en hacer crecer mi negocio sin preocuparme por los números."
           : "Allison completely transformed the financial organization of my café. Now I can focus on growing my business without worrying about the numbers.",
-      image: "./src/assets/img/professional-man-glasses.png",
+      image: professionalMan,
     },
     {
       name: "Carlos Mendoza",
@@ -26,7 +29,7 @@ export function Testimonials() {
         language === "es"
           ? "Los reportes mensuales que recibo son increíblemente claros. Por primera vez entiendo realmente la situación financiera de mi startup."
           : "The monthly reports I receive are incredibly clear. For the first time I really understand the financial situation of my startup.",
-      image: "./src/assets/img/professional-woman-smiling.png",
+      image: professsionalWoman,
     },
     {
       name: "Ana Rodríguez",
@@ -36,7 +39,7 @@ export function Testimonials() {
         language === "es"
           ? "El plan emprendedor me dio la estructura que necesitaba. Allison no solo maneja mis libros, sino que me asesora estratégicamente."
           : "The entrepreneur plan gave me the structure I needed. Allison not only handles my books, but also advises me strategically.",
-      image: "./src/assets/img/professional-woman-entrepreneur.png",
+      image: professionalWomanEntrepreneur,
     },
   ]
 
