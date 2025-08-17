@@ -63,7 +63,7 @@ export function About() {
               <CardContent className="p-8">
                 <div className="flex flex-col items-center text-center space-y-6">
                   <div className="w-48 h-48 rounded-full overflow-hidden border-4" style={{ borderColor: "#4285F4" }}>
-                    <img src="./src/assets/img/avatar.jpg" alt="Allison Silva" className="w-full h-full object-cover" />
+                    <img src="/images/avatar.jpg" alt="Allison Silva" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-2" style={{ color: "#1E3A5F" }}>
