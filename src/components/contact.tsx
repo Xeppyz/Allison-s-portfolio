@@ -91,7 +91,9 @@ export function Contact() {
                     className="bg-white"
                   />
                 </div>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                 style={{ backgroundColor: "#34A853" }}
+                >
                   {t("contact.form.submit")}
                 </Button>
               </form>

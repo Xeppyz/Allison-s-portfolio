@@ -1,5 +1,5 @@
 "use client"
-    
+
 
 import { Calendar, ArrowRight } from "lucide-react"
 import { useLanguage } from "./language-context"
@@ -20,7 +20,7 @@ export function Blog() {
           ? "Descubre los errores más frecuentes que cometen los emprendedores y cómo evitarlos para mantener finanzas saludables."
           : "Discover the most common mistakes entrepreneurs make and how to avoid them to maintain healthy finances.",
       date: "2024-01-15",
-      image: "/placeholder-4y9ff.png",
+      image: "./src/assets/img/placeholder.png",
     },
     {
       title:
@@ -32,7 +32,7 @@ export function Blog() {
           ? "Una guía paso a paso para organizar tus documentos y maximizar tus deducciones fiscales este año."
           : "A step-by-step guide to organize your documents and maximize your tax deductions this year.",
       date: "2024-01-10",
-      image: "/tax-documents-calendar.png",
+      image: "./src/assets/img/tax-documents-calendar.png",
     },
     {
       title:
@@ -44,7 +44,7 @@ export function Blog() {
           ? "Comparamos las ventajas y desventajas de cada método para ayudarte a tomar la mejor decisión."
           : "We compare the advantages and disadvantages of each method to help you make the best decision.",
       date: "2024-01-05",
-      image: "/accounting-software-screen.png",
+      image: "./src/assets/img/accounting-software-screen.png",
     },
   ]
 
@@ -71,10 +71,14 @@ export function Blog() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <CardDescription className="text-gray-600 line-clamp-3">{post.excerpt}</CardDescription>
-                <Button variant="ghost" className="text-blue-600 hover:text-blue-700 p-0 h-auto font-medium">
+                <Button
+                  className="text-white"
+                  style={{ backgroundColor: "#34A853" }}
+                >
                   {t("blog.readmore")}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
+
               </CardContent>
             </Card>
           ))}

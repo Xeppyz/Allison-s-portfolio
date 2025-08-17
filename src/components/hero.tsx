@@ -14,18 +14,21 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">{t("hero.title")}</h1>
+              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight font-serif">{t("hero.title")}</h1>
               <p className="text-xl text-gray-600 leading-relaxed">{t("hero.subtitle")}</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+              style={{ backgroundColor: "#34A853" }}
+              >
                 {t("hero.cta1")}
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-8 py-3 bg-transparent"
+                style={{ borderColor: "#4285F4", color: "#4285F4", backgroundColor: "transparent" }}
               >
                 {t("hero.cta2")}
               </Button>
@@ -39,8 +42,8 @@ export function Hero() {
                   <Calculator className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Bookkeeping</h3>
-                  <p className="text-gray-600 text-sm">Monthly organization</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.bookkeeping")}</h3>
+                  <p className="text-gray-600 text-sm">{t("hero.bookkeeping_desc")}</p>
                 </div>
               </div>
 
@@ -49,8 +52,8 @@ export function Hero() {
                   <TrendingUp className="h-6 w-6 text-yellow-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Financial Reports</h3>
-                  <p className="text-gray-600 text-sm">Clear insights</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.financial_reports")}</h3>
+                  <p className="text-gray-600 text-sm">{t("hero.financial_reports_desc")}</p>
                 </div>
               </div>
 
@@ -59,8 +62,8 @@ export function Hero() {
                   <Shield className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Tax Compliance</h3>
-                  <p className="text-gray-600 text-sm">Stress-free</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.tax_compliance")}</h3>
+                  <p className="text-gray-600 text-sm">{t("hero.tax_compliance_desc")}</p>
                 </div>
               </div>
             </div>

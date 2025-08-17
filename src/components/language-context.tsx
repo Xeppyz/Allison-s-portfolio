@@ -8,6 +8,7 @@ interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
   t: (key: string) => string
+  translations: (typeof translations)[Language]
 }
 
 const translations = {
@@ -25,6 +26,17 @@ const translations = {
       "Te ayudamos a organizar y optimizar las finanzas de tu negocio, para que tomes decisiones con claridad y crezcas con confianza.",
     "hero.cta1": "Agenda tu consulta gratis",
     "hero.cta2": "Solicita una cotización",
+
+  // Hero Cards
+  "hero.bookkeeping": "Contabilidad",
+  "hero.bookkeeping_desc": "Organización mensual",
+  "hero.financial_reports": "Reportes Financieros",
+  "hero.financial_reports_desc": "Información clara",
+  "hero.tax_compliance": "Cumplimiento Fiscal",
+  "hero.tax_compliance_desc": "Sin estrés",
+  // About
+    aboutTitle: "Acerca de mí",
+    aboutSubtitle: "Conoce a la profesional detrás de tu éxito financiero",
 
     // Services
     "services.title": "Nuestros Servicios",
@@ -93,6 +105,17 @@ const translations = {
     "hero.cta1": "Schedule your free consultation",
     "hero.cta2": "Request a quote",
 
+  // Hero Cards
+  "hero.bookkeeping": "Bookkeeping",
+  "hero.bookkeeping_desc": "Monthly organization",
+  "hero.financial_reports": "Financial Reports",
+  "hero.financial_reports_desc": "Clear insights",
+  "hero.tax_compliance": "Tax Compliance",
+  "hero.tax_compliance_desc": "Stress-free",
+  // About
+    aboutTitle: "About me",
+    aboutSubtitle: "Meet the professional behind your financial success",
+
     // Services
     "services.title": "Our Services",
     "services.subtitle": "Complete solutions for your business financial success",
@@ -156,9 +179,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return translations[language][key as keyof (typeof translations)["es"]] || key
   }
 
-  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t, translations: translations[language] }}>
+      {children}
+    </LanguageContext.Provider>
+  )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   const context = useContext(LanguageContext)
   if (context === undefined) {

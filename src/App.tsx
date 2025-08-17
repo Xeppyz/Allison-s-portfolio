@@ -9,6 +9,7 @@ import { Testimonials } from "./components/testimonials"
 import { Blog } from "./components/blog"
 import { Contact } from "./components/contact"
 import { Footer } from "./components/footer"
+import { About } from './components/about'
 
 function App() {
   
@@ -17,6 +18,7 @@ function App() {
      <div className="min-h-screen bg-white">
         <Navigation />
         <Hero />
+        <About />
         <Services />
         <Benefits />
         <Testimonials />
