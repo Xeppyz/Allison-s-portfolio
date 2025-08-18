@@ -52,7 +52,7 @@ export function Contact() {
                   <Input
                     type="text"
                     name="name"
-                    placeholder={t("contact.form.name")}
+                    placeholder={t("contact.form.name") as string}
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -63,7 +63,7 @@ export function Contact() {
                   <Input
                     type="email"
                     name="email"
-                    placeholder={t("contact.form.email")}
+                    placeholder={t("contact.form.email") as string}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -74,7 +74,7 @@ export function Contact() {
                   <Input
                     type="tel"
                     name="phone"
-                    placeholder={t("contact.form.phone")}
+                    placeholder={t("contact.form.phone") as string}
                     value={formData.phone}
                     onChange={handleChange}
                     className="bg-white"
@@ -83,7 +83,7 @@ export function Contact() {
                 <div>
                   <Textarea
                     name="message"
-                    placeholder={t("contact.form.message")}
+                    placeholder={t("contact.form.message") as string}
                     value={formData.message}
                     onChange={handleChange}
                     rows={4}

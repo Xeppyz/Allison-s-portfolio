@@ -1,56 +1,61 @@
-import * as React from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-}
- from "./ui/dialog"
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
-type ResponsiveDialogProps = {
-  trigger: React.ReactNode
-  title: string
-  description?: string
-  children?: React.ReactNode
+interface ResponsiveModalProps {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
 }
 
-export function ResponsiveDialog({
-  trigger,
+export default function ResponsiveModal({
+  open,
+  onClose,
   title,
-  description,
   children,
-}: ResponsiveDialogProps) {
-  return (
-    <Dialog>
-      {/* Botón o componente que abre el modal */}
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+}: ResponsiveModalProps) {
+  const [isMobile, setIsMobile] = useState(false);
 
-      {/* Contenido del modal / bottom sheet */}
-      <DialogContent
-        className="
-          fixed bottom-0 left-0 right-0
-          sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
-          sm:max-w-md
-          max-h-[90vh] sm:max-h-[80vh]
-          overflow-y-auto
-          rounded-t-2xl sm:rounded-lg
-          animate-in
-          slide-in-from-bottom-5 sm:slide-in-from-top-5
-          bg-white
-          shadow-lg
-          p-4 sm:p-6
-        "
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // breakpoint md
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      {/* Contenedor modal */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`bg-white shadow-xl transition-all duration-300 
+          ${isMobile 
+            ? "fixed bottom-0 left-0 right-0 rounded-t-2xl animate-slideUp" 
+            : "rounded-2xl w-full max-w-lg mx-4 animate-fadeIn"}
+        `}
       >
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
-        </DialogHeader>
+        {/* Header */}
+        {title && (
+          <div className="p-4 border-b flex justify-between items-center">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            <button onClick={onClose} className="text-gray-600 hover:text-gray-900">
+              ✕
+            </button>
+          </div>
+        )}
 
-        {/* Contenido que pases dentro */}
-        <div className="mt-4 flex flex-col gap-4">{children}</div>
-      </DialogContent>
-    </Dialog>
-  )
+        {/* Body */}
+        <div className="p-4">{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
 }

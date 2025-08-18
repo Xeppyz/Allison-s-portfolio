@@ -4,44 +4,40 @@ import { useLanguage } from "./language-context"
 import { Card, CardContent } from "./ui/card"
 import { Badge } from "./ui/badge"
 import avatar from "../assets/img/avatar.jpg"
-
 export function About() {
-  const { language, translations } = useLanguage()
+  const { language } = useLanguage()
 
   const certifications = [
     "CPA (Certified Public Accountant)",
     "QuickBooks ProAdvisor",
-    "IRS Enrolled Agent",
-    "Tax Preparation Specialist",
+    language === "es" ? "Maestría en Finanzas" : "Master's in Finance",
+    language === "es" ? "Graduada de UCA" : "UCA Graduate",
   ]
 
-  const experience = [
+  const companyMilestones = [
     {
-      title: language === "es" ? "Contadora Pública Senior" : "Senior Public Accountant",
-      company: "Silva & Associates",
-      years: "2018 - Present",
+      title: language === "es" ? "Fundación de la Empresa" : "Company Foundation",
+      year: "2018",
       description:
         language === "es"
-          ? "Liderando servicios de contabilidad y preparación de impuestos para más de 500 clientes"
-          : "Leading accounting and tax preparation services for over 500 clients",
+          ? "Allison fundó Silva Taxes & Accounting con la visión de brindar servicios contables personalizados y de alta calidad."
+          : "Allison founded Silva Taxes & Accounting with the vision of providing personalized, high-quality accounting services.",
     },
     {
-      title: language === "es" ? "Especialista en Impuestos" : "Tax Specialist",
-      company: "H&R Block",
-      years: "2015 - 2018",
+      title: language === "es" ? "Expansión del Equipo" : "Team Expansion",
+      year: "2020",
       description:
         language === "es"
-          ? "Preparación de declaraciones de impuestos complejas y asesoramiento fiscal"
-          : "Complex tax return preparation and tax advisory services",
+          ? "Incorporamos un equipo de profesionales especializados para atender mejor a nuestros clientes en crecimiento."
+          : "We incorporated a team of specialized professionals to better serve our growing client base.",
     },
     {
-      title: language === "es" ? "Contadora Junior" : "Junior Accountant",
-      company: "Martinez CPA Firm",
-      years: "2013 - 2015",
+      title: language === "es" ? "Crecimiento Sostenido" : "Sustained Growth",
+      year: "2024",
       description:
         language === "es"
-          ? "Contabilidad general y asistencia en auditorías para pequeñas empresas"
-          : "General accounting and audit assistance for small businesses",
+          ? "Hoy servimos a más de 800 clientes con un equipo dedicado de contadores y especialistas en impuestos."
+          : "Today we serve over 800 clients with a dedicated team of accountants and tax specialists.",
     },
   ]
 
@@ -50,15 +46,15 @@ export function About() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4" style={{ color: "#1E3A5F" }}>
-            {translations.aboutTitle}
+            {language === "es" ? "Acerca de Nosotros" : "About Us"}
           </h2>
           <p className="text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F" }}>
-            {translations.aboutSubtitle}
+            {language === "es" ? "Nuestra Historia" : "Our Story"}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Profile Section */}
+          {/* Founder Profile Section */}
           <div className="space-y-8">
             <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
               <CardContent className="p-8">
@@ -71,23 +67,23 @@ export function About() {
                       Allison Silva, CPA
                     </h3>
                     <p className="text-lg mb-4" style={{ color: "#1E3A5F" }}>
-                      {language === "es" ? "Contadora Pública Certificada" : "Certified Public Accountant"}
+                      {language === "es" ? "Fundadora y Directora" : "Founder & Director"}
                     </p>
                     <p className="leading-relaxed" style={{ color: "#1E3A5F" }}>
                       {language === "es"
-                        ? "Con más de 10 años de experiencia en contabilidad y preparación de impuestos, me especializo en ayudar a individuos y pequeñas empresas a navegar el complejo mundo de las finanzas y los impuestos."
-                        : "With over 10 years of experience in accounting and tax preparation, I specialize in helping individuals and small businesses navigate the complex world of finance and taxes."}
+                        ? "Graduada como contadora de la Universidad Centroamericana (UCA), con certificación CPA y Maestría en Finanzas. Allison lidera nuestro equipo de profesionales con más de 10 años de experiencia, brindando servicios contables y fiscales de excelencia."
+                        : "Graduated as an accountant from Universidad Centroamericana (UCA), with CPA certification and a Master's degree in Finance. Allison leads our team of professionals with over 10 years of experience, providing excellent accounting and tax services."}
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Certifications */}
+            {/* Education & Certifications */}
             <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
               <CardContent className="p-8">
                 <h4 className="text-xl font-bold mb-6" style={{ color: "#1E3A5F" }}>
-                  {language === "es" ? "Certificaciones" : "Certifications"}
+                  {language === "es" ? "Educación y Certificaciones" : "Education & Certifications"}
                 </h4>
                 <div className="flex flex-wrap gap-3">
                   {certifications.map((cert, index) => (
@@ -109,26 +105,26 @@ export function About() {
             </Card>
           </div>
 
-          {/* Experience Section */}
+          {/* Company Growth Section */}
           <div className="space-y-6">
             <h4 className="text-2xl font-bold mb-8" style={{ color: "#1E3A5F" }}>
-              {language === "es" ? "Experiencia Profesional" : "Professional Experience"}
+              {language === "es" ? "Nuestro Crecimiento" : "Our Growth"}
             </h4>
 
-            {experience.map((exp, index) => (
+            {companyMilestones.map((milestone, index) => (
               <Card key={index} style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
                     <div className="w-3 h-3 rounded-full mt-2" style={{ backgroundColor: "#4285F4" }}></div>
                     <div className="flex-1">
                       <h5 className="text-lg font-bold mb-1" style={{ color: "#1E3A5F" }}>
-                        {exp.title}
+                        {milestone.title}
                       </h5>
                       <p className="font-medium mb-2" style={{ color: "#4285F4" }}>
-                        {exp.company} • {exp.years}
+                        {milestone.year}
                       </p>
                       <p className="text-sm leading-relaxed" style={{ color: "#1E3A5F" }}>
-                        {exp.description}
+                        {milestone.description}
                       </p>
                     </div>
                   </div>
@@ -136,26 +132,33 @@ export function About() {
               </Card>
             ))}
 
-            {/* Stats */}
+            {/* Company Stats */}
             <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="grid grid-cols-2 gap-6 text-center">
                   <div>
                     <div className="text-3xl font-bold mb-2" style={{ color: "#34A853" }}>
-                      500+
+                      800+
                     </div>
                     <p className="text-sm" style={{ color: "#1E3A5F" }}>
-                      {language === "es" ? "Clientes Satisfechos" : "Satisfied Clients"}
+                      {language === "es" ? "Clientes Atendidos" : "Clients Served"}
                     </p>
                   </div>
                   <div>
                     <div className="text-3xl font-bold mb-2" style={{ color: "#34A853" }}>
-                      10+
+                      6+
                     </div>
                     <p className="text-sm" style={{ color: "#1E3A5F" }}>
-                      {language === "es" ? "Años de Experiencia" : "Years of Experience"}
+                      {language === "es" ? "Años de Experiencia" : "Years in Business"}
                     </p>
                   </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-center text-sm leading-relaxed" style={{ color: "#1E3A5F" }}>
+                    {language === "es"
+                      ? "Respaldados por un equipo de profesionales especializados trabajando bajo el liderazgo de Allison para brindar servicios de confianza y excelencia."
+                      : "Backed by a team of specialized professionals working under Allison's leadership to provide trusted and excellent services."}
+                  </p>
                 </div>
               </CardContent>
             </Card>

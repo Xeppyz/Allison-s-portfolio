@@ -4,9 +4,12 @@
 import { Calculator, TrendingUp, Shield } from "lucide-react"
 import { useLanguage } from "./language-context"
 import { Button } from "./ui/button"
-import { ServiceRequestDialog } from "./serviceRequestDialog"
+import { useState } from "react"
+import ResponsiveModal from "./responsiveDialog"
+
 export function Hero() {
   const { t } = useLanguage()
+  const [open, setOpen] = useState(false)
 
   return (
     <section className="bg-gradient-to-br from-blue-50 to-white py-20 lg:py-32">
@@ -19,15 +22,40 @@ export function Hero() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <ServiceRequestDialog />
+              {/* Botón que abre el modal */}
               <Button
                 variant="outline"
                 size="lg"
                 className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-8 py-3 bg-transparent"
-                style={{ borderColor: "#4285F4", color: "#4285F4", backgroundColor: "transparent" }}
+                style={{
+                  borderColor: "#4285F4",
+                  color: "#4285F4",
+                  backgroundColor: "transparent",
+                }}
+                onClick={() => setOpen(true)} // 👈 abre modal
               >
                 {t("hero.cta2")}
               </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-8 py-3 bg-transparent"
+                style={{
+                  borderColor: "#4285F4",
+                  color: "#4285F4",
+                  backgroundColor: "transparent",
+                }}
+                onClick={() => setOpen(true)} // 👈 abre modal
+              >
+                {t("hero.cta3")}
+              </Button>
+
+              {/* Modal responsive */}
+              <ResponsiveModal open={open} onClose={() => setOpen(false)} title="Bienvenido">
+                <p className="text-gray-700">
+                  Aqui iria los campos de nombre correo y detallar que desea cotizar 
+                </p>
+              </ResponsiveModal>
             </div>
           </div>
 
