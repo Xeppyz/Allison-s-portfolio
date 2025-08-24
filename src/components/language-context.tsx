@@ -13,6 +13,23 @@ interface LanguageContextType {
 
 const translations = {
   es: {
+
+    //Modal cotizacion
+    "modal.close": "Cerrar",
+    "modal.quoteTitle": "Cotiza con nosotros",
+    "modal.name": "Nombre",
+    "modal.email": "Correo",
+    "modal.problem": "Problemática",
+    "modal.service": "Servicio",
+    "modal.send": "Enviar",
+    "modal.serviceOptions": [
+      "Bookkeeping mensual",
+      "Implementación de QuickBooks",
+      "Control de ingresos y gastos",
+      "Control fiscal y cumplimiento",
+      "Reportes financieros mensuales",
+      "Plan emprendedor"
+    ],
     // Navigation
     "nav.services": "Servicios",
     "nav.benefits": "Beneficios",
@@ -34,22 +51,13 @@ const translations = {
       "Te ayudamos a organizar y optimizar las finanzas de tu negocio, para que tomes decisiones con claridad y crezcas con confianza.",
     "hero.cta1": "Agenda tu consulta gratis",
     "hero.cta2": "Solicita una cotización",
-    "hero.cta3": "Mirar planes",
+    "hero.cta3": "Escoger plan",
 
     // About
     aboutTitle: "Sobre Mí",
     aboutSubtitle: "Conoce a la profesional detrás de tu éxito financiero",
 
-    // Modal
-    "modal.consultationTitle": "Agenda tu Consulta Gratis",
-    "modal.quoteTitle": "Solicita una Cotización",
-    "modal.name": "Nombre completo",
-    "modal.email": "Correo electrónico",
-    "modal.phone": "Teléfono",
-    "modal.subject": "Tema de consulta",
-    "modal.message": "Describe lo que necesitas",
-    "modal.cancel": "Cancelar",
-    "modal.send": "Enviar",
+  
 
     // Entrepreneur Plan
     "entrepreneurPlan.title": "Plan Emprendedor",
@@ -179,6 +187,25 @@ const translations = {
     "footer.follow": "Síguenos",
   },
   en: {
+
+
+    //modal cotizacion
+    "modal.close": "Close",
+    "modal.quoteTitle": "Get a Quote",
+    "modal.name": "Name",
+    "modal.email": "Email",
+    "modal.problem": "Problem",
+    "modal.service": "Service",
+    "modal.send": "Send",
+    "modal.serviceOptions": [
+      "Monthly bookkeeping",
+      "QuickBooks implementation",
+      "Income and expense tracking",
+      "Tax control and compliance",
+      "Monthly financial reports",
+      "Entrepreneur plan"
+    ],
+
     // Navigation
     "nav.services": "Services",
     "nav.benefits": "Benefits",
@@ -205,17 +232,7 @@ const translations = {
     aboutTitle: "About Me",
     aboutSubtitle: "Meet the professional behind your financial success",
 
-    // Modal
-    "modal.consultationTitle": "Schedule Your Free Consultation",
-    "modal.quoteTitle": "Request a Quote",
-    "modal.name": "Full name",
-    "modal.email": "Email address",
-    "modal.phone": "Phone number",
-    "modal.subject": "Subject",
-    "modal.message": "Describe what you need",
-    "modal.cancel": "Cancel",
-    "modal.send": "Send",
-
+  
     // Entrepreneur Plan
     "entrepreneurPlan.title": "Entrepreneur Plan",
     "entrepreneurPlan.subtitle": "Comprehensive solution for entrepreneurs seeking organization and growth",

@@ -46,7 +46,12 @@ export default function ResponsiveModal({
         {title && (
           <div className="p-4 border-b flex justify-between items-center">
             <h2 className="text-lg font-semibold">{title}</h2>
-            <button onClick={onClose} className="text-gray-600 hover:text-gray-900">
+            <button
+              onClick={onClose}
+              className="text-gray-600 hover:text-gray-900 rounded-full p-1 transition-colors"
+              style={{ backgroundColor: "#F7F7F7", color: "#1E3A5F" }}
+              aria-label="Cerrar"
+            >
               ✕
             </button>
           </div>

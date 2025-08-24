@@ -23,7 +23,7 @@ export function Navigation() {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
                   <h1 className="text-xl font-bold text-blue-600 font-serif" style={{ color: "#1E3A5F" }}>
-              Allison Silva
+              Accounting
             </h1>
           </div>
 
@@ -109,7 +109,7 @@ export function Navigation() {
               size="sm"
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden"
-              style={{ color: "#1E3A5F" }}
+              style={{ color: "#1e5bbdff", backgroundColor: "transparent" }}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>

@@ -3,13 +3,14 @@
 
 import { Calculator, TrendingUp, Shield } from "lucide-react"
 import { useLanguage } from "./language-context"
-import { Button } from "./ui/button"
 import { useState } from "react"
-import ResponsiveModal from "./responsiveDialog"
+import ServicePickerModal from "./servicePickerModal"
+import CotizacionModal from "./cotizacionModal"
 
 export function Hero() {
   const { t } = useLanguage()
-  const [open, setOpen] = useState(false)
+  const [openPicker, setOpenPicker] = useState(false)
+  const [openQuote, setOpenQuote] = useState(false)
 
   return (
     <section className="bg-gradient-to-br from-blue-50 to-white py-20 lg:py-32">
@@ -22,40 +23,41 @@ export function Hero() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Botón que abre el modal */}
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-8 py-3 bg-transparent"
-                style={{
-                  borderColor: "#4285F4",
-                  color: "#4285F4",
-                  backgroundColor: "transparent",
-                }}
-                onClick={() => setOpen(true)} // 👈 abre modal
-              >
-                {t("hero.cta2")}
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-8 py-3 bg-transparent"
-                style={{
-                  borderColor: "#4285F4",
-                  color: "#4285F4",
-                  backgroundColor: "transparent",
-                }}
-                onClick={() => setOpen(true)} // 👈 abre modal
-              >
-                {t("hero.cta3")}
-              </Button>
+              <div style={{ display: "flex", gap: 12 }}>
+                {/* botón cotizar existente (usando el modal de cotización separado) */}
+                <button
+                  onClick={() => setOpenQuote(true)}
+                  style={{
+                    backgroundColor: "#34A853",
+                    color: "#fff",
+                    padding: "0.6rem 1.2rem",
+                    borderRadius: 8,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t("modal.quoteTitle")}
+                </button>
 
-              {/* Modal responsive */}
-              <ResponsiveModal open={open} onClose={() => setOpen(false)} title="Bienvenido">
-                <p className="text-gray-700">
-                  Aqui iria los campos de nombre correo y detallar que desea cotizar 
-                </p>
-              </ResponsiveModal>
+                {/* botón escoger paquete (abre el nuevo ServicePickerModal) */}
+                <button
+                  onClick={() => setOpenPicker(true)}
+                  style={{
+                    backgroundColor: "#4285F4",
+                    color: "#fff",
+                    padding: "0.6rem 1.2rem",
+                    borderRadius: 8,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t("hero.cta3") ?? "Escoger paquete"}
+                </button>
+              </div>
+
+              {/* modals */}
+              <ServicePickerModal open={openPicker} onClose={() => setOpenPicker(false)} />
+              <CotizacionModal open={openQuote} onClose={() => setOpenQuote(false)} />
             </div>
           </div>
 
