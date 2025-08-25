@@ -177,18 +177,18 @@ export function PlansModal({ open, onClose }: PlansModalProps) {
                 onClick={onClose}
                 style={{ backgroundColor: '#F3F4F6', borderColor: '#E5E7EB', color: '#1E3A5F' }}
               >
-                Cancelar
+                Close
               </Button>
               <Button
                 onClick={handleContinue}
                 disabled={selectedPlans.length === 0}
-                className="flex items-center gap-2"
+                className="flex items-center gap-0"
                 style={{
                   backgroundColor: selectedPlans.length > 0 ? "#34A853" : "#9CA3AF",
                   color: "white",
                 }}
               >
-                Continuar
+                Continue
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>

@@ -25,7 +25,7 @@ export function Navigation() {
             <span className="block font-bold font-serif text-base" style={{ color: "#1E3A5F" }}>
               Allison Silva Taxes and Accounting
             </span>
-            <span className="block text-[10px] sm:text-xs text-gray-500" style={{ maxWidth: 140, lineHeight: 1.1 }}>
+            <span className="block text-[10px] sm:text-xs text-gray-500" style={{ maxWidth: 300, lineHeight: 1.1 }}>
               {t("nav.slogan")}
             </span>
           </div>

@@ -6,9 +6,9 @@ import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Star } from "lucide-react"
 import { ResponsiveModal } from "../components/modalResponsiveTestimonials"
-import professionalMan from "../assets/img/professional-man-glasses.png"
+import professionalMan from "../assets/img/IGH_CEO.jpg"
 import professsionalWoman from "../assets/img/professional-woman-smiling.png"
-import professionalWomanEntrepreneur from "../assets/img/professional-woman-entrepreneur.png"
+import professionalWomanEntrepreneur from "../assets/img/RAPIMARKET_CEO.jpg"
 
 export function Testimonials() {
   const { t, language } = useLanguage()
