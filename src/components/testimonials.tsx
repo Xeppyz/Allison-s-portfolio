@@ -33,10 +33,6 @@ export function Testimonials() {
           language === "es"
             ? "Resultados satisfactorios, pues el tiempo de respuesta es el que requería."
             : "Satisfactory results, as the response time met my requirements.",
-        result:
-          language === "es"
-            ? "Aumenté mis ganancias en un 30% en 6 meses al tener mejor control de costos y precios. Los impuestos ya no son un problema."
-            : "I increased my profits by 30% in 6 months by having better control of costs and prices. Taxes are no longer a problem.",
         satisfaction:
           language === "es"
             ? "Si lo recomendaría, por la calidad de servicio y además por el profesionalismo con que realizó su trabajo."
@@ -61,10 +57,6 @@ export function Testimonials() {
           language === "es"
             ? "Ahora puedo saber cuánto estamos facturando, gastando, en qué categorías y cuánto es nuestra rentabilidad."
             : "Now I can see how much we are billing, spending, in which categories, and what our profitability is",
-        result:
-          language === "es"
-            ? "Conseguí una segunda ronda de inversión de $500K gracias a la claridad de mis reportes financieros."
-            : "I secured a second investment round of $500K thanks to the clarity of my financial reports.",
         satisfaction:
           language === "es"
             ? "Si, porque has realizado tu trabajo con transparencia y calidad."
@@ -89,10 +81,6 @@ export function Testimonials() {
           language === "es"
             ? "Logramos tener procesos contables mucho más organizados, información financiera al día y asesoría oportuna para la toma de decisiones. Además, nos sentimos tranquilos al saber que todo está en orden con nuestras obligaciones fiscales."
             : "We achieved much more organized accounting processes, up-to-date financial information, and timely advice for decision-making. In addition, we feel at ease knowing that everything is in order with our tax obligations.",
-        result:
-          language === "es"
-            ? "Optimicé mi inventario, eliminé productos no rentables y aumenté mi margen de ganancia del 25% al 40%."
-            : "I optimized my inventory, eliminated unprofitable products and increased my profit margin from 25% to 40%.",
         satisfaction:
           language === "es"
             ? "Definitivamente sí, porque ofrecen un servicio profesional, confiable y personalizado que realmente ayuda a las empresas a enfocarse en su crecimiento mientras ustedes se encargan de la parte contable."
@@ -194,13 +182,6 @@ export function Testimonials() {
                     {language === "es" ? "Beneficio obtenido:" : "Benefit obtained:"}
                   </h5>
                   <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.benefit}</p>
-                </div>
-
-                <div>
-                  <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    {language === "es" ? "Resultado:" : "Result:"}
-                  </h5>
-                  <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.result}</p>
                 </div>
 
                 <div>

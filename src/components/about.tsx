@@ -11,33 +11,33 @@ export function About() {
     "CPA (Certified Public Accountant)",
     "QuickBooks ProAdvisor",
     language === "es" ? "Maestría en Finanzas" : "Master's in Finance",
-    language === "es" ? "Graduada de UCA" : "UCA Graduate",
+    language === "es" ? "Diplomado en Tributación en Panamá" : "Diploma in Taxation in Panama",
   ]
 
   const companyMilestones = [
     {
       title: language === "es" ? "Fundación de la Empresa" : "Company Foundation",
-      year: "2018",
-      description:
-        language === "es"
-          ? "Allison fundó Silva Taxes & Accounting con la visión de brindar servicios contables personalizados y de alta calidad."
-          : "Allison founded Silva Taxes & Accounting with the vision of providing personalized, high-quality accounting services.",
-    },
-    {
-      title: language === "es" ? "Expansión del Equipo" : "Team Expansion",
-      year: "2020",
-      description:
-        language === "es"
-          ? "Incorporamos un equipo de profesionales especializados para atender mejor a nuestros clientes en crecimiento."
-          : "We incorporated a team of specialized professionals to better serve our growing client base.",
-    },
-    {
-      title: language === "es" ? "Crecimiento Sostenido" : "Sustained Growth",
       year: "2024",
       description:
         language === "es"
-          ? "Hoy servimos a más de 800 clientes con un equipo dedicado de contadores y especialistas en impuestos."
-          : "Today we serve over 800 clients with a dedicated team of accountants and tax specialists.",
+          ? "Motivada por ofrecer un servicio cercano y de excelencia, en el año 2024 Allison fundó Allison Silva Taxes & Accounting. La empresa nació con el propósito de brindar a emprendedores, pymes y corporaciones un acompañamiento integral en contabilidad, cumplimiento tributario y control financiero, con la premisa de que la gestión contable no debe ser vista como un gasto, sino como una inversión en crecimiento y sostenibilidad."
+          : "Driven by the motivation to provide a close and high-quality service, in 2024 Allison established Allison Silva Taxes & Accounting. The firm was created with the purpose of offering entrepreneurs, small and medium-sized businesses, and corporations comprehensive support in accounting, tax compliance, and financial control—under the premise that accounting management should not be seen as an expense, but rather as an investment in growth and sustainability.",
+    },
+    {
+      title: language === "es" ? "Expansión del Equipo" : "Team Expansion",
+      year: "2025",
+      description:
+        language === "es"
+          ? "Con el tiempo el  proyecto evolucionó a un equipo multidisciplinario de profesionales comprometidos en apoyar a clientes en Nicaragua, Panamá y otros países de la región. Este crecimiento ha permitido integrar servicios adicionales como migración de sistemas contables a QuickBooks, diseño de procesos internos, manuales contables, consultoría estratégica y reportes financieros personalizados."
+          : "Over time, the project evolved into a multidisciplinary team of professionals committed to supporting clients in Nicaragua, Panama, and other countries in the region. This growth has made it possible to integrate additional services such as the migration of accounting systems to QuickBooks, the design of internal processes, accounting manuals, strategic consulting, and customized financial reporting.",
+    },
+    {
+      title: language === "es" ? "Crecimiento Sostenido" : "Sustained Growth",
+      year: "2025",
+      description:
+        language === "es"
+          ? "La misión de Allison Silva Taxes & Accounting es transformar la contabilidad de un gasto a una inversión estratégica, ayudando a sus clientes a crecer con datos financieros confiables y planificación inteligente. El objetivo a futuro es continuar expandiendo la cartera de servicios, fortaleciendo la presencia internacional y acompañando a empresas en su transformación financiera y digital, siempre con un estándar de calidad y confianza con el que se distingue."
+          : "The mission of Allison Silva Taxes & Accounting is to transform accounting from an expense into a strategic investment, helping clients grow with reliable financial data and smart planning. Looking ahead, the goal is to continue expanding the service portfolio, strengthening international presence, and supporting companies in their financial and digital transformation—always with the standard of quality and trust that distinguishes the firm.",
     },
   ]
 
@@ -58,7 +58,7 @@ export function About() {
           <div className="space-y-8">
             <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
               <CardContent className="p-8">
-                <div className="flex flex-col items-center text-center space-y-6">
+                <div className="flex flex-col items-center text-justify space-y-6">
                   <div className="w-48 h-48 rounded-full overflow-hidden border-4" style={{ borderColor: "#4285F4" }}>
                     <img src={avatar} alt="Allison Silva" className="w-full h-full object-cover" />
                   </div>
@@ -71,8 +71,8 @@ export function About() {
                     </p>
                     <p className="leading-relaxed" style={{ color: "#1E3A5F" }}>
                       {language === "es"
-                        ? "Graduada como contadora de la Universidad Centroamericana (UCA), con certificación CPA y Maestría en Finanzas. Allison lidera nuestro equipo de profesionales con más de 10 años de experiencia, brindando servicios contables y fiscales de excelencia."
-                        : "Graduated as an accountant from Universidad Centroamericana (UCA), with CPA certification and a Master's degree in Finance. Allison leads our team of professionals with over 10 years of experience, providing excellent accounting and tax services."}
+                        ? "Trayectoria Profesional Allison Silva, CPA Fundadora y Directora Allison Silva es Contadora Pública Autorizada (CPA), graduada de la Universidad Centroamericana (UCA) y Máster en Finanzas. Cuenta con más de 10 años de experiencia en contabilidad, tributación y consultoría financiera, además de posgrados especializados en tributación en Estados Unidos, Panamá, Costa Rica y Nicaragua. Su sólida formación y visión estratégica le han permitido asesorar a empresas de diferentes sectores en la optimización fiscal, implementación de sistemas contables y elaboración de reportes financieros de alto valor para la toma de decisiones."
+                        : "Allison Silva is a Certified Public Accountant (CPA), graduated from the Central American University (UCA), and holds a Master’s degree in Finance. She has over 10 years of experience in accounting, taxation, and financial consulting, in addition to specialized postgraduate studies in taxation in the United States, Panama, Costa Rica, and Nicaragua. Her solid academic background and strategic vision have enabled her to advise companies from various industries on tax optimization, implementation of accounting systems, and the preparation of high-value financial reports for decision-making."}
                     </p>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export function About() {
             {companyMilestones.map((milestone, index) => (
               <Card key={index} style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
                 <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
+                  <div className="flex items-start space-x-4 text-justify">
                     <div className="w-3 h-3 rounded-full mt-2" style={{ backgroundColor: "#4285F4" }}></div>
                     <div className="flex-1">
                       <h5 className="text-lg font-bold mb-1" style={{ color: "#1E3A5F" }}>
@@ -132,36 +132,7 @@ export function About() {
               </Card>
             ))}
 
-            {/* Company Stats */}
-            <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="grid grid-cols-2 gap-6 text-center">
-                  <div>
-                    <div className="text-3xl font-bold mb-2" style={{ color: "#34A853" }}>
-                      800+
-                    </div>
-                    <p className="text-sm" style={{ color: "#1E3A5F" }}>
-                      {language === "es" ? "Clientes Atendidos" : "Clients Served"}
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold mb-2" style={{ color: "#34A853" }}>
-                      6+
-                    </div>
-                    <p className="text-sm" style={{ color: "#1E3A5F" }}>
-                      {language === "es" ? "Años de Experiencia" : "Years in Business"}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-center text-sm leading-relaxed" style={{ color: "#1E3A5F" }}>
-                    {language === "es"
-                      ? "Respaldados por un equipo de profesionales especializados trabajando bajo el liderazgo de Allison para brindar servicios de confianza y excelencia."
-                      : "Backed by a team of specialized professionals working under Allison's leadership to provide trusted and excellent services."}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          
           </div>
         </div>
       </div>

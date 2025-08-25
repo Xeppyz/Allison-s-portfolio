@@ -1,25 +1,24 @@
 "use client"
 
 
-import { Calculator, TrendingUp, Shield } from "lucide-react"
+import { Calculator, TrendingUp, Shield, User} from "lucide-react"
 import { useLanguage } from "./language-context"
 import { useState } from "react"
-import ServicePickerModal from "./servicePickerModal"
+import { PlansModal } from "./modalPaquetes"
 import CotizacionModal from "./cotizacionModal"
 
 export function Hero() {
   const { t } = useLanguage()
-  const [openPicker, setOpenPicker] = useState(false)
+  const [openPlans, setOpenPlans] = useState(false)
   const [openQuote, setOpenQuote] = useState(false)
 
   return (
-    <section className="bg-gradient-to-br from-blue-50 to-white py-20 lg:py-32">
+  <section className="bg-gradient-to-br from-blue-50 to-white pt-8 pb-20 lg:pt-12 lg:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight font-serif">{t("hero.title")}</h1>
-              <p className="text-xl text-gray-600 leading-relaxed">{t("hero.subtitle")}</p>
+              <h2 className="text-2xl lg:text-6x1 font-bold text-gray-900 leading-tight font-serif">{t("hero.subtitle")}</h2>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -39,9 +38,9 @@ export function Hero() {
                   {t("modal.quoteTitle")}
                 </button>
 
-                {/* botón escoger paquete (abre el nuevo ServicePickerModal) */}
+                {/* botón escoger paquete (abre el modal de planes) */}
                 <button
-                  onClick={() => setOpenPicker(true)}
+                  onClick={() => setOpenPlans(true)}
                   style={{
                     backgroundColor: "#4285F4",
                     color: "#fff",
@@ -56,7 +55,7 @@ export function Hero() {
               </div>
 
               {/* modals */}
-              <ServicePickerModal open={openPicker} onClose={() => setOpenPicker(false)} />
+              <PlansModal open={openPlans} onClose={() => setOpenPlans(false)} />
               <CotizacionModal open={openQuote} onClose={() => setOpenQuote(false)} />
             </div>
           </div>
@@ -90,6 +89,15 @@ export function Hero() {
                 <div>
                   <h3 className="font-semibold text-gray-900 font-serif">{t("hero.tax_compliance")}</h3>
                   <p className="text-gray-600 text-sm">{t("hero.tax_compliance_desc")}</p>
+                </div>
+              </div>
+               <div className="flex items-center space-x-4">
+                <div className="bg-red-100 p-3 rounded-full">
+                  <User className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.practices_title")}</h3>
+                  <p className="text-gray-600 text-sm">{t("hero.practices_desc")}</p>
                 </div>
               </div>
             </div>

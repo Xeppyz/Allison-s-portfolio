@@ -64,7 +64,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4" />
-                <span>info@allisonsilva.com</span>
+                <span>info@allisonsilvacorp.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4" />

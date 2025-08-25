@@ -31,17 +31,20 @@ const translations = {
       "Plan emprendedor"
     ],
     // Navigation
-    "nav.services": "Servicios",
-    "nav.benefits": "Beneficios",
-    "nav.testimonials": "Testimonios",
-    "nav.blog": "Blog",
-    "nav.contact": "Contacto",
+  "nav.services": "Servicios",
+  "nav.benefits": "Beneficios",
+  "nav.testimonials": "Testimonios",
+  "nav.blog": "Blog",
+  "nav.contact": "Contacto",
+  "nav.slogan": "NO SOLO CIERRO LIBROS, ABRO OPORTUNIDADES",
 
     // Hero
     // Dentro de "es"
     "hero.bookkeeping": "Contabilidad",
     "hero.bookkeeping_desc": "Registros claros y precisos para tu negocio.",
     "hero.financial_reports": "Reportes financieros",
+    "hero.practices_title": "Capacitación en Sistemas y Normas Contables",
+    "hero.practices_desc": "Formación práctica en QuickBooks Online y Xero, y entrenamiento en principios contables y US GAAP para tu equipo",
     "hero.financial_reports_desc": "Análisis detallado para la toma de decisiones.",
     "hero.tax_compliance": "Cumplimiento fiscal",
     "hero.tax_compliance_desc": "Cumple con tus obligaciones tributarias sin estrés.",
@@ -77,6 +80,11 @@ const translations = {
     "entrepreneurPlan.features.laborCompliance":
       "Cumplimiento laboral (si aplica), incluyendo registro de nómina ante autoridades locales como INSS",
 
+
+
+      //
+      "plans.title": "Nuestros Planes",
+      "plans.subtitle": "Elige el plan que mejor se adapte a tus necesidades",
     // Services
     "services.title": "Nuestros Servicios",
     "services.subtitle": "Soluciones completas para el éxito financiero de tu negocio",
@@ -84,7 +92,7 @@ const translations = {
     "services.detailsSubtitle": "Conoce todo lo que incluye este servicio",
     "services.includes": "Este servicio incluye",
 
-    "services.1.title": "Bookkeeping mensual",
+    "services.1.title": "Contabilidad mensual",
     "services.1.desc": "Mantenemos tus registros contables al día con precisión y detalle.",
     "services.1.details": [
       "Registro diario de todas las transacciones comerciales",
@@ -207,17 +215,20 @@ const translations = {
     ],
 
     // Navigation
-    "nav.services": "Services",
-    "nav.benefits": "Benefits",
-    "nav.testimonials": "Testimonials",
-    "nav.blog": "Blog",
-    "nav.contact": "Contact",
+  "nav.services": "Services",
+  "nav.benefits": "Benefits",
+  "nav.testimonials": "Testimonials",
+  "nav.blog": "Blog",
+  "nav.contact": "Contact",
+  "nav.slogan": "I DON'T JUST CLOSE BOOKS, I OPEN OPPORTUNITIES",
 
     // Hero
     // Dentro de "en"
     "hero.bookkeeping": "Bookkeeping",
     "hero.bookkeeping_desc": "Clear and accurate records for your business.",
     "hero.financial_reports": "Financial reports",
+    "hero.practices_title": "Training in Accounting Systems and Standards.",
+    "hero.practices_desc": "Practical training in QuickBooks Online and Xero, and training in accounting principles and US GAAP for your team.",
     "hero.financial_reports_desc": "Detailed analysis for decision-making.",
     "hero.tax_compliance": "Tax compliance",
     "hero.tax_compliance_desc": "Stay compliant with tax obligations stress-free.",
@@ -250,6 +261,11 @@ const translations = {
       "Financial statement preparation ensuring monthly and annual tax compliance",
     "entrepreneurPlan.features.laborCompliance":
       "Labor compliance (if applicable), including payroll registration with local authorities such as INSS",
+
+    //plans
+
+    "plans.title": "Our Packages",
+    "plans.subtitle": "Choose the package that best suits your needs",
 
     // Services
     "services.title": "Our Services",
