@@ -1,6 +1,7 @@
 
 import './App.css'
 import { LanguageProvider } from "./components/language-context"
+import { Analytics } from '@vercel/analytics/react'
 import { Navigation } from "./components/navegation"
 import { Hero } from "./components/hero"
 import { Services } from "./components/services"
@@ -24,7 +25,8 @@ function App() {
         <Testimonials />
         <Blog />
         <Contact />
-        <Footer />
+  <Footer />
+  <Analytics />
       </div>
     </LanguageProvider>
   )
