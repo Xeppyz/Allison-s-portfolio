@@ -2,6 +2,7 @@
 import './App.css'
 import { LanguageProvider } from "./components/language-context"
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Navigation } from "./components/navegation"
 import { Hero } from "./components/hero"
 import { Services } from "./components/services"
@@ -27,6 +28,7 @@ function App() {
         <Contact />
   <Footer />
   <Analytics />
+  <SpeedInsights />
       </div>
     </LanguageProvider>
   )
