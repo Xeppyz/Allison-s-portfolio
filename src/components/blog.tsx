@@ -63,7 +63,12 @@ export function Blog() {
           {blogPosts.map((post, index) => (
             <Card key={index} className="bg-white hover:shadow-lg transition-shadow duration-300">
               <div className="aspect-video overflow-hidden rounded-t-lg">
-                <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+                <img 
+                  src={post.image || "/placeholder.svg"} 
+                  alt={post.title + (language === 'es' ? ' - Artículo de blog sobre contabilidad y finanzas' : ' - Blog article about accounting and finance')} 
+                  loading="lazy" 
+                  decoding="async"
+                  className="w-full h-full object-cover" />
               </div>
               <CardHeader>
                 <div className="flex items-center text-sm text-gray-500 mb-2">

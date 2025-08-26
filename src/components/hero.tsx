@@ -18,7 +18,7 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-2xl lg:text-6x1 font-bold text-gray-900 leading-tight font-serif">{t("hero.subtitle")}</h2>
+              <h1 className="text-2xl lg:text-6x1 font-bold text-gray-900 leading-tight font-serif">{t("hero.subtitle")}</h1>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">

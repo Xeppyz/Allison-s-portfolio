@@ -116,7 +116,9 @@ export function Testimonials() {
                 <div className="flex items-center space-x-4">
                   <img
                     src={testimonial.image || "/placeholder.svg"}
-                    alt={testimonial.name}
+                    alt={`${testimonial.name} - ${testimonial.company}`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
@@ -156,7 +158,9 @@ export function Testimonials() {
               <div className="flex items-center space-x-4 mb-6">
                 <img
                   src={testimonials[selectedTestimonial].image || "/placeholder.svg"}
-                  alt={testimonials[selectedTestimonial].name}
+                  alt={`${testimonials[selectedTestimonial].name} - ${testimonials[selectedTestimonial].company}`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>

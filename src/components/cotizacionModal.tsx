@@ -140,7 +140,7 @@ export default function CotizacionModal({ open, onClose }: CotizacionModalProps)
 };
 
     try {
-      const res = await fetch("http://localhost:3001/api/send-quote", {
+      const res = await fetch("https://wservices.casavision.com/ApiWebHub/api/Email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
