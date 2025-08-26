@@ -11,7 +11,7 @@ export function About() {
     "CPA (Certified Public Accountant)",
     "QuickBooks ProAdvisor",
     language === "es" ? "Maestría en Finanzas" : "Master's in Finance",
-    language === "es" ? "Diplomado en Tributación en Panamá" : "Diploma in Taxation in Panama",
+    language === "es" ? "Diplomado en Tributación en Panamá y Costa Rica" : "Diploma in Taxation in Panama And Costa Rica",
   ]
 
   const companyMilestones = [
