@@ -1,7 +1,7 @@
 "use client"
 
 
-import { Calculator, TrendingUp, Shield, User} from "lucide-react"
+import { Calculator, TrendingUp, Shield, User } from "lucide-react"
 import { useLanguage } from "./language-context"
 import { useState } from "react"
 import { PlansModal } from "./modalPaquetes"
@@ -13,14 +13,15 @@ export function Hero() {
   const [openQuote, setOpenQuote] = useState(false)
 
   return (
-  <section className="bg-gradient-to-br from-blue-50 to-white pt-8 pb-20 lg:pt-12 lg:pb-32">
+    <section className="bg-gradient-to-br from-blue-50 to-white pt-8 pb-20 lg:pt-12 lg:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-2xl lg:text-6x1 font-bold text-gray-900 leading-tight font-serif">{t("hero.subtitle")}</h1>
+              <h1 className="!text-lg md:!text-xl lg:!text-4xl font-bold text-gray-900 leading-tight font-serif">
+                {t("hero.subtitle")}
+              </h1>
             </div>
-
             <div className="flex flex-col sm:flex-row gap-4">
               <div style={{ display: "flex", gap: 12 }}>
                 {/* botón cotizar existente (usando el modal de cotización separado) */}
@@ -91,7 +92,7 @@ export function Hero() {
                   <p className="text-gray-600 text-sm">{t("hero.tax_compliance_desc")}</p>
                 </div>
               </div>
-               <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4">
                 <div className="bg-red-100 p-3 rounded-full">
                   <User className="h-6 w-6 text-red-600" />
                 </div>

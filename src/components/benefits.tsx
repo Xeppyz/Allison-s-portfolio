@@ -1,19 +1,15 @@
-"use client"
-
-
 import { Clock, Shield, BarChart, Zap } from "lucide-react"
 import { useLanguage } from "./language-context"
 
-const benefitIcons = [Clock, Shield, BarChart, Zap]
+const benefitIcons = [
+  <Clock className="h-10 w-10 text-yellow-600" />, 
+  <Shield className="h-10 w-10 text-yellow-600" />, 
+  <BarChart className="h-10 w-10 text-yellow-600" />, 
+  <Zap className="h-10 w-10 text-yellow-600" />
+]
 
 export function Benefits() {
   const { t } = useLanguage()
-
-  const benefits = Array.from({ length: 4 }, (_, i) => ({
-    id: i + 1,
-    title: t(`benefits.${i + 1}`),
-    icon: benefitIcons[i],
-  }))
 
   return (
     <section id="benefits" className="py-20 bg-white">
@@ -24,14 +20,13 @@ export function Benefits() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {benefits.map((benefit) => {
-            const IconComponent = benefit.icon
+          {Array.from({length: 4}).map((_, index) => {
             return (
-              <div key={benefit.id} className="text-center space-y-4">
+              <div key={`benefit-${index + 1}`} className="text-center space-y-4">
                 <div className="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
-                  <IconComponent className="h-10 w-10 text-yellow-600" />
+                  {benefitIcons[index]}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{benefit.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t(`benefits.${index + 1}`)}</h3>
               </div>
             )
           })}

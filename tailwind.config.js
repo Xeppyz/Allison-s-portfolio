@@ -6,5 +6,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')({ nocompatible: true }) // nocompatible elimina los prefijos viejos
+],
 };

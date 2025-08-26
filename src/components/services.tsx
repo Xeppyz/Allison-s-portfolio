@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useLanguage } from "./language-context"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"

@@ -7,8 +7,10 @@ import { Button } from "../components/ui/button"
 import { Star } from "lucide-react"
 import { ResponsiveModal } from "../components/modalResponsiveTestimonials"
 import professionalMan from "../assets/img/IGH_CEO.jpg"
-import professsionalWoman from "../assets/img/professional-woman-smiling.png"
+import professsionalWoman from "../assets/img/DEAN_LARGUESPADA.jpg"
 import professionalWomanEntrepreneur from "../assets/img/RAPIMARKET_CEO.jpg"
+import guest from "../assets/img/user_guest.png"
+
 
 export function Testimonials() {
   const { t, language } = useLanguage()
@@ -87,6 +89,92 @@ export function Testimonials() {
             : "Definitely yes, because they offer a professional, reliable, and personalized service that truly helps companies focus on their growth while they take care of the accounting side.",
       },
     },
+    {
+      name: "Leslie Xaviera Martínez Benavides",
+      position: language === "es"
+        ? "Gerente contable"
+        : "Manager Accounting",
+      company: "INGROMESA",
+      comment:
+        language === "es"
+          ? "Resultados satisfactorios, pues el tiempo de respuesta es el que requería."
+          : "Satisfactory results, since the response time is just what I needed.",
+      image: guest,
+      details: {
+        problem:
+          language === "es"
+            ? "Sistemas contables."
+            : "Bookkeeping.",
+        benefit:
+          language === "es"
+            ? "Excelente servicio."
+            : "Excellent service.",
+        satisfaction:
+          language === "es"
+            ? "Si, porque es personalizado y de calidad."
+            : "Definitely yes, because it is personalized and of quality.",
+      },
+    },
+    {
+      name: language === "es"
+        ? "Anónimo"
+        : "Anonymous",
+      position: language === "es"
+        ? "COO"
+        : "COO",
+      company: language === "es"
+        ? "Empresa Regional - Sector Exportación de Materiales."
+        : "Regional Company - Materials Export Sector.",
+      comment:
+        language === "es"
+          ? "Nos guió a poder estructurar el departamento contable para tener una buena trazabilidad."
+          : "It guided us to structure the accounting department for good traceability.",
+      image: guest,
+      details: {
+        problem:
+          language === "es"
+            ? "Organización dentro del equipo contable, no teníamos definidos roles ni responsabilidades."
+            : "Organization within the accounting team, we did not have defined roles or responsibilities.",
+        benefit:
+          language === "es"
+            ? "Nos guió a poder estructurar el departamento contable para tener una buena trazabilidad."
+            : "It guided us to structure the accounting department for good traceability.",
+        satisfaction:
+          language === "es"
+            ? "Si, Allison se caracteriza por su profesionalismo y curiosidad. Ella quiere comprender cada paso en tu proceso operativo para así brindarte la mejor solución."
+            : "Definitely yes, because Allison is characterized by her professionalism and curiosity. She wants to understand every step in your operational process in order to provide you with the best solution.",
+      },
+    },
+    {
+      name: language === "es"
+        ? "Julio Rodriguez"
+        : "Julio Rodriguez",
+      position: language === "es"
+        ? "Gerente General"
+        : "General Manager",
+      company: language === "es"
+        ? "Omniprint International."
+        : "Omniprint International.",
+      comment:
+        language === "es"
+          ? "Puntualidad, asesoría pertinente y consistencia."
+          : "Timeliness, relevant advice, and consistency.",
+      image: guest,
+      details: {
+        problem:
+          language === "es"
+            ? "Necesitaba a alguien confiable que llevara la contabilidad de la empresa."
+            : "I needed someone reliable to handle the company's accounting.",
+        benefit:
+          language === "es"
+            ? "Puntualidad, asesoría pertinente y consistencia."
+            : "Timeliness, relevant advice, and consistency.",
+        satisfaction:
+          language === "es"
+            ? "Definitivamente SI. Por los valores que tienes como proveedor de servicios contables y el profesionalismo que te caracteriza."
+            : "Definitely yes. Because of the values you have as a provider of accounting services and the professionalism that characterizes you.",
+      },
+    },
   ]
 
   return (
@@ -101,16 +189,33 @@ export function Testimonials() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          className=" flex gap-6 overflow-x-auto overflow-y-hidden pb-4 px-1 md:px-4 lg:px-8
+         scroll-smooth
+                    scrollbar scrollbar-thin
+                    scrollbar-track-slate-200
+                    scrollbar-thumb-[#4285F4]/70
+                    hover:scrollbar-thumb-[#4285F4]
+                    scrollbar-thumb-rounded-full scrollbar-track-rounded-full
+"
+          style={{
+            scrollSnapType: 'x mandatory',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
           {testimonials.map((testimonial, index) => (
-            <Card key={index} style={{ backgroundColor: "#FBFCFF" }}>
+            <Card
+              key={index}
+              style={{ backgroundColor: '#FBFCFF', minWidth: 320, maxWidth: 380, scrollSnapAlign: 'start', flex: '0 0 auto' }}
+              className="shadow-md"
+            >
               <CardContent className="p-6 space-y-4">
                 <div className="flex space-x-1">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" style={{ color: "#34A853" }} />
+                    <Star key={i} className="h-5 w-5 fill-current" style={{ color: '#34A853' }} />
                   ))}
                 </div>
-                <p className="italic leading-relaxed" style={{ color: "#1E3A5F", opacity: 0.8 }}>
+                <p className="italic leading-relaxed" style={{ color: '#1E3A5F', opacity: 0.8 }}>
                   "{testimonial.comment}"
                 </p>
                 <div className="flex items-center space-x-4">
@@ -122,10 +227,10 @@ export function Testimonials() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <h4 className="font-semibold" style={{ color: "#1E3A5F" }}>
+                    <h4 className="font-semibold" style={{ color: '#1E3A5F' }}>
                       {testimonial.name}
                     </h4>
-                    <p className="text-sm" style={{ color: "#1E3A5F", opacity: 0.6 }}>
+                    <p className="text-sm" style={{ color: '#1E3A5F', opacity: 0.6 }}>
                       {testimonial.position}, {testimonial.company}
                     </p>
                   </div>
@@ -136,12 +241,12 @@ export function Testimonials() {
                   onClick={() => setSelectedTestimonial(index)}
                   className="w-full mt-4 border-2"
                   style={{
-                    borderColor: "#4285F4",
-                    color: "#4285F4",
-                    backgroundColor: "transparent",
+                    borderColor: '#4285F4',
+                    color: '#4285F4',
+                    backgroundColor: 'transparent',
                   }}
                 >
-                  {language === "es" ? "Ver más" : "See more"}
+                  {language === 'es' ? 'Ver más' : 'See more'}
                 </Button>
               </CardContent>
             </Card>
