@@ -97,8 +97,8 @@ export function Testimonials() {
       company: "INGROMESA",
       comment:
         language === "es"
-          ? "Resultados satisfactorios, pues el tiempo de respuesta es el que requería."
-          : "Satisfactory results, since the response time is just what I needed.",
+          ? "Atención de calidad y personalizada para capacitación de personal en implementación de sistema contable"
+          : "Quality and personalized attention for staff training in accounting system implementation.",
       image: guest,
       details: {
         problem:
