@@ -4,6 +4,7 @@ import { useLanguage } from "./language-context"
 import { Card, CardContent } from "./ui/card"
 import { Badge } from "./ui/badge"
 import avatar from "../assets/img/avatar.jpg"
+
 export function About() {
   const { language } = useLanguage()
 
@@ -42,39 +43,41 @@ export function About() {
   ]
 
   return (
-    <section className="py-20 px-4" style={{ backgroundColor: "#F8F8F8" }}>
+    <section className="py-20 px-4 overflow-x-hidden" style={{ backgroundColor: "#F8F8F8" }}>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4" style={{ color: "#1E3A5F" }}>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "#1E3A5F" }}>
             {language === "es" ? "Acerca de Nosotros" : "About Us"}
           </h2>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F" }}>
+          <p className="text-lg sm:text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F" }}>
             {language === "es" ? "Nuestra Historia" : "Our Story"}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Founder Profile Section */}
           <div className="space-y-8">
-            <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
-              <CardContent className="p-8">
+            <Card style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
+              <CardContent className="p-6 sm:p-8">
                 <div className="flex flex-col items-center text-justify space-y-6">
-                  <div className="w-48 h-48 rounded-full overflow-hidden border-4" style={{ borderColor: "#4285F4" }}>
-                    <img 
-                      src={avatar} 
-                      alt={language === 'es' ? 'Allison Silva CPA - Fundadora y Directora' : 'Allison Silva CPA - Founder & Director'} 
-                      loading="lazy" 
-                      decoding="async" 
-                      className="w-full h-full object-cover" />
+                  <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4"
+                       style={{ borderColor: "#4285F4" }}>
+                    <img
+                      src={avatar}
+                      alt={language === 'es' ? 'Allison Silva CPA - Fundadora y Directora' : 'Allison Silva CPA - Founder & Director'}
+                      loading="lazy"
+                      decoding="async"
+                      className="block w-full h-full object-cover max-w-full"
+                    />
                   </div>
-                  <div>
+                  <div className="w-full">
                     <h3 className="text-2xl font-bold mb-2" style={{ color: "#1E3A5F" }}>
                       Allison Silva, CPA
                     </h3>
-                    <p className="text-lg mb-4" style={{ color: "#1E3A5F" }}>
+                    <p className="text-base sm:text-lg mb-4" style={{ color: "#1E3A5F" }}>
                       {language === "es" ? "Fundadora y Directora" : "Founder & Director"}
                     </p>
-                    <p className="leading-relaxed" style={{ color: "#1E3A5F" }}>
+                    <p className="leading-relaxed break-words" style={{ color: "#1E3A5F" }}>
                       {language === "es"
                         ? "Trayectoria Profesional Allison Silva, CPA Fundadora y Directora Allison Silva es Contadora Pública Autorizada (CPA), graduada de la Universidad Centroamericana (UCA) y Máster en Finanzas. Cuenta con más de 10 años de experiencia en contabilidad, tributación y consultoría financiera, además de posgrados especializados en tributación en Estados Unidos, Panamá, Costa Rica y Nicaragua. Su sólida formación y visión estratégica le han permitido asesorar a empresas de diferentes sectores en la optimización fiscal, implementación de sistemas contables y elaboración de reportes financieros de alto valor para la toma de decisiones."
                         : "Allison Silva is a Certified Public Accountant (CPA), graduated from the Central American University (UCA), and holds a Master’s degree in Finance. She has over 10 years of experience in accounting, taxation, and financial consulting, in addition to specialized postgraduate studies in taxation in the United States, Panama, Costa Rica, and Nicaragua. Her solid academic background and strategic vision have enabled her to advise companies from various industries on tax optimization, implementation of accounting systems, and the preparation of high-value financial reports for decision-making."}
@@ -85,8 +88,8 @@ export function About() {
             </Card>
 
             {/* Education & Certifications */}
-            <Card style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
-              <CardContent className="p-8">
+            <Card style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
+              <CardContent className="p-6 sm:p-8">
                 <h4 className="text-xl font-bold mb-6" style={{ color: "#1E3A5F" }}>
                   {language === "es" ? "Educación y Certificaciones" : "Education & Certifications"}
                 </h4>
@@ -95,7 +98,7 @@ export function About() {
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="px-4 py-2 text-sm font-medium"
+                      className="px-3 py-2 text-sm font-medium whitespace-normal break-words text-center max-w-full"
                       style={{
                         backgroundColor: "#34A853",
                         color: "white",
@@ -117,18 +120,18 @@ export function About() {
             </h4>
 
             {companyMilestones.map((milestone, index) => (
-              <Card key={index} style={{ backgroundColor: "#FBFCFF" }} className="border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4 text-justify">
-                    <div className="w-3 h-3 rounded-full mt-2" style={{ backgroundColor: "#4285F4" }}></div>
-                    <div className="flex-1">
-                      <h5 className="text-lg font-bold mb-1" style={{ color: "#1E3A5F" }}>
+              <Card key={index} style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
+                <CardContent className="p-5 sm:p-6">
+                  <div className="flex items-start gap-4 text-justify">
+                    <div className="shrink-0 w-3 h-3 rounded-full mt-2" style={{ backgroundColor: "#4285F4" }} />
+                    <div className="flex-1 min-w-0">
+                      <h5 className="text-lg font-bold mb-1 break-words" style={{ color: "#1E3A5F" }}>
                         {milestone.title}
                       </h5>
                       <p className="font-medium mb-2" style={{ color: "#4285F4" }}>
                         {milestone.year}
                       </p>
-                      <p className="text-sm leading-relaxed" style={{ color: "#1E3A5F" }}>
+                      <p className="text-sm leading-relaxed break-words" style={{ color: "#1E3A5F" }}>
                         {milestone.description}
                       </p>
                     </div>
@@ -136,8 +139,6 @@ export function About() {
                 </CardContent>
               </Card>
             ))}
-
-          
           </div>
         </div>
       </div>
