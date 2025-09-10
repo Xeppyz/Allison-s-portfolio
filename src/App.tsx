@@ -1,5 +1,6 @@
 
 import './App.css'
+import './styles/article.css'
 import { LanguageProvider } from "./components/language-context"
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'

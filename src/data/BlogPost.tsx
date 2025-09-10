@@ -7,12 +7,13 @@ export type BlogPost = {
   title: Record<Locale, string>
   excerpt: Record<Locale, string>
   contentHtml: Record<Locale, string>
+  tags?: string[]
 }
 
 export const blogPosts: BlogPost[] = [
   {
     slug: "pasos-para-inscribirse-ante-la-dgi-de-nicaragua",
-    date: "09/09/2025",
+    date: "2024-02-01",
     imageKey: "calendar",
     title: {
       es: "Pasos para inscribirse ante la DGI de Nicaragua",
@@ -48,10 +49,11 @@ export const blogPosts: BlogPost[] = [
         <p>Completing this step is essential for operating legally in Nicaragua. At Allison Silva Taxes and Accounting, we support clients at every stage to ensure a correct process.</p>
       `,
     },
+    tags: ["Nicaragua", "DGI", "RUC", "Cumplimiento fiscal"],
   },
   {
     slug: "ventajas-de-automatizar-e-integrar-quickbooks",
-    date: "09/09/2025",
+    date: "2024-02-10",
     imageKey: "accounting",
     title: {
       es: "Ventajas de automatizar e integrar QuickBooks como sistema contable",
@@ -87,10 +89,11 @@ export const blogPosts: BlogPost[] = [
         <p>At Allison Silva Taxes and Accounting, we implement QuickBooks strategically to ensure efficiency and tax compliance.</p>
       `,
     },
+    tags: ["QuickBooks", "Automatización", "Contabilidad", "Tecnología"],
   },
   {
     slug: "como-prepararse-para-las-declaraciones-anuales-ca-y-eeuu",
-    date: "09/09/2025",
+    date: "2024-02-20",
     imageKey: "placeholder",
     title: {
       es: "Cómo prepararse para las declaraciones anuales en Centroamérica y Estados Unidos",
@@ -126,6 +129,7 @@ export const blogPosts: BlogPost[] = [
         <p>At Allison Silva Taxes and Accounting, we support businesses and individuals in meeting their tax obligations locally and internationally, providing confidence and peace of mind.</p>
       `,
     },
+    tags: ["Declaraciones anuales", "Centroamérica", "Estados Unidos", "Cumplimiento"],
   },
 ]
 
