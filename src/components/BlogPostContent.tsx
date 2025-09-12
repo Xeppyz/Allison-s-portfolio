@@ -69,6 +69,11 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
     setHeadings(collected)
   }, [contentHtml, language])
 
+   // Scroll to top on mount or location change
+   // Scroll to top on mount or location change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [location.pathname])
   // Ordena posts por fecha para prev/next
   const { prev, next, related } = useMemo(() => {
     const all = getAllPosts().slice().sort((a, b) => (a.date < b.date ? 1 : -1))
