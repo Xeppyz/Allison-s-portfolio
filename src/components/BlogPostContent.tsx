@@ -179,14 +179,14 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
           {post.tags && (
             <div className="mb-4 flex flex-wrap gap-2">
               {post.tags.map((t) => (
-                <Badge
-                  key={t}
-                  variant="secondary"
-                  className="px-3 py-1 text-xs font-medium whitespace-normal break-words"
-                  style={{ backgroundColor: "#34A853", color: "white", border: "none" }}
-                >
-                  {t}
-                </Badge>
+                  <Badge
+                    key={t}
+                    variant="secondary"
+                    className="px-3 py-1 text-xs font-medium whitespace-normal break-words"
+                    style={{ backgroundColor: "#34A853", color: "#fff", border: "none" }}
+                  >
+                    {t}
+                  </Badge>
               ))}
             </div>
           )}

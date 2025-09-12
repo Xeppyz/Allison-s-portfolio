@@ -24,6 +24,7 @@ export function ResponsiveModal({ open, onClose, title, children }: ResponsiveMo
             onClick={onClose}
             className="absolute right-4 top-4 rounded-sm"
             style={{ backgroundColor: "#4285F4" }}
+            aria-label="Cerrar modal"
           >
             <X className="h-4 w-4" style={{ color: "#fff" }} />
           </button>

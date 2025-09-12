@@ -139,7 +139,7 @@ export function PlansModal({ open, onClose }: PlansModalProps) {
                 {t("plans.subtitle") || "Selecciona los servicios que necesitas para tu negocio"}
               </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full" style={{ backgroundColor: 'transparent', color: '#1E3A5F' }}>
+            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full" style={{ backgroundColor: 'transparent', color: '#1E3A5F' }} aria-label="Cerrar modal">
               <X className="h-6 w-6" style={{ color: "#1E3A5F" }} />
             </Button>
           </div>

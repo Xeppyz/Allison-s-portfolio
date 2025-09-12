@@ -256,6 +256,7 @@ export default function CotizacionModal({ open, onClose }: CotizacionModalProps)
               border: "none",
               cursor: submitting ? "not-allowed" : "pointer",
             }}
+            aria-label={submitting ? "Enviando cotización" : "Enviar cotización"}
           >
             {submitting ? "Enviando..." : t("modal.send")}
           </button>
