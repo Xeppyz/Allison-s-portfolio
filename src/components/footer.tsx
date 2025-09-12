@@ -15,13 +15,13 @@ export function Footer() {
             <h3 className="text-xl font-bold text-white">Allison Silva</h3>
             <p className="text-gray-300 text-sm leading-relaxed">{t("hero.subtitle")}</p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a Facebook" style={{ color: '#1E3A5F' }}>
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a Instagram" style={{ color: '#1E3A5F' }}>
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="https://www.linkedin.com/in/allison-silva-2ab71a210/?originalSubdomain=ni" target="_blank" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/in/allison-silva-2ab71a210/?originalSubdomain=ni" target="_blank" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a LinkedIn" style={{ color: '#1E3A5F' }}>
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -32,22 +32,22 @@ export function Footer() {
             <h4 className="text-lg font-semibold text-white">{t("footer.services.title")}</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
-                <a href="#services" className="hover:text-white transition-colors">
+                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
                   {t("services.1.title")}
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors">
+                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
                   {t("services.2.title")}
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors">
+                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
                   {t("services.4.title")}
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors">
+                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
                   {t("services.5.title")}
                 </a>
               </li>
@@ -60,14 +60,14 @@ export function Footer() {
             <div className="space-y-3 text-sm text-gray-300">
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4" />
-                <a href="tel:+50587673463" className="hover:text-white transition-colors underline">+505 8767-3463</a>
-                <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-2 text-green-400 hover:text-green-500" title="WhatsApp">
+                <a href="tel:+50587673463" className="hover:text-white transition-colors underline" aria-label="Llamar por teléfono" style={{ color: '#1E3A5F' }}>+505 8767-3463</a>
+                <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-2 text-green-400 hover:text-green-500" title="WhatsApp" aria-label="Abrir WhatsApp" style={{ color: '#25D366' }}>
                   WhatsApp
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:info@allisonsilvacorp.com" className="hover:text-white transition-colors underline">info@allisonsilvacorp.com</a>
+                <a href="mailto:info@allisonsilvacorp.com" className="hover:text-white transition-colors underline" aria-label="Enviar correo" style={{ color: '#1E3A5F' }}>info@allisonsilvacorp.com</a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4" />
@@ -89,10 +89,10 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-gray-400">© 2024 Allison Silva Taxes & Accounting. {t("footer.rights")}</p>
             <div className="flex space-x-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-white transition-colors" aria-label="Ir a Facebook" style={{ color: '#1E3A5F' }}>
                 Privacy Policy
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-white transition-colors" aria-label="Ir a Instagram" style={{ color: '#1E3A5F' }}>
                 Terms of Service
               </a>
             </div>

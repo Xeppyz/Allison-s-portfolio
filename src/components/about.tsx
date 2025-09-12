@@ -128,7 +128,7 @@ export function About() {
                       <h5 className="text-lg font-bold mb-1 break-words" style={{ color: "#1E3A5F" }}>
                         {milestone.title}
                       </h5>
-                      <p className="font-medium mb-2" style={{ color: "#4285F4" }}>
+                      <p className="font-medium mb-2" style={{ color: "#1E3A5F" }}>
                         {milestone.year}
                       </p>
                       <p className="text-sm leading-relaxed break-words" style={{ color: "#1E3A5F" }}>

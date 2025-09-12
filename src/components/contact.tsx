@@ -259,8 +259,8 @@ const payload = {
               <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Teléfono</h3>
                   <p className="text-gray-600">
-                    <a href="tel:+50587673463" className="underline hover:text-green-600">+505 8767-3463</a>
-                    <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-3 text-green-500 hover:text-green-600 underline">WhatsApp</a>
+                    <a href="tel:+50587673463" className="underline hover:text-green-600" aria-label="Llamar por teléfono" style={{ color: '#1E3A5F' }}>+505 8767-3463</a>
+                    <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-3 text-green-500 hover:text-green-600 underline" aria-label="Abrir WhatsApp" style={{ color: '#25D366' }}>WhatsApp</a>
                   </p>
                 </div>
               </div>
@@ -272,7 +272,7 @@ const payload = {
                  <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
                   <p className="text-gray-600">
-                    <a href="mailto:info@allisonsilvacorp.com" className="underline hover:text-green-600">info@allisonsilvacorp.com</a>
+                    <a href="mailto:info@allisonsilvacorp.com" className="underline hover:text-green-600" aria-label="Enviar correo" style={{ color: '#1E3A5F' }}>info@allisonsilvacorp.com</a>
                   </p>
                 </div>
               </div>

@@ -50,7 +50,7 @@ export default function ResponsiveModal({
               onClick={onClose}
               className="text-gray-600 hover:text-gray-900 rounded-full p-1 transition-colors"
               style={{ backgroundColor: "#F7F7F7", color: "#1E3A5F" }}
-              aria-label="Cerrar"
+              aria-label="Cerrar modal"
             >
               ✕
             </button>

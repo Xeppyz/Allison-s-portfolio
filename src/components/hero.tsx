@@ -35,6 +35,7 @@ export function Hero() {
                     border: "none",
                     cursor: "pointer",
                   }}
+                  aria-label="Abrir cotización"
                 >
                   {t("modal.quoteTitle")}
                 </button>
@@ -50,6 +51,7 @@ export function Hero() {
                     border: "none",
                     cursor: "pointer",
                   }}
+                  aria-label="Escoger paquete"
                 >
                   {t("hero.cta3") ?? "Escoger paquete"}
                 </button>

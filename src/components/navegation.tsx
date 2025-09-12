@@ -93,6 +93,7 @@ export function Navigation() {
                 borderColor: "#4285F4",
                 color: "#4285F4",
               }}
+              aria-label={language === "es" ? "Cambiar a inglés" : "Cambiar a español"}
             >
               <Globe className="h-4 w-4" />
               <span className="text-sm font-medium">{language === "es" ? "EN" : "ES"}</span>
@@ -113,6 +114,7 @@ export function Navigation() {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden"
               style={{ color: "#1e5bbdff", backgroundColor: "transparent" }}
+              aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
