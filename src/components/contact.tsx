@@ -256,9 +256,12 @@ const payload = {
                 <div className="bg-blue-100 p-3 rounded-full">
                   <Phone className="h-6 w-6 text-blue-600" />
                 </div>
-                <div>
+              <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Teléfono</h3>
-                  <p className="text-gray-600">+505 8767-3463</p>
+                  <p className="text-gray-600">
+                    <a href="tel:+50587673463" className="underline hover:text-green-600">+505 8767-3463</a>
+                    <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-3 text-green-500 hover:text-green-600 underline">WhatsApp</a>
+                  </p>
                 </div>
               </div>
 
@@ -266,9 +269,11 @@ const payload = {
                 <div className="bg-blue-100 p-3 rounded-full">
                   <Mail className="h-6 w-6 text-blue-600" />
                 </div>
-                <div>
+                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                  <p className="text-gray-600">info@allisonsilvacorp.com</p>
+                  <p className="text-gray-600">
+                    <a href="mailto:info@allisonsilvacorp.com" className="underline hover:text-green-600">info@allisonsilvacorp.com</a>
+                  </p>
                 </div>
               </div>
 

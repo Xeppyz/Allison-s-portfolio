@@ -60,11 +60,14 @@ export function Footer() {
             <div className="space-y-3 text-sm text-gray-300">
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4" />
-                <span>+505 8767-3463</span>
+                <a href="tel:+50587673463" className="hover:text-white transition-colors underline">+505 8767-3463</a>
+                <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-2 text-green-400 hover:text-green-500" title="WhatsApp">
+                  WhatsApp
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4" />
-                <span>info@allisonsilvacorp.com</span>
+                <a href="mailto:info@allisonsilvacorp.com" className="hover:text-white transition-colors underline">info@allisonsilvacorp.com</a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4" />
