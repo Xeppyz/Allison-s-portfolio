@@ -83,12 +83,7 @@
 </head>
 
 <body>
-  <script>
-    // Hard redirect to maintenance in case rewrites are cached or bypassed
-    if (location.pathname === '/' || location.pathname === '/index.html') {
-      location.replace('/maintenance.html');
-    }
-  </script>
+
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
