@@ -1,17 +1,14 @@
-"use client"
-
-
 import { Calculator, TrendingUp, Shield, User } from "lucide-react"
-import { useLanguage } from "./language-context"
-import { useState } from "react"
-import { PlansModal } from "./modalPaquetes"
-import CotizacionModal from "./cotizacionModal"
+import { Link } from "react-router-dom"
+import WhatsAppButton from "./WhatsAppButton"
+import { track } from "../lib/track"
 
-export function Hero() {
-  const { t } = useLanguage()
-  const [openPlans, setOpenPlans] = useState(false)
-  const [openQuote, setOpenQuote] = useState(false)
+interface HeroProps {
+  h1: string
+  subheadline: string
+}
 
+export function Hero({ h1, subheadline }: HeroProps) {
   return (
     <section className="bg-gradient-to-br from-blue-50 to-white pt-8 pb-20 lg:pt-12 lg:pb-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,47 +16,19 @@ export function Hero() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="!text-lg md:!text-xl lg:!text-4xl font-bold text-gray-900 leading-tight font-serif">
-                {t("hero.subtitle")}
+                {h1}
               </h1>
+              <p className="text-base lg:text-lg text-gray-700">{subheadline}</p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div style={{ display: "flex", gap: 12 }}>
-                {/* botón cotizar existente (usando el modal de cotización separado) */}
-                <button
-                  onClick={() => setOpenQuote(true)}
-                  style={{
-                    backgroundColor: "#34A853",
-                    color: "#fff",
-                    padding: "0.6rem 1.2rem",
-                    borderRadius: 8,
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                  aria-label="Abrir cotización"
-                >
-                  {t("modal.quoteTitle")}
-                </button>
-
-                {/* botón escoger paquete (abre el modal de planes) */}
-                <button
-                  onClick={() => setOpenPlans(true)}
-                  style={{
-                    backgroundColor: "#4285F4",
-                    color: "#fff",
-                    padding: "0.6rem 1.2rem",
-                    borderRadius: 8,
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                  aria-label="Escoger paquete"
-                >
-                  {t("hero.cta3") ?? "Escoger paquete"}
-                </button>
-              </div>
-
-              {/* modals */}
-              <PlansModal open={openPlans} onClose={() => setOpenPlans(false)} />
-              <CotizacionModal open={openQuote} onClose={() => setOpenQuote(false)} />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <WhatsAppButton floating={false} label="Diagnóstico gratis por WhatsApp" />
+              <Link
+                to="/planes"
+                onClick={() => track("ver_planes_click")}
+                className="inline-flex items-center justify-center rounded-full border border-[#4285F4] px-5 py-3 font-semibold text-[#4285F4] hover:bg-[#4285F4]/10"
+              >
+                Ver planes
+              </Link>
             </div>
           </div>
 
@@ -70,8 +39,8 @@ export function Hero() {
                   <Calculator className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.bookkeeping")}</h3>
-                  <p className="text-gray-600 text-sm">{t("hero.bookkeeping_desc")}</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">Contabilidad</h3>
+                  <p className="text-gray-600 text-sm">Registros claros y precisos para tu negocio.</p>
                 </div>
               </div>
 
@@ -80,8 +49,8 @@ export function Hero() {
                   <TrendingUp className="h-6 w-6 text-yellow-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.financial_reports")}</h3>
-                  <p className="text-gray-600 text-sm">{t("hero.financial_reports_desc")}</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">Reportes financieros</h3>
+                  <p className="text-gray-600 text-sm">Análisis detallado para la toma de decisiones.</p>
                 </div>
               </div>
 
@@ -90,8 +59,8 @@ export function Hero() {
                   <Shield className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.tax_compliance")}</h3>
-                  <p className="text-gray-600 text-sm">{t("hero.tax_compliance_desc")}</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">Cumplimiento fiscal</h3>
+                  <p className="text-gray-600 text-sm">Cumple con tus obligaciones tributarias sin estrés.</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -99,8 +68,8 @@ export function Hero() {
                   <User className="h-6 w-6 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 font-serif">{t("hero.practices_title")}</h3>
-                  <p className="text-gray-600 text-sm">{t("hero.practices_desc")}</p>
+                  <h3 className="font-semibold text-gray-900 font-serif">Capacitación en Sistemas y Normas Contables</h3>
+                  <p className="text-gray-600 text-sm">Formación práctica en QuickBooks Online y Xero, y entrenamiento en principios contables y US GAAP para tu equipo</p>
                 </div>
               </div>
             </div>

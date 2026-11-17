@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useLanguage } from "./language-context"
 import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight, Tag } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { getAllPosts, type BlogPost } from "../data/BlogPost"
@@ -38,11 +37,10 @@ function estimateReadingTime(html: string) {
 }
 
 export default function BlogPostContent({ post }: { post: BlogPost }) {
-  const { language } = useLanguage()
-  const locale = language === "es" ? "es-ES" : "en-US"
-  const title = post.title[language === "es" ? "es" : "en"]
-  const contentHtml = post.contentHtml[language === "es" ? "es" : "en"]
-  const excerpt = post.excerpt[language === "es" ? "es" : "en"]
+  const locale = "es-ES"
+  const title = post.title
+  const contentHtml = post.contentHtml
+  const excerpt = post.excerpt
   const imgSrc = imageMap[post.imageKey] || "/placeholder.svg"
   const readMin = estimateReadingTime(contentHtml)
 
@@ -67,7 +65,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
       collected.push({ id, text: h.textContent || "", level: h.tagName === "H2" ? 2 : 3 })
     })
     setHeadings(collected)
-  }, [contentHtml, language])
+  }, [contentHtml])
 
    // Scroll to top on mount or location change
    // Scroll to top on mount or location change
@@ -98,7 +96,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
       // Fallback: copiar enlace
       try {
         await navigator.clipboard.writeText(shareUrl)
-        alert(language === "es" ? "Enlace copiado al portapapeles" : "Link copied to clipboard")
+        alert("Enlace copiado al portapapeles")
       } catch {
         window.open(shareUrl, "_blank")
       }
@@ -140,7 +138,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               </span>
               <span className="inline-flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                {language === "es" ? `${readMin} min de lectura` : `${readMin} min read`}
+                {`${readMin} min de lectura`}
               </span>
               {post.tags && post.tags.length > 0 && (
                 <span className="inline-flex items-center gap-2">
@@ -166,12 +164,12 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
           <div className="flex items-center justify-between mb-6">
             <Link to="/blog" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {language === "es" ? "Volver al blog" : "Back to blog"}
+              Volver al blog
             </Link>
 
             <Button onClick={handleShare} className="bg-gray-900 hover:bg-black text-white">
               <Share2 className="h-4 w-4 mr-2" />
-              {language === "es" ? "Compartir" : "Share"}
+              Compartir
             </Button>
           </div>
 
@@ -211,9 +209,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               <div>
                 <h5 className="text-lg font-bold" style={{ color: "#1E3A5F" }}>Allison Silva, CPA</h5>
                 <p className="text-sm text-gray-600">
-                  {language === "es"
-                    ? "Fundadora y Directora de Allison Silva Taxes & Accounting. Asesoría en contabilidad, cumplimiento tributario y finanzas."
-                    : "Founder & Director at Allison Silva Taxes & Accounting. Advisory in accounting, tax compliance, and finance."}
+                  {"Fundadora y Directora de Allison Silva Taxes & Accounting. Asesoría en contabilidad, cumplimiento tributario y finanzas."}
                 </p>
               </div>
             </CardContent>
@@ -225,19 +221,17 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <h4 className="text-xl font-bold mb-1" style={{ color: "#1E3A5F" }}>
-                    {language === "es" ? "¿Necesitas ayuda con este tema?" : "Need help with this topic?"}
+                    ¿Necesitas ayuda con este tema?
                   </h4>
                   <p className="text-gray-700">
-                    {language === "es"
-                      ? "Agenda una consulta y obtén asesoría personalizada."
-                      : "Book a consultation and get personalized advice."}
+                    Agenda una consulta y obtén asesoría personalizada.
                   </p>
                 </div>
-                <a href="/#contact">
+                <Link to="/contacto">
                   <Button className="text-white" style={{ backgroundColor: "#34A853" }}>
-                    {language === "es" ? "Contactar" : "Contact"}
+                    Contactar
                   </Button>
-                </a>
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -248,21 +242,21 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               <Link to={`/blog/${prev.slug}`} className="group block rounded-lg border border-gray-200 p-4 hover:bg-gray-50">
                 <div className="text-xs text-gray-500 mb-1 flex items-center gap-2">
                   <ChevronLeft className="h-4 w-4" />
-                  {language === "es" ? "Artículo anterior" : "Previous"}
+                  Artículo anterior
                 </div>
                 <div className="font-semibold text-gray-900 group-hover:text-gray-700 line-clamp-2">
-                  {prev.title[language === "es" ? "es" : "en"]}
+                  {prev.title}
                 </div>
               </Link>
             ) : <div className="hidden sm:block" />}
             {next && (
               <Link to={`/blog/${next.slug}`} className="group block rounded-lg border border-gray-200 p-4 hover:bg-gray-50 text-right">
                 <div className="text-xs text-gray-500 mb-1 flex items-center gap-2 justify-end">
-                  {language === "es" ? "Siguiente artículo" : "Next"}
+                  Siguiente artículo
                   <ChevronRight className="h-4 w-4" />
                 </div>
                 <div className="font-semibold text-gray-900 group-hover:text-gray-700 line-clamp-2">
-                  {next.title[language === "es" ? "es" : "en"]}
+                  {next.title}
                 </div>
               </Link>
             )}
@@ -272,7 +266,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
           {related.length > 0 && (
             <>
               <h4 className="mt-12 mb-4 text-xl font-bold" style={{ color: "#1E3A5F" }}>
-                {language === "es" ? "Artículos relacionados" : "Related articles"}
+                Artículos relacionados
               </h4>
               <div className="grid sm:grid-cols-2 gap-4">
                 {related.map((r) => (
@@ -281,7 +275,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
                       {new Date(r.date).toLocaleDateString(locale)}
                     </div>
                     <div className="font-semibold text-gray-900 line-clamp-2">
-                      {r.title[language === "es" ? "es" : "en"]}
+                      {r.title}
                     </div>
                   </Link>
                 ))}
@@ -295,11 +289,11 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
           <Card className="border-0 shadow-md sticky top-24" style={{ backgroundColor: "#FBFCFF" }}>
             <CardContent className="p-6">
               <h5 className="text-base font-bold mb-3" style={{ color: "#1E3A5F" }}>
-                {language === "es" ? "Contenido" : "Contents"}
+                Contenido
               </h5>
               {headings.length === 0 ? (
                 <p className="text-sm text-gray-600">
-                  {language === "es" ? "Este artículo no tiene secciones" : "This article has no sections"}
+                  Este artículo no tiene secciones
                 </p>
               ) : (
                 <ul className="space-y-2 text-sm">
@@ -319,7 +313,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               <div className="mt-6">
                 <Button onClick={handleShare} variant="secondary" className="w-full bg-green-600 text-white hover:bg-green-700">
                   <Share2 className="h-4 w-4 mr-2" />
-                  {language === "es" ? "Compartir" : "Share"}
+                  Compartir
                 </Button>
               </div>
             </CardContent>

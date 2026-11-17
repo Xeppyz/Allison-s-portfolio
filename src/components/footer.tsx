@@ -1,10 +1,21 @@
 "use client"
 
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react"
-import { useLanguage } from "./language-context"
+import { Linkedin, Mail, Phone, MapPin } from "lucide-react"
+import { Link } from "react-router-dom"
+import { useSettings } from "../lib/content"
+import { track } from "../lib/track"
+
+const FALLBACK_EMAIL = "info@allisonsilvacorp.com"
+const FALLBACK_PHONE = "+505 8767-3463"
 
 export function Footer() {
-  const { t } = useLanguage()
+  const { data: settings } = useSettings()
+  const email = settings?.email || FALLBACK_EMAIL
+  const phone = settings?.phone || FALLBACK_PHONE
+  const phoneHref = "tel:" + phone.replace(/[^\d+]/g, "")
+  const hours = settings?.hours
+  const address = settings?.address
+  const gbpUrl = settings?.gbp_url
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -13,15 +24,9 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white">Allison Silva</h3>
-            <p className="text-gray-300 text-sm leading-relaxed">{t("hero.subtitle")}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">Te ayudamos a organizar y optimizar las finanzas de tu negocio, para que tomes decisiones con claridad y crezcas con confianza.</p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a Facebook" style={{ color: '#1E3A5F' }}>
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a Instagram" style={{ color: '#1E3A5F' }}>
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="https://www.linkedin.com/in/allison-silva-2ab71a210/?originalSubdomain=ni" target="_blank" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a LinkedIn" style={{ color: '#1E3A5F' }}>
+              <a href="https://www.linkedin.com/in/allison-silva-2ab71a210/?originalSubdomain=ni" target="_blank" className="text-gray-400 hover:text-white transition-colors" aria-label="Ir a LinkedIn" style={{ color: '#D1D5DB' }}>
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -29,26 +34,26 @@ export function Footer() {
 
           {/* Services */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">{t("footer.services.title")}</h4>
+            <h4 className="text-lg font-semibold text-white">Servicios</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
-                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
-                  {t("services.1.title")}
+                <a href="/#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#D1D5DB' }}>
+                  Contabilidad mensual
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
-                  {t("services.2.title")}
+                <a href="/#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#D1D5DB' }}>
+                  Implementación de QuickBooks
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
-                  {t("services.4.title")}
+                <a href="/#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#D1D5DB' }}>
+                  Control fiscal y cumplimiento
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#1E3A5F' }}>
-                  {t("services.5.title")}
+                <a href="/#services" className="hover:text-white transition-colors" aria-label="Ver servicios" style={{ color: '#D1D5DB' }}>
+                  Reportes financieros mensuales
                 </a>
               </li>
             </ul>
@@ -56,45 +61,56 @@ export function Footer() {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">{t("footer.contact.title")}</h4>
+            <h4 className="text-lg font-semibold text-white">Contacto</h4>
             <div className="space-y-3 text-sm text-gray-300">
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4" />
-                <a href="tel:+50587673463" className="hover:text-white transition-colors underline" aria-label="Llamar por teléfono" style={{ color: '#1E3A5F' }}>+505 8767-3463</a>
-                <a href="https://wa.me/50587673463" target="_blank" rel="noopener" className="ml-2 text-green-400 hover:text-green-500" title="WhatsApp" aria-label="Abrir WhatsApp" style={{ color: '#25D366' }}>
-                  WhatsApp
-                </a>
+                <a href={phoneHref} onClick={() => track("phone_click")} className="hover:text-white transition-colors underline" aria-label="Llamar por teléfono" style={{ color: '#D1D5DB' }}>{phone}</a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:info@allisonsilvacorp.com" className="hover:text-white transition-colors underline" aria-label="Enviar correo" style={{ color: '#1E3A5F' }}>info@allisonsilvacorp.com</a>
+                <a href={`mailto:${email}`} className="hover:text-white transition-colors underline" aria-label="Enviar correo" style={{ color: '#D1D5DB' }}>{email}</a>
               </div>
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-4 w-4" />
-                <span>{t("contact.info.city")}</span>
-              </div>
+              {address && (
+                <div className="flex items-center space-x-3">
+                  <MapPin className="h-4 w-4" />
+                  <span>{address}</span>
+                </div>
+              )}
+              {gbpUrl && (
+                <div>
+                  <a href={gbpUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline" style={{ color: '#D1D5DB' }}>
+                    Encuéntranos en Google
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Business Hours */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">{t("contact.info.hours")}</h4>
-            <div className="text-sm text-gray-300">
-              <p>{t("contact.info.schedule")}</p>
+          {hours && (
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-white">Horario de atención</h4>
+              <div className="text-sm text-gray-300">
+                <p>{hours}</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-gray-400">© 2024 Allison Silva Taxes & Accounting. {t("footer.rights")}</p>
+            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Allison Silva Taxes & Accounting. Todos los derechos reservados.</p>
             <div className="flex space-x-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors" aria-label="Ir a Facebook" style={{ color: '#1E3A5F' }}>
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-white transition-colors" aria-label="Ir a Instagram" style={{ color: '#1E3A5F' }}>
-                Terms of Service
-              </a>
+              <Link to="/privacidad" className="hover:text-white transition-colors" style={{ color: '#D1D5DB' }}>
+                Privacidad
+              </Link>
+              <Link to="/terminos" className="hover:text-white transition-colors" style={{ color: '#D1D5DB' }}>
+                Términos
+              </Link>
+              <button type="button" onClick={() => window.dispatchEvent(new Event("cookie-preferences"))} className="hover:text-white transition-colors" style={{ color: '#D1D5DB' }}>
+                Preferencias de cookies
+              </button>
             </div>
           </div>
         </div>
