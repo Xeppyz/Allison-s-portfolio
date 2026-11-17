@@ -83,7 +83,10 @@ export default function PostEditor({ post, onBack, onSaved }: {
   async function save(publish?: boolean) {
     if (!supabase) return
     setError('')
+    const sent = form
     const f = publish === undefined ? form : { ...form, published: publish }
+    // Al publicar por primera vez, la fecha es hoy salvo que se haya elegido otra.
+    if (publish === true && !current?.published && f.published_at === saved.published_at) f.published_at = today()
     if (!f.title.trim()) return setError('Escribe un título.')
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(f.slug)) return setError('La dirección solo puede tener minúsculas, números y guiones.')
     if (f.published && !f.content_html.trim()) return setError('No se puede publicar un artículo vacío.')
@@ -110,7 +113,8 @@ export default function PostEditor({ post, onBack, onSaved }: {
     }
     const next = toForm(res.data)
     setCurrent(res.data)
-    setForm(next)
+    // Si se siguió escribiendo durante el guardado, no se pisa: queda como cambio pendiente.
+    setForm((prev) => (prev === sent ? next : { ...prev, slug: next.slug, published: next.published, published_at: next.published_at }))
     setSaved(next)
     setSlugTouched(true)
     onSaved(res.data)
@@ -157,7 +161,13 @@ export default function PostEditor({ post, onBack, onSaved }: {
               <div className="flex items-center rounded-xl border border-navy/15 bg-ivory pl-3 focus-within:border-navy">
                 <span className="shrink-0 text-sm text-navy/50">/blog/</span>
                 <input id="post-slug" value={form.slug}
-                  onChange={(e) => { setSlugTouched(true); set('slug', slugify(e.target.value) + (e.target.value.endsWith('-') ? '-' : '')) }}
+                  onChange={(e) => {
+                    setSlugTouched(true)
+                    const raw = e.target.value
+                    const slug = slugify(raw)
+                    set('slug', slug && /[-\s_]$/.test(raw) ? `${slug}-` : slug)
+                  }}
+                  onBlur={() => set('slug', slugify(form.slug))}
                   className="h-11 min-w-0 flex-1 bg-transparent pr-3 text-base text-navy focus:outline-none" />
               </div>
               {slugChangedWhilePublished && (

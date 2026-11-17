@@ -11,6 +11,7 @@ import Leads from './Leads'
 import Posts from './Posts'
 import Dashboard from './Dashboard'
 import { btn } from './ui'
+import { confirmDiscard } from './useDirty'
 
 type Item = { key: string; label: string; desc: string; icon: typeof Inbox }
 const groups: { title: string; items: Item[] }[] = [
@@ -41,12 +42,21 @@ function Shell({ email, children }: { email: string; children: (nav: { section: 
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onHash = () => setNav((v) => ({ section: fromHash(), n: v.n + 1 }))
+    const onHash = () =>
+      setNav((v) => {
+        if (fromHash() === v.section) return v
+        if (!confirmDiscard()) {
+          history.replaceState(null, '', `#${v.section}`)
+          return v
+        }
+        return { section: fromHash(), n: v.n + 1 }
+      })
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
   const go = (section: string, open?: string) => {
+    if (!confirmDiscard()) return
     setNav((v) => ({ section, open, n: v.n + 1 }))
     setMenuOpen(false)
     if (window.location.hash.slice(1) !== section) history.replaceState(null, '', `#${section}`)

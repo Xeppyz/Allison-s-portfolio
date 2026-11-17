@@ -131,6 +131,17 @@ const TIMEOUT_MS = 8000
 const cache = new Map<string, unknown>()
 const inflight = new Map<string, Promise<unknown>>()
 
+// El servidor deja el artículo (o la lista) en #__seed: la primera pintura no espera a Supabase.
+if (typeof document !== 'undefined') {
+  const el = document.getElementById('__seed')
+  try {
+    const { key, data } = JSON.parse(el?.textContent ?? 'null') ?? {}
+    if (typeof key === 'string' && data) cache.set(key, data)
+  } catch {
+    // sin semilla: se consulta como siempre
+  }
+}
+
 function load<T>(key: string, fn: () => PromiseLike<T>): Promise<T> {
   let p = inflight.get(key) as Promise<T> | undefined
   if (!p) {

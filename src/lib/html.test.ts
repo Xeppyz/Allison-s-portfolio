@@ -20,3 +20,31 @@ test('htmlToText y conteo de palabras', () => {
   assert.equal(readingMinutes(html), 1)
   assert.equal(readingMinutes('<p>' + 'palabra '.repeat(401) + '</p>'), 3)
 })
+
+test('cleanHtml resiste los bypass conocidos', () => {
+  const payloads = [
+    '<scr<!---->ipt>alert(1)</scr<!---->ipt>',
+    '<ifr<!---->ame srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;"></iframe>',
+    '<img src="x"onerror="alert(1)">',
+    '<svg/onload=alert(1)>',
+    '<a href="jav&#x61;script:alert(1)">x</a>',
+    '<a href="java\tscript:alert(1)">x</a>',
+    '<a href="&#106;avascript:alert(1)">x</a>',
+    '<a href="//evil.com">x</a>',
+    '<svg><animate attributeName="href" values="javascript:alert(1)"/></svg>',
+    '<p style="background:url(javascript:alert(1))" class="x">t</p>',
+    '<math><mtext><img src=x onerror=alert(1)></mtext></math>',
+    '<a href="data:text/html,<script>alert(1)</script>">x</a>',
+  ]
+  for (const p of payloads) {
+    const out = cleanHtml(p)
+    // Puede quedar texto inerte; lo que no puede quedar es una etiqueta o atributo peligroso.
+    assert.doesNotMatch(out, /<(script|iframe|svg|math|animate)\b/i, `${p} → ${out}`)
+    assert.doesNotMatch(out, /<[a-z][^>]*\s(on\w+|srcdoc|style|class)\s*=/i, `${p} → ${out}`)
+    assert.doesNotMatch(out, /(href|src)="(javascript|vbscript|data|\/\/)/i, `${p} → ${out}`)
+  }
+  assert.equal(cleanHtml('<p class="x" style="y">Hola <b>a</b> &amp; b</p>'), '<p>Hola <b>a</b> &amp; b</p>')
+  assert.equal(cleanHtml('<a href="/planes" target="_blank" rel="nofollow">x</a>'), '<a href="/planes">x</a>')
+  assert.equal(cleanHtml('<img src="https://x.co/a.webp" alt="A &quot;b&quot;">'), '<img src="https://x.co/a.webp" alt="A &quot;b&quot;">')
+  assert.equal(cleanHtml('1 < 2 y 3 > 2'), '1 &lt; 2 y 3 &gt; 2')
+})

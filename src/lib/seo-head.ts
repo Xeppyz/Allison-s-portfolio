@@ -57,6 +57,8 @@ export type SettingsRow = {
 }
 
 export type PostMeta = {
+  id?: string
+  published?: boolean
   slug: string
   title: string
   seo_title?: string | null
@@ -69,7 +71,11 @@ export type PostMeta = {
   content_html?: string | null
 }
 
-export type PostSummary = Pick<PostMeta, 'slug' | 'title' | 'excerpt' | 'published_at'>
+export type PostSummary = Pick<PostMeta, 'id' | 'slug' | 'title' | 'excerpt' | 'published_at' | 'cover_url' | 'cover_alt'>
+
+/** Datos para que el cliente pinte sin volver a pedirlos (clave de caché de content.ts). */
+const seed = (key: string, data: unknown) =>
+  `<script type="application/json" id="__seed">${serializeJsonLd({ key, data })}</script>`
 
 /** Sufijo de marca que se añade al título de los artículos. */
 export const POST_TITLE_SUFFIX = ' | Allison Silva'
@@ -252,7 +258,8 @@ export function postBody(post: PostMeta): string {
     `<p><time datetime="${escapeHtml(post.published_at)}">${formatDate(post.published_at)}</time> · Allison Silva, CPA</p>` +
     cover +
     `<div class="article-content">${cleanHtml(post.content_html ?? '')}</div>` +
-    `</article></main>`
+    `</article></main>` +
+    seed(`post:${post.slug}`, { ...post, content_html: cleanHtml(post.content_html ?? '') })
   )
 }
 
@@ -265,7 +272,7 @@ export function blogIndexBody(posts: PostSummary[]): string {
         `</li>`,
     )
     .join('')
-  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>`
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>` + seed('posts', posts)
 }
 
 /** Quita lo que identifica una URL concreta (canonical, og:url, JSON-LD del servidor): para respuestas de respaldo. */

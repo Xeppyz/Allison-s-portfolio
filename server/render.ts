@@ -22,7 +22,7 @@ type SlugData = { page: PageRow | null; faqs: FaqRow[]; settings: SettingsRow | 
 const dataCache = new Map<string, { data: SlugData; at: number }>()
 const blogCache = new Map<string, { data: PostMeta | PostSummary[] | null; at: number }>()
 
-const POST_COLS = 'slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html'
+const POST_COLS = 'id,published,focus_keyword,slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html'
 
 /** Artículo (slug) o lista del blog (''); null = no existe. Lanza si Supabase falla. */
 async function blogData(base: string, key: string, slug: string): Promise<PostMeta | PostSummary[] | null> {
@@ -30,8 +30,12 @@ async function blogData(base: string, key: string, slug: string): Promise<PostMe
   if (cached && Date.now() - cached.at < DATA_TTL_MS) return cached.data
   const data = slug
     ? ((await rest<PostMeta[]>(base, key, `posts?slug=eq.${encodeURIComponent(slug)}&published=eq.true&select=${POST_COLS}&limit=1`))[0] ?? null)
-    : await rest<PostSummary[]>(base, key, 'posts?published=eq.true&select=slug,title,excerpt,published_at&order=published_at.desc&limit=100')
-  blogCache.set(slug, { data, at: Date.now() })
+    : await rest<PostSummary[]>(base, key, 'posts?published=eq.true&select=id,slug,title,excerpt,published_at,cover_url,cover_alt&order=published_at.desc&limit=100')
+  // No se cachean los que no existen (un borrador recién publicado aparece enseguida) y el mapa tiene tope.
+  if (data !== null) {
+    if (blogCache.size > 200) blogCache.clear()
+    blogCache.set(slug, { data, at: Date.now() })
+  }
   return data
 }
 
@@ -169,7 +173,11 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   const meta = metaForPath(path, { page, faqs, settings, post, alt })
-  if (!meta) return notFound()
+  if (!meta) {
+    // Un borrador recién publicado no debe quedar como 404 en la CDN.
+    if (route.type === 'post') return new Response(noindexShell(shell), { status: 404, headers: { ...HTML_HEADERS, 'cache-control': 'no-store' } })
+    return notFound()
+  }
 
   const head = renderHead(shell, meta)
   return new Response(body ? renderBody(head, body) : head, {
@@ -177,7 +185,11 @@ export default async function handler(req: Request): Promise<Response> {
     headers: {
       ...HTML_HEADERS,
       // Si faltó algo secundario (FAQ/ajustes) no se cachea una cabecera incompleta.
-      'cache-control': degraded ? 'no-store' : 'public, s-maxage=300, stale-while-revalidate=86400',
+      'cache-control': degraded
+        ? 'no-store'
+        : body // el blog cambia más seguido: despublicar se nota en un minuto
+          ? 'public, s-maxage=60, stale-while-revalidate=300'
+          : 'public, s-maxage=300, stale-while-revalidate=86400',
     },
   })
 }

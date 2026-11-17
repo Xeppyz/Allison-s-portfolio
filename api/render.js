@@ -1,8 +1,98 @@
 // GENERADO por scripts/build-api.mjs desde server/render.ts. No editar.
 // src/lib/html.ts
-var BLOCKED = "script|style|iframe|object|embed|noscript|template|form|input|button|textarea|select|link|meta|base";
+var ALLOWED = /* @__PURE__ */ new Set([
+  "p",
+  "h2",
+  "h3",
+  "h4",
+  "ul",
+  "ol",
+  "li",
+  "strong",
+  "b",
+  "em",
+  "i",
+  "u",
+  "s",
+  "a",
+  "img",
+  "blockquote",
+  "hr",
+  "br",
+  "figure",
+  "figcaption",
+  "code",
+  "pre",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td"
+]);
+var VOID = /* @__PURE__ */ new Set(["img", "hr", "br"]);
+var ATTRS = { a: ["href"], img: ["src", "alt"] };
+var DROP_WITH_CONTENT = /* @__PURE__ */ new Set(["script", "style", "iframe", "object", "embed", "noscript", "template", "textarea", "title", "svg", "math", "select"]);
+var NAMED = { nbsp: " ", amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", colon: ":", tab: "	", newline: "\n" };
+function decodeEntities(s) {
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);?/gi, (m, e) => {
+    if (e[0] === "#") {
+      const n = e[1].toLowerCase() === "x" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      return Number.isFinite(n) && n > 0 && n < 1114112 ? String.fromCodePoint(n) : "";
+    }
+    return NAMED[e.toLowerCase()] ?? m;
+  });
+}
+var escAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function safeUrl(raw) {
+  const v = decodeEntities(raw).replace(/[\u0000- \u007f-\u009f]/g, "");
+  if (/^(https?:|mailto:|tel:)/i.test(v) || v.startsWith("#") || v.startsWith("/") && !v.startsWith("//")) return v;
+  if (v && /^[^:/?#]+(?:[/?#]|$)/.test(v) && !v.includes(":")) return v;
+  return null;
+}
 function cleanHtml(html) {
-  return String(html ?? "").replace(new RegExp(`<(${BLOCKED})\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>`, "gi"), "").replace(new RegExp(`<\\/?(${BLOCKED})\\b[^>]*>`, "gi"), "").replace(/<!--[\s\S]*?-->/g, "").replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "").replace(/\s+(href|src|srcset|xlink:href)\s*=\s*("\s*(?:javascript|vbscript|data):[^"]*"|'\s*(?:javascript|vbscript|data):[^']*'|(?:javascript|vbscript|data):[^\s>]*)/gi, "");
+  const src = String(html ?? "");
+  const token = /<!--[\s\S]*?(?:-->|$)|<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>|<|[^<]+/g;
+  let out = "";
+  let skip = null;
+  for (const m of src.matchAll(token)) {
+    const [whole, close, rawName, attrs] = m;
+    const name = rawName?.toLowerCase();
+    if (skip) {
+      if (close && name === skip) skip = null;
+      continue;
+    }
+    if (whole.startsWith("<!--")) continue;
+    if (whole === "<") {
+      out += "&lt;";
+      continue;
+    }
+    if (!name) {
+      out += whole.replace(/>/g, "&gt;");
+      continue;
+    }
+    if (DROP_WITH_CONTENT.has(name)) {
+      if (!close && !/\/\s*$/.test(attrs)) skip = name;
+      continue;
+    }
+    if (!ALLOWED.has(name)) continue;
+    if (close) {
+      if (!VOID.has(name)) out += `</${name}>`;
+      continue;
+    }
+    let kept = "";
+    for (const a of attrs.matchAll(/([^\s"'=<>/]+)\s*=\s*("([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g)) {
+      const attr = a[1].toLowerCase();
+      if (!ATTRS[name]?.includes(attr)) continue;
+      const value = a[3] ?? a[4] ?? a[5] ?? "";
+      if (attr === "href" || attr === "src") {
+        const url = safeUrl(value);
+        if (url !== null) kept += ` ${attr}="${escAttr(url)}"`;
+      } else kept += ` ${attr}="${escAttr(decodeEntities(value))}"`;
+    }
+    out += `<${name}${kept}>`;
+  }
+  return out;
 }
 function formatDate(d) {
   const t = /* @__PURE__ */ new Date(String(d).slice(0, 10) + "T12:00:00Z");
@@ -17,6 +107,7 @@ var DEFAULT_TITLE = ORG_NAME;
 var DEFAULT_DESCRIPTION = "Servicios profesionales de contabilidad, impuestos, reportes financieros y consultor\xEDa estrat\xE9gica para emprendedores, pymes y corporaciones en Latinoam\xE9rica y EE.UU.";
 var DEFAULT_DESCRIPTION_EN = "Professional accounting, tax and financial reporting services for entrepreneurs, small businesses and corporations in Nicaragua and the U.S.";
 var DEFAULT_IMAGE = `${ORIGIN}/og-image.jpg`;
+var seed = (key, data) => `<script type="application/json" id="__seed">${serializeJsonLd({ key, data })}</script>`;
 var POST_TITLE_SUFFIX = " | Allison Silva";
 function absoluteImage(url) {
   if (!url) return DEFAULT_IMAGE;
@@ -139,13 +230,13 @@ function renderBody(html, inner) {
 }
 function postBody(post) {
   const cover = post.cover_url ? `<img src="${escapeHtml(post.cover_url)}" alt="${escapeHtml(post.cover_alt || post.title)}" width="1200" height="675">` : "";
-  return `<main class="mx-auto max-w-3xl px-4 py-16"><article><nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav><h1>${escapeHtml(post.title)}</h1><p><time datetime="${escapeHtml(post.published_at)}">${formatDate(post.published_at)}</time> \xB7 Allison Silva, CPA</p>` + cover + `<div class="article-content">${cleanHtml(post.content_html ?? "")}</div></article></main>`;
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><article><nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav><h1>${escapeHtml(post.title)}</h1><p><time datetime="${escapeHtml(post.published_at)}">${formatDate(post.published_at)}</time> \xB7 Allison Silva, CPA</p>` + cover + `<div class="article-content">${cleanHtml(post.content_html ?? "")}</div></article></main>` + seed(`post:${post.slug}`, { ...post, content_html: cleanHtml(post.content_html ?? "") });
 }
 function blogIndexBody(posts) {
   const items = posts.map(
     (p) => `<li><a href="/blog/${escapeHtml(p.slug)}">${escapeHtml(p.title)}</a>` + (p.excerpt ? `<p>${escapeHtml(p.excerpt)}</p>` : "") + `</li>`
   ).join("");
-  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>`;
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>` + seed("posts", posts);
 }
 function stripIdentity(html) {
   return removeMeta(html, "property", "og:url").replace(/<link\b[^>]*?\brel\s*=\s*["']canonical["'][^>]*>\s*/gi, "").replace(JSON_LD_SSR, "");
@@ -311,12 +402,15 @@ var DATA_TTL_MS = 6e4;
 var shellCache = null;
 var dataCache = /* @__PURE__ */ new Map();
 var blogCache = /* @__PURE__ */ new Map();
-var POST_COLS = "slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html";
+var POST_COLS = "id,published,focus_keyword,slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html";
 async function blogData(base, key, slug) {
   const cached = blogCache.get(slug);
   if (cached && Date.now() - cached.at < DATA_TTL_MS) return cached.data;
-  const data = slug ? (await rest(base, key, `posts?slug=eq.${encodeURIComponent(slug)}&published=eq.true&select=${POST_COLS}&limit=1`))[0] ?? null : await rest(base, key, "posts?published=eq.true&select=slug,title,excerpt,published_at&order=published_at.desc&limit=100");
-  blogCache.set(slug, { data, at: Date.now() });
+  const data = slug ? (await rest(base, key, `posts?slug=eq.${encodeURIComponent(slug)}&published=eq.true&select=${POST_COLS}&limit=1`))[0] ?? null : await rest(base, key, "posts?published=eq.true&select=id,slug,title,excerpt,published_at,cover_url,cover_alt&order=published_at.desc&limit=100");
+  if (data !== null) {
+    if (blogCache.size > 200) blogCache.clear();
+    blogCache.set(slug, { data, at: Date.now() });
+  }
   return data;
 }
 var HTML_HEADERS = { "content-type": "text/html; charset=utf-8" };
@@ -434,14 +528,17 @@ async function handler(req) {
     }
   }
   const meta = metaForPath(path, { page, faqs, settings, post, alt });
-  if (!meta) return notFound();
+  if (!meta) {
+    if (route.type === "post") return new Response(noindexShell(shell), { status: 404, headers: { ...HTML_HEADERS, "cache-control": "no-store" } });
+    return notFound();
+  }
   const head = renderHead(shell, meta);
   return new Response(body ? renderBody(head, body) : head, {
     status: 200,
     headers: {
       ...HTML_HEADERS,
       // Si faltó algo secundario (FAQ/ajustes) no se cachea una cabecera incompleta.
-      "cache-control": degraded ? "no-store" : "public, s-maxage=300, stale-while-revalidate=86400"
+      "cache-control": degraded ? "no-store" : body ? "public, s-maxage=60, stale-while-revalidate=300" : "public, s-maxage=300, stale-while-revalidate=86400"
     }
   });
 }
