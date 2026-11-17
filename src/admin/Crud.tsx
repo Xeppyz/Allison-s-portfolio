@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ArrowLeft, Check, ExternalLink, PenLine, Plus, Trash2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { Badge } from '../components/ui/badge'
 import { tables, type Field } from './fields'
 import { FieldInput, type FormValue, type Pair } from './FieldInput'
+import SeoPanel, { ScoreBadge } from './SeoPanel'
+import { pageLabel, pageScore, pageSeoInput, pageUrl } from './scores'
+import { btn, card, eyebrow } from './ui'
+import { confirmDiscard, useUnsavedWarning } from './useDirty'
 
 type Row = Record<string, unknown>
 type Form = Record<string, FormValue>
@@ -76,13 +80,14 @@ function toPayload(fields: Field[], form: Form): Row {
   return out
 }
 
-export default function Crud({ table }: { table: string }) {
+export default function Crud({ table, initial }: { table: string; initial?: string }) {
   const def = tables[table]
   const hasSort = def.fields.some((f) => f.name === 'sort')
   const [rows, setRows] = useState<Row[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [editing, setEditing] = useState<Row | 'new' | null>(null)
+  const [pending, setPending] = useState(initial)
 
   const load = useCallback(async () => {
     if (!supabase) return
@@ -105,11 +110,17 @@ export default function Crud({ table }: { table: string }) {
     void load()
   }, [load])
 
-  const errorBox = loadError ? (
-    <p role="alert" className="text-red-700">{loadError}</p>
-  ) : null
+  useEffect(() => {
+    if (!pending || loading) return
+    setEditing(pending === 'new' ? 'new' : (rows.find((r) => r.id === pending) ?? null))
+    setPending(undefined)
+  }, [pending, loading, rows])
 
-  if (loading) return <p className="text-slate-600">Cargando…</p>
+  const errorBox = loadError ? <p role="alert" className="text-red-700">{loadError}</p> : null
+
+  if (loading) {
+    return <div className="space-y-3">{[0, 1, 2, 3].map((i) => <div key={i} className="h-16 animate-pulse rounded-2xl bg-sand" />)}</div>
+  }
 
   if (def.single) {
     return (
@@ -146,46 +157,52 @@ export default function Crud({ table }: { table: string }) {
     }
   }
 
+  const isPages = table === 'pages'
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {errorBox}
-      <button
-        type="button"
-        className="min-h-11 rounded-md bg-[#1E3A5F] px-4 text-sm font-medium text-white hover:bg-[#16304f]"
-        onClick={() => setEditing('new')}
-      >
-        Nuevo
-      </button>
-      {rows.length === 0 && <p className="text-slate-600">No hay elementos todavía.</p>}
-      <ul className="space-y-2">
-        {rows.map((row) => (
-          <li
-            key={String(row.id)}
-            className="flex flex-wrap items-center gap-2 rounded-md border border-slate-200 bg-white p-3"
-          >
-            <span className="min-w-0 flex-1 break-words font-medium">
-              {String(row[def.titleField] ?? '') || '(sin título)'}
-            </span>
-            {row.active === false && <Badge variant="secondary">Inactivo</Badge>}
-            {table === 'testimonials' && row.authorized !== true && (
-              <Badge variant="outline">Sin autorizar</Badge>
-            )}
-            <button
-              type="button"
-              className="min-h-11 rounded-md border border-[#1E3A5F] px-3 text-sm font-medium text-[#1E3A5F]"
-              onClick={() => setEditing(row)}
-            >
-              Editar
-            </button>
-            <button
-              type="button"
-              className="min-h-11 rounded-md border border-red-300 px-3 text-sm font-medium text-red-700"
-              onClick={() => void remove(row)}
-            >
-              Borrar
-            </button>
-          </li>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-navy/60">{rows.length} {rows.length === 1 ? 'elemento' : 'elementos'}</p>
+        <button type="button" className={btn.primary} onClick={() => setEditing('new')}>
+          <Plus className="h-4 w-4" /> Nuevo
+        </button>
+      </div>
+      {rows.length === 0 && <p className={`${card} px-6 py-10 text-center text-navy/60`}>No hay elementos todavía.</p>}
+      <ul className={`${card} divide-y divide-navy/10 overflow-hidden`}>
+        {rows.map((row) => {
+          const title = String(row[def.titleField] ?? '') || '(sin título)'
+          return (
+            <li key={String(row.id)} className="flex flex-wrap items-center gap-3 px-4 py-3 transition hover:bg-ivory">
+              <button type="button" onClick={() => setEditing(row)}
+                className="min-w-0 flex-1 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy">
+                <span className="block break-words font-medium text-navy">{isPages ? pageLabel(row) : title}</span>
+                {isPages && row.meta_title ? <span className="block truncate text-sm text-navy/60">{String(row.meta_title)}</span> : null}
+              </button>
+              {row.active === false && (
+                <span className="rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-taupe-deep">{isPages ? 'Borrador' : 'Oculto'}</span>
+              )}
+              {table === 'testimonials' && row.authorized !== true && (
+                <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">Sin autorizar</span>
+              )}
+              {isPages && row.kind !== 'legal' && <ScoreBadge score={pageScore(row)} />}
+              <div className="flex gap-1">
+                <button type="button" aria-label={`Editar ${title}`} title="Editar" className={btn.ghost} onClick={() => setEditing(row)}>
+                  <PenLine className="h-4 w-4" />
+                </button>
+                {isPages && row.active !== false && (
+                  <a href={pageUrl(row)} target="_blank" rel="noopener" aria-label={`Ver ${title}`} title="Ver" className={btn.ghost}>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                )}
+                <button type="button" aria-label={`Borrar ${title}`} title="Borrar"
+                  className={`${btn.ghost} hover:bg-red-50 hover:text-red-700`} onClick={() => void remove(row)}>
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
@@ -204,10 +221,17 @@ function RowForm({
   // Tras crear, el formulario sigue abierto y los guardados siguientes actualizan esa fila.
   const [current, setCurrent] = useState<Row | null>(row)
   const [form, setForm] = useState<Form>(() => toForm(def.fields, row))
+  const [saved, setSaved] = useState<Form>(() => toForm(def.fields, row))
   const [saving, setSaving] = useState(false)
   const [uploads, setUploads] = useState(0)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
+
+  const dirty = JSON.stringify(form) !== JSON.stringify(saved)
+  useUnsavedWarning(dirty)
+
+  const isPage = table === 'pages'
+  const seoInput = useMemo(() => (isPage ? pageSeoInput(toPayload(def.fields, form)) : null), [isPage, def, form])
 
   async function save(e: React.FormEvent) {
     e.preventDefault()
@@ -239,17 +263,14 @@ function RowForm({
       setError(err.message)
       return
     }
+    setSaved(form)
     setStatus('Guardado')
+    window.setTimeout(() => setStatus(''), 2500)
     await onSaved()
   }
 
-  return (
-    <form onSubmit={save} className="max-w-2xl space-y-4">
-      {onBack && (
-        <button type="button" className="min-h-11 text-sm font-medium text-[#1E3A5F] underline" onClick={onBack}>
-          ← Volver a la lista
-        </button>
-      )}
+  const fields = (
+    <div className={`${card} space-y-5 p-5 sm:p-6`}>
       {def.fields.map((f) => (
         <FieldInput
           key={f.name}
@@ -259,16 +280,45 @@ function RowForm({
           onBusy={(b) => setUploads((n) => n + (b ? 1 : -1))}
         />
       ))}
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="submit"
-          disabled={saving || uploads > 0}
-          className="min-h-11 rounded-md bg-[#1E3A5F] px-5 text-sm font-medium text-white hover:bg-[#16304f] disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Guardar'}
+    </div>
+  )
+
+  return (
+    <form onSubmit={save} className="pb-24">
+      {onBack && (
+        <button type="button" className={`${btn.ghost} mb-4`} onClick={() => confirmDiscard(dirty) && onBack()}>
+          <ArrowLeft className="h-4 w-4" /> Volver a la lista
         </button>
-        {status && <p role="status" className="text-sm font-medium text-green-700">{status}</p>}
-        {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+      )}
+      {isPage && seoInput && form.kind !== 'legal' ? (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          {fields}
+          <aside className={`${card} h-fit space-y-4 p-5 lg:sticky lg:top-6`}>
+            <h2 className={eyebrow} style={{ fontFamily: 'inherit' }}>SEO de la página</h2>
+            <SeoPanel input={seoInput} path={String(form.slug) === 'inicio' ? '/' : pageUrl(form)} />
+          </aside>
+        </div>
+      ) : (
+        <div className="max-w-3xl">{fields}</div>
+      )}
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-navy/10 bg-white/95 backdrop-blur lg:left-64">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
+          <p className="mr-auto text-sm" role="status" aria-live="polite">
+            {status ? (
+              <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700"><Check className="h-4 w-4" />{status}</span>
+            ) : error ? (
+              <span className="text-red-700">{error}</span>
+            ) : dirty ? (
+              <span className="text-amber-700">Cambios sin guardar</span>
+            ) : (
+              <span className="text-navy/50">Todo guardado</span>
+            )}
+          </p>
+          <button type="submit" disabled={saving || uploads > 0} className={btn.primary}>
+            {saving ? 'Guardando…' : 'Guardar'}
+          </button>
+        </div>
       </div>
     </form>
   )

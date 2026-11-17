@@ -45,6 +45,7 @@ export const tables: Record<string, TableDef> = {
       { name: 'active', label: 'Publicada', kind: 'bool', help: 'Si se desmarca queda como borrador: solo la ves tú con la sesión iniciada' },
       { name: 'lang', label: 'Idioma', kind: 'select', options: ['es', 'en'], help: 'Las páginas en inglés se publican en /en/dirección' },
       { name: 'alt_slug', label: 'Misma página en el otro idioma', kind: 'text', help: 'Dirección (slug) de la versión en el otro idioma, si existe' },
+      { name: 'focus_keyword', label: 'Palabra clave principal', kind: 'text', help: 'La búsqueda por la que quieres aparecer. Se usa para el puntaje SEO' },
       { name: 'meta_title', label: 'Título para Google', kind: 'text' },
       { name: 'meta_description', label: 'Descripción para Google', kind: 'textarea' },
       { name: 'h1', label: 'Título principal', kind: 'text' },

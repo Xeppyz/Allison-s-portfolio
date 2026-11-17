@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Input } from '../components/ui/input'
+import { btn, inputCls, labelCls } from './ui'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -19,25 +19,41 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <form onSubmit={submit} className="w-full max-w-sm space-y-4 rounded-lg border border-slate-200 bg-white p-6">
-        <h1 className="text-xl font-semibold text-[#1E3A5F]">Panel de administración</h1>
-        <div className="space-y-1">
-          <label htmlFor="login-email" className="block text-sm font-medium">Correo</label>
-          <Input id="login-email" type="email" autoComplete="username" required className="h-11 text-base"
-            value={email} onChange={(e) => setEmail(e.target.value)} />
+    <main className="grid min-h-screen bg-ivory lg:grid-cols-2">
+      <div className="hidden flex-col justify-between bg-navy p-12 text-white lg:flex">
+        <div>
+          <p className="font-serif text-2xl">Allison Silva</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-taupe">Taxes &amp; Accounting</p>
         </div>
-        <div className="space-y-1">
-          <label htmlFor="login-password" className="block text-sm font-medium">Contraseña</label>
-          <Input id="login-password" type="password" autoComplete="current-password" required className="h-11 text-base"
-            value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div className="max-w-md space-y-4">
+          <span aria-hidden="true" className="block h-px w-12 bg-taupe" />
+          <p className="font-serif text-4xl leading-tight">Tu web, tus artículos y tus contactos en un solo lugar.</p>
         </div>
-        {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-        <button type="submit" disabled={busy}
-          className="min-h-11 w-full rounded-md bg-[#1E3A5F] text-sm font-medium text-white hover:bg-[#16304f] disabled:opacity-50">
-          {busy ? 'Entrando…' : 'Entrar'}
-        </button>
-      </form>
+        <p className="text-sm text-white/50">allisonsilvacorp.com</p>
+      </div>
+      <div className="flex items-center justify-center px-4 py-12">
+        <form onSubmit={submit} className="w-full max-w-sm space-y-6">
+          <div className="space-y-2">
+            <span aria-hidden="true" className="block h-px w-12 bg-taupe" />
+            <h1 className="text-3xl font-medium text-navy">Panel de administración</h1>
+            <p className="text-navy/60">Entra con tu correo y contraseña.</p>
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="login-email" className={labelCls}>Correo</label>
+            <input id="login-email" type="email" autoComplete="username" required className={inputCls}
+              value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="login-password" className={labelCls}>Contraseña</label>
+            <input id="login-password" type="password" autoComplete="current-password" required className={inputCls}
+              value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+          <button type="submit" disabled={busy} className={`${btn.primary} w-full`}>
+            {busy ? 'Entrando…' : 'Entrar'}
+          </button>
+        </form>
+      </div>
     </main>
   )
 }

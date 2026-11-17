@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { scoreSeo } from './seo-score.ts'
+import { scoreSeo, slugify } from './seo-score.ts'
 
 const para = (n: number, extra = '') =>
   `<p>${extra}${Array.from({ length: n }, (_, i) => `Frase corta número ${i} sobre contabilidad para empresas.`).join(' ')}</p>`
@@ -50,4 +50,15 @@ test('una página no exige 600 palabras ni subtítulos ni enlaces', () => {
   const r = scoreSeo({ ...good, kind: 'page', html: para(40, 'QuickBooks. ') })
   assert.equal(r.checks.find((c) => c.id === 'length')?.status, 'good')
   assert.ok(!r.checks.some((c) => c.id === 'headings' || c.id === 'links'))
+})
+
+test('slugify', () => {
+  assert.equal(slugify('¿Cómo usar QuickBooks en 2026?'), 'como-usar-quickbooks-en-2026')
+  assert.equal(slugify('  Ñandú & DGI  '), 'nandu-dgi')
+})
+
+test('un artículo corto no puede salir "muy bien"', () => {
+  const r = scoreSeo({ ...good, html: para(5, 'QuickBooks. ') + '<h2>QuickBooks</h2><p><a href="/planes">x</a></p>' })
+  assert.equal(r.checks.find((c) => c.id === 'length')?.status, 'bad')
+  assert.ok(r.score <= 79)
 })

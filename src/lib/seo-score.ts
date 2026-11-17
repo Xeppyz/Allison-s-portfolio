@@ -2,7 +2,7 @@
 import { htmlToText, wordCount } from './html.ts'
 
 export type SeoStatus = 'good' | 'warn' | 'bad'
-export type SeoCheck = { id: string; label: string; status: SeoStatus; hint: string }
+export type SeoCheck = { id: string; label: string; status: SeoStatus; hint: string; weight: number }
 export type SeoInput = {
   kind: 'post' | 'page'
   title: string
@@ -18,14 +18,20 @@ export function norm(s: string): string {
   return String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 }
 
-const range = (n: number, good: [number, number], warn: [number, number]): SeoStatus =>
+/** "Cómo usar QuickBooks" → "como-usar-quickbooks". */
+export function slugify(s: string): string {
+  return norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, '')
+}
+
+const range =(n: number, good: [number, number], warn: [number, number]): SeoStatus =>
   n >= good[0] && n <= good[1] ? 'good' : n >= warn[0] && n <= warn[1] ? 'warn' : 'bad'
 
 const has = (hay: string, needle: string) => norm(hay).includes(norm(needle))
 
 export function scoreSeo(input: SeoInput): { score: number; checks: SeoCheck[] } {
   const checks: SeoCheck[] = []
-  const add = (id: string, label: string, status: SeoStatus, hint: string) => checks.push({ id, label, status, hint })
+  const add = (id: string, label: string, status: SeoStatus, hint: string, weight = 1) =>
+    checks.push({ id, label, status, hint, weight })
   const isPost = input.kind === 'post'
   const title = (input.title ?? '').trim()
   const description = (input.description ?? '').trim()
@@ -35,18 +41,18 @@ export function scoreSeo(input: SeoInput): { score: number; checks: SeoCheck[] }
   const keyword = (input.keyword ?? '').trim()
 
   add('title', `Título para Google: ${title.length} caracteres`, range(title.length, [30, 60], [20, 70]),
-    'Lo ideal es entre 30 y 60 caracteres: más largo, Google lo corta.')
+    'Lo ideal es entre 30 y 60 caracteres: más largo, Google lo corta.', 2)
   add('description', `Descripción: ${description.length} caracteres`, range(description.length, [120, 160], [70, 180]),
-    'Lo ideal es entre 120 y 160 caracteres, con un motivo para hacer clic.')
+    'Lo ideal es entre 120 y 160 caracteres, con un motivo para hacer clic.', 2)
 
   const slug = input.slug ?? ''
   add('slug', 'Dirección corta y legible', slug && slug.length <= 60 ? 'good' : slug ? 'warn' : 'bad',
     'Usa pocas palabras separadas por guiones, sin fechas ni palabras vacías.')
 
   if (!keyword) {
-    add('keyword', 'Palabra clave principal', 'bad', 'Define la búsqueda por la que quieres aparecer (por ejemplo: “QuickBooks”).')
+    add('keyword', 'Palabra clave principal', 'bad', 'Define la búsqueda por la que quieres aparecer (por ejemplo: “QuickBooks”).', 3)
   } else {
-    add('kw-title', 'Palabra clave en el título', has(title, keyword) ? 'good' : 'bad', 'Inclúyela, idealmente al principio.')
+    add('kw-title', 'Palabra clave en el título', has(title, keyword) ? 'good' : 'bad', 'Inclúyela, idealmente al principio.', 2)
     add('kw-description', 'Palabra clave en la descripción', has(description, keyword) ? 'good' : 'warn',
       'Google la resalta en negrita en los resultados.')
     add('kw-slug', 'Palabra clave en la dirección', has(slug.replace(/-/g, ' '), keyword.replace(/-/g, ' ')) ? 'good' : 'warn',
@@ -66,7 +72,7 @@ export function scoreSeo(input: SeoInput): { score: number; checks: SeoCheck[] }
 
   if (isPost) {
     add('length', `Extensión: ${words} palabras`, words >= 600 ? 'good' : words >= 300 ? 'warn' : 'bad',
-      'Los artículos de 600 palabras o más suelen posicionar mejor.')
+      'Los artículos de 600 palabras o más suelen posicionar mejor.', 3)
     add('headings', 'Subtítulos (H2) que ordenan el texto', /<h2\b/i.test(html) ? 'good' : 'bad',
       'Divide el artículo en secciones con subtítulos.')
     const internal = (html.match(/<a\b[^>]*href\s*=\s*["'](\/(?!\/)|https?:\/\/(www\.)?allisonsilvacorp\.com)/gi) ?? []).length
@@ -90,8 +96,11 @@ export function scoreSeo(input: SeoInput): { score: number; checks: SeoCheck[] }
       'Frases cortas se leen mejor en el celular.')
   }
 
-  const points = checks.reduce((n, c) => n + (c.status === 'good' ? 1 : c.status === 'warn' ? 0.5 : 0), 0)
-  return { score: Math.round((100 * points) / checks.length), checks }
+  const total = checks.reduce((n, c) => n + c.weight, 0)
+  const points = checks.reduce((n, c) => n + c.weight * (c.status === 'good' ? 1 : c.status === 'warn' ? 0.5 : 0), 0)
+  const score = Math.round((100 * points) / total)
+  // Con algo en rojo no puede salir "muy bien".
+  return { score: checks.some((c) => c.status === 'bad') ? Math.min(score, 79) : score, checks }
 }
 
 export function scoreTone(score: number): SeoStatus {

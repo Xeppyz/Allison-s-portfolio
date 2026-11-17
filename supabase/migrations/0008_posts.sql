@@ -38,7 +38,7 @@ insert into public.posts (slug, title, seo_title, excerpt, focus_keyword, cover_
 (
   'pasos-para-inscribirse-ante-la-dgi-de-nicaragua',
   'Pasos para inscribirse ante la DGI de Nicaragua',
-  'Cómo inscribirse ante la DGI de Nicaragua: pasos para obtener el RUC',
+  'Inscribirse en la DGI de Nicaragua: pasos',
   'Guía práctica para inscribirte ante la DGI de Nicaragua, obtener tu RUC y cumplir tus obligaciones fiscales desde el primer día.',
   'DGI',
   '/blog/inscripcion-dgi.webp',
@@ -59,7 +59,7 @@ insert into public.posts (slug, title, seo_title, excerpt, focus_keyword, cover_
 (
   'ventajas-de-automatizar-e-integrar-quickbooks',
   'Ventajas de automatizar e integrar QuickBooks como sistema contable',
-  'Ventajas de automatizar tu contabilidad con QuickBooks Online',
+  'Ventajas de automatizar con QuickBooks',
   'Optimiza procesos, reduce errores y asegura el cumplimiento fiscal de tu empresa al integrar QuickBooks Online como sistema contable.',
   'QuickBooks',
   '/blog/quickbooks.webp',
@@ -80,7 +80,7 @@ insert into public.posts (slug, title, seo_title, excerpt, focus_keyword, cover_
 (
   'como-prepararse-para-las-declaraciones-anuales-ca-y-eeuu',
   'Cómo prepararse para las declaraciones anuales en Centroamérica y Estados Unidos',
-  'Declaraciones anuales en Centroamérica y EE. UU.: cómo prepararte',
+  'Declaraciones anuales en CA y EE. UU.',
   'Claves para preparar tus declaraciones anuales en Centroamérica y Estados Unidos, evitar sanciones y cumplir tus obligaciones a tiempo.',
   'declaraciones anuales',
   '/blog/declaraciones-anuales.png',
