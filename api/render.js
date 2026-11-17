@@ -4,6 +4,10 @@ var BLOCKED = "script|style|iframe|object|embed|noscript|template|form|input|but
 function cleanHtml(html) {
   return String(html ?? "").replace(new RegExp(`<(${BLOCKED})\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>`, "gi"), "").replace(new RegExp(`<\\/?(${BLOCKED})\\b[^>]*>`, "gi"), "").replace(/<!--[\s\S]*?-->/g, "").replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "").replace(/\s+(href|src|srcset|xlink:href)\s*=\s*("\s*(?:javascript|vbscript|data):[^"]*"|'\s*(?:javascript|vbscript|data):[^']*'|(?:javascript|vbscript|data):[^\s>]*)/gi, "");
 }
+function formatDate(d) {
+  const t = /* @__PURE__ */ new Date(String(d).slice(0, 10) + "T12:00:00Z");
+  return Number.isNaN(t.getTime()) ? "" : t.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}
 
 // src/lib/seo-head.ts
 var ORIGIN = "https://www.allisonsilvacorp.com";
@@ -133,13 +137,9 @@ function renderHead(html, meta) {
 function renderBody(html, inner) {
   return html.replace(/<div id="root">\s*<\/div>/, () => `<div id="root">${inner}</div>`);
 }
-var dateEs = (d) => {
-  const t = /* @__PURE__ */ new Date(d + "T12:00:00Z");
-  return Number.isNaN(t.getTime()) ? "" : t.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-};
 function postBody(post) {
   const cover = post.cover_url ? `<img src="${escapeHtml(post.cover_url)}" alt="${escapeHtml(post.cover_alt || post.title)}" width="1200" height="675">` : "";
-  return `<main class="mx-auto max-w-3xl px-4 py-16"><article><nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav><h1>${escapeHtml(post.title)}</h1><p><time datetime="${escapeHtml(post.published_at)}">${dateEs(post.published_at)}</time> \xB7 Allison Silva, CPA</p>` + cover + `<div class="article-content">${cleanHtml(post.content_html ?? "")}</div></article></main>`;
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><article><nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav><h1>${escapeHtml(post.title)}</h1><p><time datetime="${escapeHtml(post.published_at)}">${formatDate(post.published_at)}</time> \xB7 Allison Silva, CPA</p>` + cover + `<div class="article-content">${cleanHtml(post.content_html ?? "")}</div></article></main>`;
 }
 function blogIndexBody(posts) {
   const items = posts.map(

@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { usePosts, type Post } from "../lib/content"
-import { cleanHtml, readingMinutes } from "../lib/html"
-import { formatDate } from "./blog"
+import { cleanHtml, formatDate, readingMinutes } from "../lib/html"
 import avatar from "../assets/img/avatar.jpg"
 
 type HeadingItem = { id: string; text: string; level: number }

@@ -1,7 +1,7 @@
 // SEO del lado del servidor: calcula y escribe el <head> de cada URL.
 // Módulo puro (sin React, sin import.meta): lo importan la función edge
 // api/render.ts, api/sitemap.ts, el cliente no, y los tests con node:test.
-import { cleanHtml } from './html.ts'
+import { cleanHtml, formatDate } from './html.ts'
 
 export const ORIGIN = 'https://www.allisonsilvacorp.com'
 export const ORG_ID = `${ORIGIN}/#organizacion`
@@ -241,11 +241,6 @@ export function renderBody(html: string, inner: string): string {
   return html.replace(/<div id="root">\s*<\/div>/, () => `<div id="root">${inner}</div>`)
 }
 
-const dateEs = (d: string) => {
-  const t = new Date(d + 'T12:00:00Z')
-  return Number.isNaN(t.getTime()) ? '' : t.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
-}
-
 export function postBody(post: PostMeta): string {
   const cover = post.cover_url
     ? `<img src="${escapeHtml(post.cover_url)}" alt="${escapeHtml(post.cover_alt || post.title)}" width="1200" height="675">`
@@ -254,7 +249,7 @@ export function postBody(post: PostMeta): string {
     `<main class="mx-auto max-w-3xl px-4 py-16"><article>` +
     `<nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav>` +
     `<h1>${escapeHtml(post.title)}</h1>` +
-    `<p><time datetime="${escapeHtml(post.published_at)}">${dateEs(post.published_at)}</time> · Allison Silva, CPA</p>` +
+    `<p><time datetime="${escapeHtml(post.published_at)}">${formatDate(post.published_at)}</time> · Allison Silva, CPA</p>` +
     cover +
     `<div class="article-content">${cleanHtml(post.content_html ?? '')}</div>` +
     `</article></main>`

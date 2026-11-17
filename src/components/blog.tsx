@@ -1,9 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import { usePosts, type PostCard } from "../lib/content"
-
-export const formatDate = (d: string) =>
-  new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
+import { formatDate } from "../lib/html"
 
 function Card({ post }: { post: PostCard }) {
   return (

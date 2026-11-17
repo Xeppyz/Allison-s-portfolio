@@ -32,3 +32,9 @@ export function wordCount(html: string): number {
 export function readingMinutes(html: string): number {
   return Math.max(1, Math.ceil(wordCount(html) / 200))
 }
+
+/** "10 de febrero de 2024" a partir de YYYY-MM-DD. */
+export function formatDate(d: string): string {
+  const t = new Date(String(d).slice(0, 10) + 'T12:00:00Z')
+  return Number.isNaN(t.getTime()) ? '' : t.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+}
