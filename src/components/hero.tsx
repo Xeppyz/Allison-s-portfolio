@@ -43,16 +43,19 @@ export function Hero({ h1, subheadline, credentials }: HeroProps) {
         </div>
 
         <figure className="hero-in relative mx-auto w-full max-w-sm lg:max-w-md" style={{ animationDelay: "120ms" }}>
-          <div aria-hidden="true" className="absolute -right-4 -top-4 h-full w-full rounded-t-full border border-taupe/50" />
-          <img
-            src={avatar}
-            alt="Allison Silva, CPA, fundadora de Allison Silva Taxes & Accounting"
-            width={1024}
-            height={1024}
-            fetchPriority="high"
-            className="relative aspect-[4/5] w-full rounded-t-full object-cover object-top"
-          />
-          <figcaption className="relative border-t border-navy/10 pt-4 text-center">
+          {/* Arco fino concéntrico: enmarca solo la foto, con el mismo aire en los tres lados. */}
+          <div className="relative p-3">
+            <div aria-hidden="true" className="absolute inset-0 rounded-t-full border border-taupe/50" />
+            <img
+              src={avatar}
+              alt="Allison Silva, CPA, fundadora de Allison Silva Taxes & Accounting"
+              width={1024}
+              height={1024}
+              fetchPriority="high"
+              className="relative aspect-[4/5] w-full rounded-t-full object-cover object-top"
+            />
+          </div>
+          <figcaption className="relative mt-5 text-center">
             <span className="block font-serif text-xl text-navy">Allison Silva, CPA</span>
             <span className="text-xs uppercase tracking-[0.18em] text-navy/60">Fundadora y directora</span>
           </figcaption>
