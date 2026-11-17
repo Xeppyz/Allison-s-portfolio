@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { renderHead, renderBody, postBody, blogIndexBody, metaForPath, stripIdentity, type HeadMeta } from './seo-head.ts'
+import { renderHead, renderBody, postBody, blogIndexBody, metaForPath, stripIdentity, HERO_IMAGE, type HeadMeta } from './seo-head.ts'
 
 const shell = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
 const count = (s: string, re: RegExp) => (s.match(re) ?? []).length
@@ -224,6 +224,14 @@ test('el inicio precarga el retrato del hero; las demás páginas no', () => {
   const out = renderHead(shell, home)
   assert.equal(count(out, /rel="preload" as="image"/g), 1)
   assert.match(out, /imagesrcset="\/img\/allison-480\.webp 480w/)
+  const planes = renderHead(shell, metaForPath('/planes', { page: { slug: 'planes', lang: 'es', kind: 'service' } })!)
+  assert.equal(count(planes, /rel="preload" as="image"/g), 0)
+})
+
+test('index.html precarga el retrato con los mismos valores que HERO_IMAGE', () => {
+  assert.ok(shell.includes(`imagesrcset="${HERO_IMAGE.srcset}"`))
+  assert.ok(shell.includes(`imagesizes="${HERO_IMAGE.sizes}"`))
+  // En las demás páginas la función edge lo quita.
   const planes = renderHead(shell, metaForPath('/planes', { page: { slug: 'planes', lang: 'es', kind: 'service' } })!)
   assert.equal(count(planes, /rel="preload" as="image"/g), 0)
 })
