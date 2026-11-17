@@ -1,4 +1,10 @@
 // GENERADO por scripts/build-api.mjs desde server/render.ts. No editar.
+// src/lib/html.ts
+var BLOCKED = "script|style|iframe|object|embed|noscript|template|form|input|button|textarea|select|link|meta|base";
+function cleanHtml(html) {
+  return String(html ?? "").replace(new RegExp(`<(${BLOCKED})\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>`, "gi"), "").replace(new RegExp(`<\\/?(${BLOCKED})\\b[^>]*>`, "gi"), "").replace(/<!--[\s\S]*?-->/g, "").replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "").replace(/\s+(href|src|srcset|xlink:href)\s*=\s*("\s*(?:javascript|vbscript|data):[^"]*"|'\s*(?:javascript|vbscript|data):[^']*'|(?:javascript|vbscript|data):[^\s>]*)/gi, "");
+}
+
 // src/lib/seo-head.ts
 var ORIGIN = "https://www.allisonsilvacorp.com";
 var ORG_ID = `${ORIGIN}/#organizacion`;
@@ -7,6 +13,11 @@ var DEFAULT_TITLE = ORG_NAME;
 var DEFAULT_DESCRIPTION = "Servicios profesionales de contabilidad, impuestos, reportes financieros y consultor\xEDa estrat\xE9gica para emprendedores, pymes y corporaciones en Latinoam\xE9rica y EE.UU.";
 var DEFAULT_DESCRIPTION_EN = "Professional accounting, tax and financial reporting services for entrepreneurs, small businesses and corporations in Nicaragua and the U.S.";
 var DEFAULT_IMAGE = `${ORIGIN}/og-image.jpg`;
+var POST_TITLE_SUFFIX = " | Allison Silva";
+function absoluteImage(url) {
+  if (!url) return DEFAULT_IMAGE;
+  return url.startsWith("/") ? ORIGIN + url : url;
+}
 function pagePath(slug, lang) {
   if (slug === "inicio") return "/";
   return lang === "en" ? `/en/${slug}` : `/${slug}`;
@@ -119,6 +130,23 @@ function renderHead(html, meta) {
   }
   return out;
 }
+function renderBody(html, inner) {
+  return html.replace(/<div id="root">\s*<\/div>/, () => `<div id="root">${inner}</div>`);
+}
+var dateEs = (d) => {
+  const t = /* @__PURE__ */ new Date(d + "T12:00:00Z");
+  return Number.isNaN(t.getTime()) ? "" : t.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+};
+function postBody(post) {
+  const cover = post.cover_url ? `<img src="${escapeHtml(post.cover_url)}" alt="${escapeHtml(post.cover_alt || post.title)}" width="1200" height="675">` : "";
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><article><nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav><h1>${escapeHtml(post.title)}</h1><p><time datetime="${escapeHtml(post.published_at)}">${dateEs(post.published_at)}</time> \xB7 Allison Silva, CPA</p>` + cover + `<div class="article-content">${cleanHtml(post.content_html ?? "")}</div></article></main>`;
+}
+function blogIndexBody(posts) {
+  const items = posts.map(
+    (p) => `<li><a href="/blog/${escapeHtml(p.slug)}">${escapeHtml(p.title)}</a>` + (p.excerpt ? `<p>${escapeHtml(p.excerpt)}</p>` : "") + `</li>`
+  ).join("");
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>`;
+}
 function stripIdentity(html) {
   return removeMeta(html, "property", "og:url").replace(/<link\b[^>]*?\brel\s*=\s*["']canonical["'][^>]*>\s*/gi, "").replace(JSON_LD_SSR, "");
 }
@@ -189,24 +217,39 @@ function metaForPath(pathname, data = {}) {
     const post = data.post;
     if (!post || post.slug !== route.slug) return null;
     const canonical2 = absoluteUrl(`/blog/${post.slug}`);
+    const image2 = absoluteImage(post.cover_url);
+    const description2 = post.excerpt || DEFAULT_DESCRIPTION;
+    const posting = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: description2,
+      datePublished: post.published_at,
+      dateModified: post.updated_at || post.published_at,
+      image: image2,
+      inLanguage: "es",
+      mainEntityOfPage: canonical2,
+      author: { "@type": "Person", name: "Allison Silva", jobTitle: "CPA", url: `${ORIGIN}/` },
+      publisher: { "@id": ORG_ID }
+    };
+    if (post.tags?.length) posting.keywords = post.tags.join(", ");
     return {
-      title: `${post.title} | Allison Silva`,
-      description: post.excerpt,
+      title: (post.seo_title || post.title) + POST_TITLE_SUFFIX,
+      description: description2,
       canonical: canonical2,
       lang: "es",
-      image: DEFAULT_IMAGE,
+      image: image2,
       type: "article",
       jsonLd: [
+        posting,
         {
           "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: post.title,
-          description: post.excerpt,
-          datePublished: post.date,
-          image: DEFAULT_IMAGE,
-          mainEntityOfPage: canonical2,
-          author: { "@type": "Person", name: "Allison Silva" },
-          publisher: { "@id": ORG_ID }
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Inicio", item: `${ORIGIN}/` },
+            { "@type": "ListItem", position: 2, name: "Blog", item: absoluteUrl("/blog") },
+            { "@type": "ListItem", position: 3, name: post.title, item: canonical2 }
+          ]
         }
       ]
     };
@@ -259,70 +302,6 @@ function metaForPath(pathname, data = {}) {
   return meta;
 }
 
-// src/data/BlogPost.tsx
-var blogPosts = [
-  {
-    slug: "pasos-para-inscribirse-ante-la-dgi-de-nicaragua",
-    date: "2024-02-01",
-    imageKey: "calendar",
-    title: "Pasos para inscribirse ante la DGI de Nicaragua",
-    excerpt: "Gu\xEDa pr\xE1ctica para obtener tu RUC y cumplir con tus obligaciones fiscales ante la DGI.",
-    contentHtml: `
-        <p>Si est\xE1s por iniciar un negocio en Nicaragua, uno de los primeros requisitos legales es inscribirte ante la Direcci\xF3n General de Ingresos (DGI). Este tr\xE1mite te permite obtener tu RUC (Registro \xDAnico de Contribuyente) y cumplir con tus obligaciones fiscales seg\xFAn lo establece el C\xF3digo Tributario y la Ley de Concertaci\xF3n Tributaria.</p>
-        <h3>Pasos principales:</h3>
-        <ol>
-          <li><strong>Definir el tipo de contribuyente</strong> \u2013 Persona natural o jur\xEDdica, seg\xFAn corresponda al negocio.</li>
-          <li><strong>Reunir la documentaci\xF3n necesaria</strong> \u2013 C\xE9dula de identidad, escritura de constituci\xF3n inscrita; este proceso debe realizarse de forma personal; constancia de local arrendado o propio; RTN municipal.</li>
-          <li><strong>Llenar el formulario de inscripci\xF3n</strong> \u2013 Proporcionado en las oficinas de la DGI o disponible en l\xEDnea.</li>
-          <li><strong>Presentar y validar la informaci\xF3n</strong> \u2013 Un funcionario revisa los documentos y asigna el n\xFAmero de RUC.</li>
-          <li><strong>Obtener tu RUC y clave de acceso</strong> \u2013 Con esto podr\xE1s declarar impuestos, emitir facturas autorizadas y cumplir tus obligaciones tributarias.</li>
-        </ol>
-        <p>Cumplir con este paso es fundamental para que tu negocio opere legalmente en Nicaragua. En Allison Silva Taxes and Accounting acompa\xF1amos a nuestros clientes en cada etapa para garantizar un proceso correcto.</p>
-      `,
-    tags: ["Nicaragua", "DGI", "RUC", "Cumplimiento fiscal"]
-  },
-  {
-    slug: "ventajas-de-automatizar-e-integrar-quickbooks",
-    date: "2024-02-10",
-    imageKey: "accounting",
-    title: "Ventajas de automatizar e integrar QuickBooks como sistema contable",
-    excerpt: "Optimiza procesos, reduce errores y asegura cumplimiento fiscal con QuickBooks Online.",
-    contentHtml: `
-        <p>La contabilidad manual puede ser ineficiente y propensa a errores. Con la adopci\xF3n de sistemas tecnol\xF3gicos como QuickBooks Online, tu empresa puede cumplir con la normativa fiscal y al mismo tiempo optimizar procesos.</p>
-        <h3>Principales ventajas:</h3>
-        <ul>
-          <li><strong>Automatizaci\xF3n de tareas</strong> \u2013 Registro de ingresos, egresos y conciliaciones bancarias en menor tiempo.</li>
-          <li><strong>Cumplimiento fiscal</strong> \u2013 Reportes financieros organizados y alineados con obligaciones locales e internacionales.</li>
-          <li><strong>Acceso en tiempo real</strong> \u2013 Informaci\xF3n disponible desde cualquier lugar para la toma de decisiones.</li>
-          <li><strong>Reducci\xF3n de errores</strong> \u2013 Minimiza riesgos de omisiones y duplicidades en los registros.</li>
-          <li><strong>Integraci\xF3n con otras herramientas</strong> \u2013 Conexi\xF3n con facturaci\xF3n, bancos y n\xF3mina.</li>
-        </ul>
-        <p>En Allison Silva Taxes and Accounting ayudamos a implementar QuickBooks de forma estrat\xE9gica, asegurando eficiencia y cumplimiento fiscal.</p>
-      `,
-    tags: ["QuickBooks", "Automatizaci\xF3n", "Contabilidad", "Tecnolog\xEDa"]
-  },
-  {
-    slug: "como-prepararse-para-las-declaraciones-anuales-ca-y-eeuu",
-    date: "2024-02-20",
-    imageKey: "placeholder",
-    title: "C\xF3mo prepararse para las declaraciones anuales en Centroam\xE9rica y Estados Unidos",
-    excerpt: "Claves para evitar sanciones y cumplir con obligaciones en CA y EE. UU.",
-    contentHtml: `
-        <p>Las declaraciones anuales son una obligaci\xF3n establecida por las leyes fiscales en Centroam\xE9rica y en Estados Unidos. Prepararse con tiempo es la clave para evitar sanciones y garantizar el cumplimiento tributario.</p>
-        <h3>Recomendaciones clave:</h3>
-        <ol>
-          <li><strong>Mant\xE9n registros contables organizados</strong> \u2013 Facturas, recibos y estados bancarios actualizados.</li>
-          <li><strong>Identifica tus obligaciones fiscales</strong> \u2013 En CA: Impuesto sobre la Renta e IVA/ITBMS; en EE. UU.: Federal Income Tax, State Tax y Sales Tax seg\xFAn corresponda.</li>
-          <li><strong>Revisa deducciones permitidas</strong> \u2013 Gastos operativos, depreciaciones y beneficios aplicables en cada pa\xEDs.</li>
-          <li><strong>Usa herramientas tecnol\xF3gicas</strong> \u2013 QuickBooks u otros softwares que faciliten la preparaci\xF3n de reportes.</li>
-          <li><strong>Consulta a un experto</strong> \u2013 La normativa cambia con frecuencia y conviene tener asesor\xEDa profesional.</li>
-        </ol>
-        <p>En Allison Silva Taxes and Accounting apoyamos a empresas y personas a cumplir con sus obligaciones fiscales tanto a nivel local como internacional, ofreciendo seguridad y tranquilidad tributaria.</p>
-      `,
-    tags: ["Declaraciones anuales", "Centroam\xE9rica", "Estados Unidos", "Cumplimiento"]
-  }
-];
-
 // server/render.ts
 export const config = { runtime: "edge" };
 var SHELL_TTL_MS = 6e4;
@@ -331,6 +310,15 @@ var REST_TIMEOUT_MS = 1500;
 var DATA_TTL_MS = 6e4;
 var shellCache = null;
 var dataCache = /* @__PURE__ */ new Map();
+var blogCache = /* @__PURE__ */ new Map();
+var POST_COLS = "slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html";
+async function blogData(base, key, slug) {
+  const cached = blogCache.get(slug);
+  if (cached && Date.now() - cached.at < DATA_TTL_MS) return cached.data;
+  const data = slug ? (await rest(base, key, `posts?slug=eq.${encodeURIComponent(slug)}&published=eq.true&select=${POST_COLS}&limit=1`))[0] ?? null : await rest(base, key, "posts?published=eq.true&select=slug,title,excerpt,published_at&order=published_at.desc&limit=100");
+  blogCache.set(slug, { data, at: Date.now() });
+  return data;
+}
 var HTML_HEADERS = { "content-type": "text/html; charset=utf-8" };
 async function getShell(req) {
   if (shellCache && Date.now() - shellCache.at < SHELL_TTL_MS) return shellCache.text;
@@ -428,10 +416,27 @@ async function handler(req) {
       if (!degraded) dataCache.set(route.slug, { data: { page, faqs, settings, alt }, at: Date.now() });
     }
   }
-  const post = route.type === "post" ? blogPosts.find((b) => b.slug === route.slug) ?? null : null;
+  let post = null;
+  let body = "";
+  if (route.type === "post" || route.type === "blog") {
+    const base = process.env.VITE_SUPABASE_URL;
+    const key = process.env.VITE_SUPABASE_ANON_KEY;
+    if (!base || !key) return unmodified();
+    try {
+      const data = await blogData(base, key, route.type === "post" ? route.slug : "");
+      if (route.type === "post") {
+        post = data;
+        if (post) body = postBody(post);
+      } else body = blogIndexBody(data ?? []);
+    } catch {
+      if (route.type === "post") return unmodified();
+      degraded = true;
+    }
+  }
   const meta = metaForPath(path, { page, faqs, settings, post, alt });
   if (!meta) return notFound();
-  return new Response(renderHead(shell, meta), {
+  const head = renderHead(shell, meta);
+  return new Response(body ? renderBody(head, body) : head, {
     status: 200,
     headers: {
       ...HTML_HEADERS,

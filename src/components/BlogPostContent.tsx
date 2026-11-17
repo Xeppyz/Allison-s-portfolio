@@ -1,18 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
-import { getAllPosts, type BlogPost } from "../data/BlogPost"
-
-import placeHolder from "../assets/img/placeholder.png"
-import documentCalendar from "../assets/img/tax-documents-calendar.webp"
-import accountingDocument from "../assets/img/accounting-software-screen.webp"
+import { usePosts, type Post } from "../lib/content"
+import { cleanHtml, readingMinutes } from "../lib/html"
+import { formatDate } from "./blog"
 import avatar from "../assets/img/avatar.jpg"
-
-const imageMap: Record<string, { src: string; width: number; height: number }> = {
-  placeholder: { src: placeHolder, width: 1200, height: 675 },
-  calendar: { src: documentCalendar, width: 1200, height: 798 },
-  accounting: { src: accountingDocument, width: 1200, height: 899 },
-}
 
 type HeadingItem = { id: string; text: string; level: number }
 
@@ -26,25 +18,17 @@ function slugify(text: string) {
     .replace(/\s+/g, "-")
 }
 
-function estimateReadingTime(html: string) {
-  const text = html.replace(/<[^>]+>/g, " ")
-  const words = (text.match(/\S+/g) || []).length
-  const minutes = Math.max(1, Math.ceil(words / 200))
-  return minutes
-}
-
 const ring = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
 const secondaryBtn = `inline-flex min-h-12 items-center justify-center rounded-full border border-navy/25 px-5 py-3 font-semibold text-navy transition hover:border-navy hover:bg-navy hover:text-white ${ring}`
 const primaryBtn = `inline-flex min-h-12 items-center justify-center rounded-full bg-navy px-7 py-3 font-semibold text-white transition hover:bg-navy-deep ${ring}`
 const cardLink = `group block rounded-2xl border border-navy/10 bg-white p-5 transition hover:-translate-y-px hover:border-taupe/60 ${ring}`
 
-export default function BlogPostContent({ post }: { post: BlogPost }) {
-  const locale = "es-ES"
+export default function BlogPostContent({ post }: { post: Post }) {
   const title = post.title
-  const contentHtml = post.contentHtml
-  const excerpt = post.excerpt
-  const img = imageMap[post.imageKey] ?? { src: "/placeholder.svg", width: 1200, height: 675 }
-  const readMin = estimateReadingTime(contentHtml)
+  const contentHtml = useMemo(() => cleanHtml(post.content_html), [post.content_html])
+  const excerpt = post.excerpt ?? ""
+  const readMin = readingMinutes(contentHtml)
+  const { data: all } = usePosts()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [headings, setHeadings] = useState<HeadingItem[]>([])
@@ -75,13 +59,13 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
   }, [location.pathname])
   // Ordena posts por fecha para prev/next
   const { prev, next, related } = useMemo(() => {
-    const all = getAllPosts().slice().sort((a, b) => (a.date < b.date ? 1 : -1))
-    const idx = all.findIndex((p) => p.slug === post.slug)
-    const prev = idx > 0 ? all[idx - 1] : undefined
-    const next = idx < all.length - 1 ? all[idx + 1] : undefined
-    const related = all.filter((p) => p.slug !== post.slug).slice(0, 2)
+    const list = all ?? []
+    const idx = list.findIndex((p) => p.slug === post.slug)
+    const prev = idx > 0 ? list[idx - 1] : undefined
+    const next = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : undefined
+    const related = list.filter((p) => p.slug !== post.slug).slice(0, 2)
     return { prev, next, related }
-  }, [post.slug])
+  }, [all, post.slug])
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : `https://example.com${location.pathname}`
   const shareText = `${title} — ${excerpt}`
@@ -110,8 +94,13 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
         {/* Cabecera */}
         <header className="bg-ivory px-4 py-16 sm:px-6 lg:py-24">
           <div className="hero-in mx-auto max-w-3xl space-y-6 text-center">
+            {!post.published && (
+              <p className="mx-auto w-fit rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-900">
+                Borrador: solo tú lo ves
+              </p>
+            )}
             <nav aria-label="Migas de pan" className="text-sm text-navy/60">
-              <Link to="/" className={`rounded hover:text-navy ${ring}`}>Home</Link>
+              <Link to="/" className={`rounded hover:text-navy ${ring}`}>Inicio</Link>
               <span className="mx-2" aria-hidden="true">/</span>
               <Link to="/blog" className={`rounded hover:text-navy ${ring}`}>Blog</Link>
             </nav>
@@ -120,7 +109,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-navy/70">
               <span className="inline-flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-taupe" aria-hidden="true" />
-                {new Date(post.date).toLocaleDateString(locale)}
+                <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
               </span>
               <span className="inline-flex items-center gap-2">
                 <Clock className="h-4 w-4 text-taupe" aria-hidden="true" />
@@ -140,15 +129,17 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
         {/* Contenido + índice */}
         <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-16 lg:px-8 lg:py-20">
           <div className="mx-auto w-full max-w-3xl">
-            <img
-              src={img.src}
-              width={img.width}
-              height={img.height}
-              alt={title}
-              loading="lazy"
-              decoding="async"
-              className="mb-10 h-auto w-full rounded-2xl border border-navy/10"
-            />
+            {post.cover_url && (
+              <img
+                src={post.cover_url}
+                width={1200}
+                height={675}
+                alt={post.cover_alt || title}
+                fetchPriority="high"
+                decoding="async"
+                className="mb-10 aspect-video h-auto w-full rounded-2xl border border-navy/10 object-cover"
+              />
+            )}
 
             <div className="mb-8 flex items-center justify-between gap-4">
               <Link to="/blog" className={`inline-flex min-h-11 items-center rounded font-semibold text-[#4285F4] hover:underline ${ring}`}>
@@ -224,7 +215,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
                   {related.map((r) => (
                     <Link key={r.slug} to={`/blog/${r.slug}`} className={cardLink}>
                       <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
-                        {new Date(r.date).toLocaleDateString(locale)}
+                        {formatDate(r.published_at)}
                       </div>
                       <div className="line-clamp-2 font-serif text-lg text-navy">{r.title}</div>
                     </Link>

@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { renderHead, metaForPath, stripIdentity, type HeadMeta } from './seo-head.ts'
+import { renderHead, renderBody, postBody, blogIndexBody, metaForPath, stripIdentity, type HeadMeta } from './seo-head.ts'
 
 const shell = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
 const count = (s: string, re: RegExp) => (s.match(re) ?? []).length
@@ -150,10 +150,23 @@ test('metaForPath rutas fijas, blog y admin', () => {
   assert.equal(metaForPath('/blog', {})!.title, 'Blog | Allison Silva Taxes & Accounting')
   assert.equal(metaForPath('/blog/', {})!.canonical, 'https://www.allisonsilvacorp.com/blog')
   assert.equal(metaForPath('/blog/x', { post: null }), null)
-  const p = metaForPath('/blog/x', { post: { slug: 'x', title: 'T', excerpt: 'E', date: '2024-02-01' } })!
+  const p = metaForPath('/blog/x', { post: { slug: 'x', title: 'T', excerpt: 'E', published_at: '2024-02-01' } })!
   assert.equal(p.title, 'T | Allison Silva')
   assert.equal(p.type, 'article')
+  assert.equal(p.image, 'https://www.allisonsilvacorp.com/og-image.jpg')
   assert.equal((p.jsonLd![0] as { '@type': string })['@type'], 'BlogPosting')
+  const q = metaForPath('/blog/x', {
+    post: {
+      slug: 'x', title: 'T', seo_title: 'Título SEO', excerpt: 'E', published_at: '2024-02-01',
+      updated_at: '2026-11-17T10:00:00Z', cover_url: '/blog/x.webp', tags: ['DGI', 'RUC'],
+    },
+  })!
+  assert.equal(q.title, 'Título SEO | Allison Silva')
+  assert.equal(q.image, 'https://www.allisonsilvacorp.com/blog/x.webp')
+  const ld = q.jsonLd![0] as Record<string, unknown>
+  assert.equal(ld.dateModified, '2026-11-17T10:00:00Z')
+  assert.equal(ld.keywords, 'DGI, RUC')
+  assert.equal((q.jsonLd![1] as { '@type': string })['@type'], 'BreadcrumbList')
   assert.equal(metaForPath('/admin/pages', {})!.noindex, true)
 })
 
@@ -189,4 +202,19 @@ test('stripIdentity quita canonical, og:url y JSON-LD del servidor', () => {
   assert.equal(count(out, /property="og:url"/g), 0)
   assert.equal(count(out, /data-ssr/g), 0)
   assert.match(out, /<title>/)
+})
+
+test('renderBody mete el artículo en #root y limpia su HTML', () => {
+  const body = postBody({
+    slug: 'x', title: 'A <b>', excerpt: 'E', published_at: '2024-02-01', cover_url: '/blog/x.webp',
+    content_html: '<h2>Sub</h2><p>Texto</p><script>alert(1)</script>',
+  })
+  const out = renderBody(shell, body)
+  assert.match(out, /<div id="root"><main[^>]*><article>/)
+  assert.match(out, /<h1>A &lt;b&gt;<\/h1>/)
+  assert.match(out, /<h2>Sub<\/h2><p>Texto<\/p>/)
+  assert.doesNotMatch(out, /alert\(1\)/)
+  assert.match(out, /1 de febrero de 2024/)
+  const idx = renderBody(shell, blogIndexBody([{ slug: 's', title: 'T', excerpt: 'E', published_at: '2024-01-01' }]))
+  assert.match(idx, /<a href="\/blog\/s">T<\/a><p>E<\/p>/)
 })

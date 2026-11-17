@@ -109,7 +109,7 @@ export default function Home() {
       <PlanCards pageSlug="inicio" />
       <Testimonials />
       <Benefits />
-      <Blog />
+      <Blog limit={3} />
       <FaqList pageSlug="inicio" />
       <FinalBlock />
     </>

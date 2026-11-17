@@ -17,5 +17,5 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true
   },
-  "include": ["server", "src/lib/seo-head.ts", "src/data/BlogPost.tsx"]
+  "include": ["server", "src/lib/seo-head.ts", "src/lib/html.ts"]
 }

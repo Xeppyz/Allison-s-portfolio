@@ -1,16 +1,19 @@
 import { useParams, Link } from "react-router-dom"
 import BlogPostContent from "../components/BlogPostContent"
-import { getPostBySlug } from "../data/BlogPost"
+import { usePost } from "../lib/content"
+import { PageError, PageLoading } from "../components/PageStatus"
 import Seo from "../components/Seo"
 
 export default function BlogPostPage() {
-  const { slug } = useParams<{ slug: string }>()
-  const post = slug ? getPostBySlug(slug) : undefined
+  const { slug = "" } = useParams<{ slug: string }>()
+  const { data: post, loading, error } = usePost(slug)
 
+  if (loading) return <PageLoading />
+  if (error) return <PageError />
   if (!post) {
     return (
       <main>
-        <Seo title="Artículo no encontrado | Allison Silva Taxes & Accounting" description="El artículo que buscas no existe o fue movido." />
+        <Seo noindex title="Artículo no encontrado | Allison Silva Taxes & Accounting" description="El artículo que buscas no existe o fue movido." />
         <section className="bg-ivory px-4 py-20 text-center sm:px-6 lg:py-28">
           <div className="mx-auto max-w-2xl space-y-6">
             <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
@@ -30,7 +33,12 @@ export default function BlogPostPage() {
 
   return (
     <>
-      <Seo title={`${post.title} | Allison Silva`} description={post.excerpt} />
+      <Seo
+        title={`${post.seo_title || post.title} | Allison Silva`}
+        description={post.excerpt ?? ""}
+        image={post.cover_url ?? undefined}
+        noindex={!post.published}
+      />
       <BlogPostContent post={post} />
     </>
   )

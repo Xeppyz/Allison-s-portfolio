@@ -1,6 +1,7 @@
 // SEO del lado del servidor: calcula y escribe el <head> de cada URL.
 // Módulo puro (sin React, sin import.meta): lo importan la función edge
 // api/render.ts, api/sitemap.ts, el cliente no, y los tests con node:test.
+import { cleanHtml } from './html.ts'
 
 export const ORIGIN = 'https://www.allisonsilvacorp.com'
 export const ORG_ID = `${ORIGIN}/#organizacion`
@@ -55,7 +56,29 @@ export type SettingsRow = {
   hours?: string | null
 }
 
-export type PostMeta = { slug: string; title: string; excerpt: string; date: string }
+export type PostMeta = {
+  slug: string
+  title: string
+  seo_title?: string | null
+  excerpt: string | null
+  published_at: string
+  updated_at?: string | null
+  cover_url?: string | null
+  cover_alt?: string | null
+  tags?: string[] | null
+  content_html?: string | null
+}
+
+export type PostSummary = Pick<PostMeta, 'slug' | 'title' | 'excerpt' | 'published_at'>
+
+/** Sufijo de marca que se añade al título de los artículos. */
+export const POST_TITLE_SUFFIX = ' | Allison Silva'
+
+/** URL absoluta de una imagen (las de /public vienen relativas). */
+export function absoluteImage(url: string | null | undefined): string {
+  if (!url) return DEFAULT_IMAGE
+  return url.startsWith('/') ? ORIGIN + url : url
+}
 
 /* ------------------------------ rutas ------------------------------ */
 
@@ -211,6 +234,45 @@ export function renderHead(html: string, meta: HeadMeta): string {
   return out
 }
 
+/* --------------------------- cuerpo inicial --------------------------- */
+
+/** Pone `inner` dentro de #root: lo leen los buscadores sin JS; React lo reemplaza al montar. */
+export function renderBody(html: string, inner: string): string {
+  return html.replace(/<div id="root">\s*<\/div>/, () => `<div id="root">${inner}</div>`)
+}
+
+const dateEs = (d: string) => {
+  const t = new Date(d + 'T12:00:00Z')
+  return Number.isNaN(t.getTime()) ? '' : t.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+}
+
+export function postBody(post: PostMeta): string {
+  const cover = post.cover_url
+    ? `<img src="${escapeHtml(post.cover_url)}" alt="${escapeHtml(post.cover_alt || post.title)}" width="1200" height="675">`
+    : ''
+  return (
+    `<main class="mx-auto max-w-3xl px-4 py-16"><article>` +
+    `<nav aria-label="Migas de pan"><a href="/">Inicio</a> / <a href="/blog">Blog</a></nav>` +
+    `<h1>${escapeHtml(post.title)}</h1>` +
+    `<p><time datetime="${escapeHtml(post.published_at)}">${dateEs(post.published_at)}</time> · Allison Silva, CPA</p>` +
+    cover +
+    `<div class="article-content">${cleanHtml(post.content_html ?? '')}</div>` +
+    `</article></main>`
+  )
+}
+
+export function blogIndexBody(posts: PostSummary[]): string {
+  const items = posts
+    .map(
+      (p) =>
+        `<li><a href="/blog/${escapeHtml(p.slug)}">${escapeHtml(p.title)}</a>` +
+        (p.excerpt ? `<p>${escapeHtml(p.excerpt)}</p>` : '') +
+        `</li>`,
+    )
+    .join('')
+  return `<main class="mx-auto max-w-3xl px-4 py-16"><h1>Blog: contabilidad, impuestos y QuickBooks</h1><ul>${items}</ul></main>`
+}
+
 /** Quita lo que identifica una URL concreta (canonical, og:url, JSON-LD del servidor): para respuestas de respaldo. */
 export function stripIdentity(html: string): string {
   return removeMeta(html, 'property', 'og:url')
@@ -305,24 +367,39 @@ export function metaForPath(pathname: string, data: MetaData = {}): HeadMeta | n
     const post = data.post
     if (!post || post.slug !== route.slug) return null
     const canonical = absoluteUrl(`/blog/${post.slug}`)
+    const image = absoluteImage(post.cover_url)
+    const description = post.excerpt || DEFAULT_DESCRIPTION
+    const posting: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description,
+      datePublished: post.published_at,
+      dateModified: post.updated_at || post.published_at,
+      image,
+      inLanguage: 'es',
+      mainEntityOfPage: canonical,
+      author: { '@type': 'Person', name: 'Allison Silva', jobTitle: 'CPA', url: `${ORIGIN}/` },
+      publisher: { '@id': ORG_ID },
+    }
+    if (post.tags?.length) posting.keywords = post.tags.join(', ')
     return {
-      title: `${post.title} | Allison Silva`,
-      description: post.excerpt,
+      title: (post.seo_title || post.title) + POST_TITLE_SUFFIX,
+      description,
       canonical,
       lang: 'es',
-      image: DEFAULT_IMAGE,
+      image,
       type: 'article',
       jsonLd: [
+        posting,
         {
           '@context': 'https://schema.org',
-          '@type': 'BlogPosting',
-          headline: post.title,
-          description: post.excerpt,
-          datePublished: post.date,
-          image: DEFAULT_IMAGE,
-          mainEntityOfPage: canonical,
-          author: { '@type': 'Person', name: 'Allison Silva' },
-          publisher: { '@id': ORG_ID },
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${ORIGIN}/` },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: absoluteUrl('/blog') },
+            { '@type': 'ListItem', position: 3, name: post.title, item: canonical },
+          ],
         },
       ],
     }
