@@ -25,6 +25,15 @@ export type HeadMeta = {
   alternates?: { es?: string; en?: string }
   jsonLd?: object[]
   type?: 'website' | 'article'
+  /** Imagen principal que el navegador debe pedir antes de ejecutar el JS (LCP). */
+  preloadImage?: { srcset: string; sizes: string; href: string }
+}
+
+/** Retrato del hero del inicio (public/img). Mismos valores que hero.tsx. */
+export const HERO_IMAGE = {
+  href: '/img/allison-800.webp',
+  srcset: '/img/allison-480.webp 480w, /img/allison-800.webp 800w',
+  sizes: '(min-width: 1024px) 424px, (min-width: 640px) 360px, calc(100vw - 56px)',
 }
 
 export type PageRow = {
@@ -230,6 +239,15 @@ export function renderHead(html: string, meta: HeadMeta): string {
     }
     const def = alts.es ?? alts.en!
     out = insertBeforeHeadEnd(out, `<link rel="alternate" hreflang="x-default" href="${escapeHtml(def)}" />`)
+  }
+
+  out = out.replace(/<link\b[^>]*?\brel\s*=\s*["']preload["'][^>]*?\bas\s*=\s*["']image["'][^>]*>\s*/gi, '')
+  if (meta.preloadImage) {
+    const p = meta.preloadImage
+    out = insertBeforeHeadEnd(
+      out,
+      `<link rel="preload" as="image" href="${escapeHtml(p.href)}" imagesrcset="${escapeHtml(p.srcset)}" imagesizes="${escapeHtml(p.sizes)}" fetchpriority="high" />`,
+    )
   }
 
   // JSON-LD: se retiran los inyectados antes (data-ssr) y se añaden los nuevos
@@ -452,6 +470,7 @@ export function metaForPath(pathname: string, data: MetaData = {}): HeadMeta | n
   if (faq) jsonLd.push(faq)
 
   const meta: HeadMeta = { title, description, canonical, lang: pageLang, image, noindex: !!page.noindex, jsonLd }
+  if (page.kind === 'home') meta.preloadImage = HERO_IMAGE
   const alt = data.alt
   const altLang: Lang | null = alt ? (alt.lang === 'en' ? 'en' : 'es') : null
   if (page.alt_slug && alt && alt.slug === page.alt_slug && !alt.noindex && altLang !== pageLang) {

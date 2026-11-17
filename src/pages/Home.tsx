@@ -30,7 +30,7 @@ function EntryCard({ slug, title, text, Icon }: (typeof ENTRIES)[number]) {
   return (
     <Link
       to={to}
-      className="group flex items-start gap-4 rounded-2xl border border-navy/10 bg-white p-6 shadow-[0_12px_40px_-18px_rgba(30,58,95,0.35)] transition hover:-translate-y-1 hover:border-taupe/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]"
+      className="group flex items-start gap-4 rounded-2xl border border-navy/10 bg-white p-6 shadow-[0_12px_40px_-18px_rgba(30,58,95,0.35)] transition hover:-translate-y-1 hover:border-taupe/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
     >
       <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-taupe/40 text-taupe">
         <Icon className="h-5 w-5" aria-hidden="true" />
@@ -39,7 +39,7 @@ function EntryCard({ slug, title, text, Icon }: (typeof ENTRIES)[number]) {
         <span className="block text-lg font-semibold text-navy">{title}</span>
         <span className="mt-1 block text-sm text-navy/70">{text}</span>
       </span>
-      <ArrowRight className="mt-1 h-5 w-5 flex-shrink-0 text-navy/40 transition group-hover:translate-x-1 group-hover:text-taupe" aria-hidden="true" />
+      <ArrowRight className="mt-1 h-5 w-5 flex-shrink-0 text-navy/70 transition group-hover:translate-x-1 group-hover:text-taupe" aria-hidden="true" />
     </Link>
   )
 }
@@ -101,6 +101,7 @@ export default function Home() {
         description={page?.meta_description || DEFAULT_DESCRIPTION}
         jsonLd={jsonLd}
       />
+      <main>
       <Hero h1={page?.h1 || FALLBACK_H1} subheadline={page?.subheadline || FALLBACK_SUB} credentials={credentials} />
       <EntryCards />
       <About />
@@ -112,6 +113,7 @@ export default function Home() {
       <Blog limit={3} />
       <FaqList pageSlug="inicio" />
       <FinalBlock />
+      </main>
     </>
   )
 }

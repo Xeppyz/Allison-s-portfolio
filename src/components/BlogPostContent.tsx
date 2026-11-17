@@ -3,7 +3,6 @@ import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight } from "l
 import { Link, useLocation } from "react-router-dom"
 import { usePosts, type Post } from "../lib/content"
 import { cleanHtml, formatDate, readingMinutes } from "../lib/html"
-import avatar from "../assets/img/avatar.jpg"
 
 type HeadingItem = { id: string; text: string; level: number }
 
@@ -98,7 +97,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
                 Borrador: solo tú lo ves
               </p>
             )}
-            <nav aria-label="Migas de pan" className="text-sm text-navy/60">
+            <nav aria-label="Migas de pan" className="text-sm text-navy/75">
               <Link to="/" className={`rounded hover:text-navy ${ring}`}>Inicio</Link>
               <span className="mx-2" aria-hidden="true">/</span>
               <Link to="/blog" className={`rounded hover:text-navy ${ring}`}>Blog</Link>
@@ -141,7 +140,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
             )}
 
             <div className="mb-8 flex items-center justify-between gap-4">
-              <Link to="/blog" className={`inline-flex min-h-11 items-center rounded font-semibold text-[#4285F4] hover:underline ${ring}`}>
+              <Link to="/blog" className={`inline-flex min-h-11 items-center rounded font-semibold text-navy underline decoration-taupe underline-offset-4 hover:decoration-navy ${ring}`}>
                 <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
                 Volver al blog
               </Link>
@@ -157,7 +156,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
             {/* Autora */}
             <div className="mt-12 flex items-center gap-4 border-y border-navy/10 py-6 sm:gap-6">
               <img
-                src={avatar}
+                src="/img/allison-480.webp"
                 alt="Allison Silva, CPA"
                 width={64}
                 height={64}
@@ -229,7 +228,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
             <div className="border-t border-navy/10 pt-6 lg:sticky lg:top-24 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Contenido</p>
               {headings.length === 0 ? (
-                <p className="text-sm text-navy/60">Este artículo no tiene secciones</p>
+                <p className="text-sm text-navy/75">Este artículo no tiene secciones</p>
               ) : (
                 <ul className="space-y-1 text-sm">
                   {headings.map((h) => (

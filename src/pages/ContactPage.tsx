@@ -8,7 +8,7 @@ const FALLBACK_EMAIL = 'info@allisonsilvacorp.com'
 const FALLBACK_PHONE = '+505 8767-3463'
 
 const linkClass =
-  'break-all rounded font-semibold text-[#4285F4] underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4] focus-visible:ring-offset-2'
+  'break-all rounded font-semibold text-navy underline decoration-taupe underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2'
 
 export default function ContactPage() {
   const { data: settings } = useSettings()

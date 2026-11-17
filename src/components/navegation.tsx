@@ -34,7 +34,7 @@ export function Navigation() {
             <span className="block font-serif text-base font-medium text-navy">
               Allison Silva Taxes and Accounting
             </span>
-            <span className="block max-w-[300px] text-[10px] leading-tight text-navy/60 sm:text-xs">
+            <span className="block max-w-[300px] text-[10px] leading-tight text-navy/75 sm:text-xs">
               {t.slogan}
             </span>
           </Link>

@@ -95,7 +95,7 @@ export function Services() {
                   {service.link && (
                     <Link
                       to={service.link}
-                      className="group inline-flex min-h-11 items-center gap-1.5 rounded text-sm font-semibold text-[#4285F4] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4] focus-visible:ring-offset-2"
+                      className="group inline-flex min-h-11 items-center gap-1.5 rounded text-sm font-semibold text-navy underline decoration-taupe underline-offset-4 hover:decoration-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
                     >
                       Ver más
                       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" />

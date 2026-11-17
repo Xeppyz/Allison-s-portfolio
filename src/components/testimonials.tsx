@@ -64,7 +64,7 @@ export function Testimonials() {
                 />
                 <div>
                   <h3 className="font-semibold text-navy">{testimonial.name}</h3>
-                  <p className="text-sm text-navy/60">
+                  <p className="text-sm text-navy/75">
                     {[testimonial.position, testimonial.company].filter(Boolean).join(", ")}
                   </p>
                 </div>

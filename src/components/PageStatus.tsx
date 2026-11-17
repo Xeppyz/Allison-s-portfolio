@@ -2,7 +2,7 @@ import Seo, { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from './Seo'
 import { useStrings } from '../lib/strings'
 
 const linkClass =
-  'rounded font-semibold text-[#4285F4] underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4] focus-visible:ring-offset-2'
+  'rounded font-semibold text-navy underline decoration-taupe underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2'
 
 export function PageLoading() {
   const { t } = useStrings()

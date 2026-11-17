@@ -37,7 +37,7 @@ export default function CookieBanner({ onChange }: Props) {
       <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-navy/75">
           {t.cookiesTexto}{' '}
-          <Link to="/privacidad" className="rounded text-[#4285F4] underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]">
+          <Link to="/privacidad" className="rounded text-navy underline decoration-taupe underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy">
             {t.cookiesPolitica}
           </Link>
           .

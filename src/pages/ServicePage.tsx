@@ -133,7 +133,7 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
 
       {p.legal_note && (
         <section className="px-4 pb-16 sm:px-6">
-          <aside aria-label={t.avisoLegal} className="mx-auto max-w-3xl whitespace-pre-line border-t border-navy/10 pt-6 text-xs leading-relaxed text-navy/60">
+          <aside aria-label={t.avisoLegal} className="mx-auto max-w-3xl whitespace-pre-line border-t border-navy/10 pt-6 text-xs leading-relaxed text-navy/75">
             {p.legal_note}
           </aside>
         </section>

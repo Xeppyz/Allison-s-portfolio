@@ -107,6 +107,11 @@ var DEFAULT_TITLE = ORG_NAME;
 var DEFAULT_DESCRIPTION = "Servicios profesionales de contabilidad, impuestos, reportes financieros y consultor\xEDa estrat\xE9gica para emprendedores, pymes y corporaciones en Latinoam\xE9rica y EE.UU.";
 var DEFAULT_DESCRIPTION_EN = "Professional accounting, tax and financial reporting services for entrepreneurs, small businesses and corporations in Nicaragua and the U.S.";
 var DEFAULT_IMAGE = `${ORIGIN}/og-image.jpg`;
+var HERO_IMAGE = {
+  href: "/img/allison-800.webp",
+  srcset: "/img/allison-480.webp 480w, /img/allison-800.webp 800w",
+  sizes: "(min-width: 1024px) 424px, (min-width: 640px) 360px, calc(100vw - 56px)"
+};
 var seed = (key, data) => `<script type="application/json" id="__seed">${serializeJsonLd({ key, data })}</script>`;
 var POST_TITLE_SUFFIX = " | Allison Silva";
 function absoluteImage(url) {
@@ -218,6 +223,14 @@ function renderHead(html, meta) {
     }
     const def = alts.es ?? alts.en;
     out = insertBeforeHeadEnd(out, `<link rel="alternate" hreflang="x-default" href="${escapeHtml(def)}" />`);
+  }
+  out = out.replace(/<link\b[^>]*?\brel\s*=\s*["']preload["'][^>]*?\bas\s*=\s*["']image["'][^>]*>\s*/gi, "");
+  if (meta.preloadImage) {
+    const p = meta.preloadImage;
+    out = insertBeforeHeadEnd(
+      out,
+      `<link rel="preload" as="image" href="${escapeHtml(p.href)}" imagesrcset="${escapeHtml(p.srcset)}" imagesizes="${escapeHtml(p.sizes)}" fetchpriority="high" />`
+    );
   }
   out = out.replace(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*\bdata-ssr\b[^>]*>[\s\S]*?<\/script\s*>\s*/gi, "");
   for (const block of meta.jsonLd ?? []) {
@@ -382,6 +395,7 @@ function metaForPath(pathname, data = {}) {
   const faq = faqBlock(data.faqs, page.slug);
   if (faq) jsonLd.push(faq);
   const meta = { title, description, canonical, lang: pageLang, image, noindex: !!page.noindex, jsonLd };
+  if (page.kind === "home") meta.preloadImage = HERO_IMAGE;
   const alt = data.alt;
   const altLang = alt ? alt.lang === "en" ? "en" : "es" : null;
   if (page.alt_slug && alt && alt.slug === page.alt_slug && !alt.noindex && altLang !== pageLang) {

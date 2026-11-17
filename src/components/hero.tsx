@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import WhatsAppButton from "./WhatsAppButton"
 import { track } from "../lib/track"
-import avatar from "../assets/img/avatar.jpg"
+import { HERO_IMAGE } from "../lib/seo-head"
 
 interface HeroProps {
   h1: string
@@ -47,17 +47,19 @@ export function Hero({ h1, subheadline, credentials }: HeroProps) {
           <div className="relative p-3">
             <div aria-hidden="true" className="absolute inset-0 rounded-t-full border border-taupe/50" />
             <img
-              src={avatar}
+              src={HERO_IMAGE.href}
+              srcSet={HERO_IMAGE.srcset}
+              sizes={HERO_IMAGE.sizes}
               alt="Allison Silva, CPA, fundadora de Allison Silva Taxes & Accounting"
-              width={1024}
-              height={1024}
+              width={800}
+              height={1000}
               fetchPriority="high"
               className="relative aspect-[4/5] w-full rounded-t-full object-cover object-top"
             />
           </div>
           <figcaption className="relative mt-5 text-center">
             <span className="block font-serif text-xl text-navy">Allison Silva, CPA</span>
-            <span className="text-xs uppercase tracking-[0.18em] text-navy/60">Fundadora y directora</span>
+            <span className="text-xs uppercase tracking-[0.18em] text-navy/75">Fundadora y directora</span>
           </figcaption>
         </figure>
       </div>

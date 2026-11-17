@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { supabase } from '../lib/supabase'
+import { invokeFunction, restConfigured } from '../lib/rest'
 import { useServices } from '../lib/content'
 import { getUtm } from '../lib/utm'
 import { track } from '../lib/track'
@@ -42,16 +42,14 @@ export default function LeadForm() {
     setSending(true)
     setStatus('idle')
     try {
-      if (!supabase) throw new Error('supabase no configurado')
-      const { data, error } = await supabase.functions.invoke('lead', {
-        body: {
-          ...values,
-          page: location.pathname,
-          utm: getUtm(),
-          elapsedMs: Date.now() - startedAt.current,
-        },
+      if (!restConfigured) throw new Error('supabase no configurado')
+      const data = await invokeFunction<{ ok?: boolean }>('lead', {
+        ...values,
+        page: location.pathname,
+        utm: getUtm(),
+        elapsedMs: Date.now() - startedAt.current,
       })
-      if (error || !data || data.ok !== true) throw error ?? new Error('respuesta inválida')
+      if (data?.ok !== true) throw new Error('respuesta inválida')
       setStatus('success')
       track('form_submit')
     } catch {
