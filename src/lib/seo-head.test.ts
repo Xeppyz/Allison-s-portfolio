@@ -218,3 +218,12 @@ test('renderBody mete el artículo en #root y limpia su HTML', () => {
   const idx = renderBody(shell, blogIndexBody([{ slug: 's', title: 'T', excerpt: 'E', published_at: '2024-01-01' }]))
   assert.match(idx, /<a href="\/blog\/s">T<\/a><p>E<\/p>/)
 })
+
+test('el inicio precarga el retrato del hero; las demás páginas no', () => {
+  const home = metaForPath('/', { page: { slug: 'inicio', lang: 'es', kind: 'home' } })!
+  const out = renderHead(shell, home)
+  assert.equal(count(out, /rel="preload" as="image"/g), 1)
+  assert.match(out, /imagesrcset="\/img\/allison-480\.webp 480w/)
+  const planes = renderHead(shell, metaForPath('/planes', { page: { slug: 'planes', lang: 'es', kind: 'service' } })!)
+  assert.equal(count(planes, /rel="preload" as="image"/g), 0)
+})

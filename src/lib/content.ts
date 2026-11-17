@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from './supabase'
+import { eq, rest, restConfigured } from './rest'
 
 export interface Settings {
   id: number
@@ -163,7 +163,7 @@ function useQuery<T>(key: string, fn: () => PromiseLike<T>, enabled = true): Que
   const [state, setState] = useState<{ key: string; data: T | null; error: boolean } | null>(null)
 
   useEffect(() => {
-    if (!enabled || cache.has(key) || !supabase) return
+    if (!enabled || cache.has(key) || !restConfigured) return
     let cancelled = false
     load(key, fn).then(
       (data) => { cache.set(key, data); if (!cancelled) setState({ key, data, error: false }) },
@@ -175,79 +175,53 @@ function useQuery<T>(key: string, fn: () => PromiseLike<T>, enabled = true): Que
   }, [key])
 
   if (!enabled) return { data: null, loading: false, error: false }
-  if (!supabase) return { data: null, loading: false, error: true }
+  if (!restConfigured) return { data: null, loading: false, error: true }
   if (cache.has(key)) return { data: cache.get(key) as T, loading: false, error: false }
   if (state && state.key === key) return { data: state.data, loading: false, error: state.error }
   return { data: null, loading: true, error: false }
 }
 
-function unwrap<T>(res: { data: T | null; error: unknown }): T | null {
-  if (res.error) throw res.error
-  return res.data
-}
+const first = async <T,>(q: string): Promise<T | null> => (await rest<T[]>(q))[0] ?? null
 
 export function useSettings(): QueryState<Settings> {
-  return useQuery<Settings | null>('settings', async () =>
-    unwrap(await supabase!.from('site_settings').select('*').eq('id', 1).maybeSingle<Settings>()),
-  ) as QueryState<Settings>
+  return useQuery<Settings | null>('settings', () => first<Settings>('site_settings?select=*&id=eq.1')) as QueryState<Settings>
 }
 
 /** Con slug vacío no consulta nada (data null, sin carga). */
 export function usePage(slug: string): QueryState<Page | null> {
-  return useQuery<Page | null>(`page:${slug}`, async () =>
-    unwrap(await supabase!.from('pages').select('*').eq('slug', slug).maybeSingle<Page>()),
-  slug !== '')
+  return useQuery<Page | null>(`page:${slug}`, () => first<Page>(`pages?select=*&slug=${eq(slug)}`), slug !== '')
 }
 
 export function usePlans(pageSlug: string): QueryState<Plan[]> {
-  return useQuery<Plan[]>(`plans:${pageSlug}`, async () =>
-    unwrap(
-      await supabase!.from('plans').select('*').eq('active', true)
-        .contains('page_slugs', [pageSlug]).order('sort').returns<Plan[]>(),
-    ) ?? [],
+  return useQuery<Plan[]>(`plans:${pageSlug}`, () =>
+    rest<Plan[]>(`plans?select=*&active=eq.true&page_slugs=cs.%7B${encodeURIComponent(pageSlug)}%7D&order=sort.asc`),
   )
 }
 
 export function useFaqs(pageSlug: string): QueryState<Faq[]> {
-  return useQuery<Faq[]>(`faqs:${pageSlug}`, async () =>
-    unwrap(
-      await supabase!.from('faqs').select('*').eq('active', true)
-        .eq('page_slug', pageSlug).order('sort').returns<Faq[]>(),
-    ) ?? [],
+  return useQuery<Faq[]>(`faqs:${pageSlug}`, () =>
+    rest<Faq[]>(`faqs?select=*&active=eq.true&page_slug=${eq(pageSlug)}&order=sort.asc`),
   )
 }
 
 export function useServices(): QueryState<Service[]> {
-  return useQuery<Service[]>('services', async () =>
-    unwrap(
-      await supabase!.from('services').select('*').eq('active', true)
-        .order('sort').returns<Service[]>(),
-    ) ?? [],
-  )
+  return useQuery<Service[]>('services', () => rest<Service[]>('services?select=*&active=eq.true&order=sort.asc'))
 }
 
 /** Artículos publicados, del más nuevo al más viejo (sin el contenido). */
 export function usePosts(): QueryState<PostCard[]> {
-  return useQuery<PostCard[]>('posts', async () =>
-    unwrap(
-      await supabase!.from('posts').select('id,slug,title,excerpt,cover_url,cover_alt,published_at')
-        .eq('published', true).order('published_at', { ascending: false }).returns<PostCard[]>(),
-    ) ?? [],
+  return useQuery<PostCard[]>('posts', () =>
+    rest<PostCard[]>('posts?select=id,slug,title,excerpt,cover_url,cover_alt,published_at&published=eq.true&order=published_at.desc'),
   )
 }
 
 /** Un artículo; los borradores solo los ve un admin con sesión (RLS). */
 export function usePost(slug: string): QueryState<Post | null> {
-  return useQuery<Post | null>(`post:${slug}`, async () =>
-    unwrap(await supabase!.from('posts').select('*').eq('slug', slug).maybeSingle<Post>()),
-  slug !== '')
+  return useQuery<Post | null>(`post:${slug}`, () => first<Post>(`posts?select=*&slug=${eq(slug)}`), slug !== '')
 }
 
 export function useTestimonials(): QueryState<Testimonial[]> {
-  return useQuery<Testimonial[]>('testimonials', async () =>
-    unwrap(
-      await supabase!.from('testimonials').select('*').eq('active', true)
-        .order('sort').returns<Testimonial[]>(),
-    ) ?? [],
+  return useQuery<Testimonial[]>('testimonials', () =>
+    rest<Testimonial[]>('testimonials?select=*&active=eq.true&order=sort.asc'),
   )
 }

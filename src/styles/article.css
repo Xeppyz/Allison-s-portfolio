@@ -51,7 +51,9 @@
 }
 
 .article-content a {
-  color: #4285F4;
+  color: #1E3A5F;
+  text-decoration-color: #A98467;
+  text-underline-offset: 3px;
   text-decoration: underline;
 }
 
