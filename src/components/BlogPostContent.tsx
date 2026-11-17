@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight, Tag } from "lucide-react"
+import { Calendar, ArrowLeft, Clock, Share2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { getAllPosts, type BlogPost } from "../data/BlogPost"
-import { Button } from "./ui/button"
-import { Card, CardContent } from "./ui/card"
-import { Badge } from "./ui/badge"
 
 import placeHolder from "../assets/img/placeholder.png"
-import documentCalendar from "../assets/img/tax-documents-calendar.png"
-import accountingDocument from "../assets/img/accounting-software-screen.png"
+import documentCalendar from "../assets/img/tax-documents-calendar.webp"
+import accountingDocument from "../assets/img/accounting-software-screen.webp"
 import avatar from "../assets/img/avatar.jpg"
 
-const imageMap: Record<string, string> = {
-  placeholder: placeHolder,
-  calendar: documentCalendar,
-  accounting: accountingDocument,
+const imageMap: Record<string, { src: string; width: number; height: number }> = {
+  placeholder: { src: placeHolder, width: 1200, height: 675 },
+  calendar: { src: documentCalendar, width: 1200, height: 798 },
+  accounting: { src: accountingDocument, width: 1200, height: 899 },
 }
 
 type HeadingItem = { id: string; text: string; level: number }
@@ -23,7 +20,7 @@ function slugify(text: string) {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-")
@@ -36,12 +33,17 @@ function estimateReadingTime(html: string) {
   return minutes
 }
 
+const ring = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+const secondaryBtn = `inline-flex min-h-12 items-center justify-center rounded-full border border-navy/25 px-5 py-3 font-semibold text-navy transition hover:border-navy hover:bg-navy hover:text-white ${ring}`
+const primaryBtn = `inline-flex min-h-12 items-center justify-center rounded-full bg-navy px-7 py-3 font-semibold text-white transition hover:bg-navy-deep ${ring}`
+const cardLink = `group block rounded-2xl border border-navy/10 bg-white p-5 transition hover:-translate-y-px hover:border-taupe/60 ${ring}`
+
 export default function BlogPostContent({ post }: { post: BlogPost }) {
   const locale = "es-ES"
   const title = post.title
   const contentHtml = post.contentHtml
   const excerpt = post.excerpt
-  const imgSrc = imageMap[post.imageKey] || "/placeholder.svg"
+  const img = imageMap[post.imageKey] ?? { src: "/placeholder.svg", width: 1200, height: 675 }
   const readMin = estimateReadingTime(contentHtml)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -67,8 +69,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
     setHeadings(collected)
   }, [contentHtml])
 
-   // Scroll to top on mount or location change
-   // Scroll to top on mount or location change
+  // Scroll to top on mount or location change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [location.pathname])
@@ -104,222 +105,156 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
   }
 
   return (
-    <article className="bg-white">
-      {/* Breadcrumb simple */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <nav className="text-sm text-gray-500 mb-3">
-          <Link to="/" className="hover:text-gray-700">Home</Link>
-          <span className="mx-2">/</span>
-          <Link to="/blog" className="hover:text-gray-700">Blog</Link>
-          <span className="mx-2">/</span>
-          <span className="text-gray-700 font-medium line-clamp-1">{title}</span>
-        </nav>
-      </div>
-
-      {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl">
-          <img
-            src={imgSrc}
-            alt={title}
-            loading="eager"
-            decoding="async"
-            className="w-full h-[260px] sm:h-[360px] lg:h-[440px] object-cover block"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-            <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-extrabold drop-shadow">
-              {title}
-            </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-white/95">
+    <main>
+      <article>
+        {/* Cabecera */}
+        <header className="bg-ivory px-4 py-16 sm:px-6 lg:py-24">
+          <div className="hero-in mx-auto max-w-3xl space-y-6 text-center">
+            <nav aria-label="Migas de pan" className="text-sm text-navy/60">
+              <Link to="/" className={`rounded hover:text-navy ${ring}`}>Home</Link>
+              <span className="mx-2" aria-hidden="true">/</span>
+              <Link to="/blog" className={`rounded hover:text-navy ${ring}`}>Blog</Link>
+            </nav>
+            <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+            <h1 className="text-3xl font-medium leading-tight text-navy sm:text-4xl lg:text-5xl">{title}</h1>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-navy/70">
               <span className="inline-flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-4 w-4 text-taupe" aria-hidden="true" />
                 {new Date(post.date).toLocaleDateString(locale)}
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock className="h-4 w-4" />
+                <Clock className="h-4 w-4 text-taupe" aria-hidden="true" />
                 {`${readMin} min de lectura`}
               </span>
-              {post.tags && post.tags.length > 0 && (
-                <span className="inline-flex items-center gap-2">
-                  <Tag className="h-4 w-4" />
-                  <span className="flex flex-wrap gap-1">
-                    {post.tags.slice(0, 2).map((t) => (
-                      <span key={t} className="bg-white/25 backdrop-blur px-2 py-0.5 rounded text-xs">{t}</span>
-                    ))}
-                    {post.tags.length > 2 && <span className="bg-white/25 px-2 py-0.5 rounded text-xs">+{post.tags.length - 2}</span>}
-                  </span>
-                </span>
-              )}
             </div>
+            {post.tags && post.tags.length > 0 && (
+              <ul className="flex flex-wrap justify-center gap-2">
+                {post.tags.map((t) => (
+                  <li key={t} className="rounded-full border border-navy/15 px-3 py-1.5 text-sm text-navy/80">{t}</li>
+                ))}
+              </ul>
+            )}
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Contenido + Sidebar */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Columna principal */}
-        <div className="lg:col-span-8">
-          {/* Acciones superiores */}
-          <div className="flex items-center justify-between mb-6">
-            <Link to="/blog" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver al blog
-            </Link>
+        {/* Contenido + índice */}
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-16 lg:px-8 lg:py-20">
+          <div className="mx-auto w-full max-w-3xl">
+            <img
+              src={img.src}
+              width={img.width}
+              height={img.height}
+              alt={title}
+              loading="lazy"
+              decoding="async"
+              className="mb-10 h-auto w-full rounded-2xl border border-navy/10"
+            />
 
-            <Button onClick={handleShare} className="bg-gray-900 hover:bg-black text-white">
-              <Share2 className="h-4 w-4 mr-2" />
-              Compartir
-            </Button>
-          </div>
-
-          {/* Chips de etiquetas (completas) */}
-          {post.tags && (
-            <div className="mb-4 flex flex-wrap gap-2">
-              {post.tags.map((t) => (
-                  <Badge
-                    key={t}
-                    variant="secondary"
-                    className="px-3 py-1 text-xs font-medium whitespace-normal break-words"
-                    style={{ backgroundColor: "#34A853", color: "#fff", border: "none" }}
-                  >
-                    {t}
-                  </Badge>
-              ))}
+            <div className="mb-8 flex items-center justify-between gap-4">
+              <Link to="/blog" className={`inline-flex min-h-11 items-center rounded font-semibold text-[#4285F4] hover:underline ${ring}`}>
+                <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+                Volver al blog
+              </Link>
+              <button type="button" onClick={handleShare} className={secondaryBtn}>
+                <Share2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                Compartir
+              </button>
             </div>
-          )}
 
-          {/* Cuerpo del artículo */}
-          <div ref={containerRef} className="article-content" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+            {/* Cuerpo del artículo */}
+            <div ref={containerRef} className="article-content" dangerouslySetInnerHTML={{ __html: contentHtml }} />
 
-          {/* Divider */}
-          <hr className="my-10 border-gray-200" />
-
-          {/* Autora */}
-          <Card className="border-0 shadow-md mb-8" style={{ backgroundColor: "#FBFCFF" }}>
-            <CardContent className="p-6 flex gap-4 sm:gap-6">
+            {/* Autora */}
+            <div className="mt-12 flex items-center gap-4 border-y border-navy/10 py-6 sm:gap-6">
               <img
                 src={avatar}
                 alt="Allison Silva, CPA"
-                className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2"
-                style={{ borderColor: "#4285F4" }}
+                width={64}
+                height={64}
+                className="h-14 w-14 flex-shrink-0 rounded-full object-cover sm:h-16 sm:w-16"
                 loading="lazy"
                 decoding="async"
               />
               <div>
-                <h5 className="text-lg font-bold" style={{ color: "#1E3A5F" }}>Allison Silva, CPA</h5>
-                <p className="text-sm text-gray-600">
+                <p className="font-serif text-lg text-navy">Allison Silva, CPA</p>
+                <p className="text-sm text-navy/70">
                   {"Fundadora y Directora de Allison Silva Taxes & Accounting. Asesoría en contabilidad, cumplimiento tributario y finanzas."}
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* CTA */}
-          <Card className="border-0 shadow-md" style={{ backgroundColor: "#FBFCFF" }}>
-            <CardContent className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <h4 className="text-xl font-bold mb-1" style={{ color: "#1E3A5F" }}>
-                    ¿Necesitas ayuda con este tema?
-                  </h4>
-                  <p className="text-gray-700">
-                    Agenda una consulta y obtén asesoría personalizada.
-                  </p>
-                </div>
-                <Link to="/contacto">
-                  <Button className="text-white" style={{ backgroundColor: "#34A853" }}>
-                    Contactar
-                  </Button>
-                </Link>
+            {/* CTA */}
+            <div className="mt-12 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-2xl font-medium text-navy">¿Necesitas ayuda con este tema?</h2>
+                <p className="mt-1 text-navy/70">Agenda una consulta y obtén asesoría personalizada.</p>
               </div>
-            </CardContent>
-          </Card>
+              <Link to="/contacto" className={primaryBtn}>
+                Contactar
+              </Link>
+            </div>
 
-          {/* Prev / Next */}
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {prev ? (
-              <Link to={`/blog/${prev.slug}`} className="group block rounded-lg border border-gray-200 p-4 hover:bg-gray-50">
-                <div className="text-xs text-gray-500 mb-1 flex items-center gap-2">
-                  <ChevronLeft className="h-4 w-4" />
-                  Artículo anterior
+            {/* Prev / Next */}
+            <div className="mt-12 grid gap-4 sm:grid-cols-2">
+              {prev ? (
+                <Link to={`/blog/${prev.slug}`} className={cardLink}>
+                  <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                    Artículo anterior
+                  </div>
+                  <div className="line-clamp-2 font-serif text-lg text-navy">{prev.title}</div>
+                </Link>
+              ) : <div className="hidden sm:block" />}
+              {next && (
+                <Link to={`/blog/${next.slug}`} className={`${cardLink} text-right`}>
+                  <div className="mb-1 flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                    Siguiente artículo
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  </div>
+                  <div className="line-clamp-2 font-serif text-lg text-navy">{next.title}</div>
+                </Link>
+              )}
+            </div>
+
+            {/* Relacionados */}
+            {related.length > 0 && (
+              <>
+                <h2 className="mb-5 mt-14 text-2xl font-medium text-navy">Artículos relacionados</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {related.map((r) => (
+                    <Link key={r.slug} to={`/blog/${r.slug}`} className={cardLink}>
+                      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                        {new Date(r.date).toLocaleDateString(locale)}
+                      </div>
+                      <div className="line-clamp-2 font-serif text-lg text-navy">{r.title}</div>
+                    </Link>
+                  ))}
                 </div>
-                <div className="font-semibold text-gray-900 group-hover:text-gray-700 line-clamp-2">
-                  {prev.title}
-                </div>
-              </Link>
-            ) : <div className="hidden sm:block" />}
-            {next && (
-              <Link to={`/blog/${next.slug}`} className="group block rounded-lg border border-gray-200 p-4 hover:bg-gray-50 text-right">
-                <div className="text-xs text-gray-500 mb-1 flex items-center gap-2 justify-end">
-                  Siguiente artículo
-                  <ChevronRight className="h-4 w-4" />
-                </div>
-                <div className="font-semibold text-gray-900 group-hover:text-gray-700 line-clamp-2">
-                  {next.title}
-                </div>
-              </Link>
+              </>
             )}
           </div>
 
-          {/* Relacionados */}
-          {related.length > 0 && (
-            <>
-              <h4 className="mt-12 mb-4 text-xl font-bold" style={{ color: "#1E3A5F" }}>
-                Artículos relacionados
-              </h4>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {related.map((r) => (
-                  <Link key={r.slug} to={`/blog/${r.slug}`} className="rounded-lg border border-gray-200 hover:bg-gray-50 p-4">
-                    <div className="text-sm text-gray-500 mb-1">
-                      {new Date(r.date).toLocaleDateString(locale)}
-                    </div>
-                    <div className="font-semibold text-gray-900 line-clamp-2">
-                      {r.title}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <aside className="lg:col-span-4">
-          <Card className="border-0 shadow-md sticky top-24" style={{ backgroundColor: "#FBFCFF" }}>
-            <CardContent className="p-6">
-              <h5 className="text-base font-bold mb-3" style={{ color: "#1E3A5F" }}>
-                Contenido
-              </h5>
+          {/* Índice */}
+          <aside>
+            <div className="border-t border-navy/10 pt-6 lg:sticky lg:top-24 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Contenido</p>
               {headings.length === 0 ? (
-                <p className="text-sm text-gray-600">
-                  Este artículo no tiene secciones
-                </p>
+                <p className="text-sm text-navy/60">Este artículo no tiene secciones</p>
               ) : (
-                <ul className="space-y-2 text-sm">
+                <ul className="space-y-1 text-sm">
                   {headings.map((h) => (
                     <li key={h.id} className={h.level === 3 ? "ml-3" : ""}>
-                      <a
-                        href={`#${h.id}`}
-                        className="text-gray-700 hover:text-green-700"
-                      >
+                      <a href={`#${h.id}`} className={`inline-flex min-h-9 items-center rounded text-navy/75 hover:text-navy ${ring}`}>
                         {h.text}
                       </a>
                     </li>
                   ))}
                 </ul>
               )}
-
-              <div className="mt-6">
-                <Button onClick={handleShare} variant="secondary" className="w-full bg-green-600 text-white hover:bg-green-700">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Compartir
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-      </section>
-    </article>
+            </div>
+          </aside>
+        </div>
+      </article>
+    </main>
   )
 }

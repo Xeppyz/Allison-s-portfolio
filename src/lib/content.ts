@@ -28,6 +28,11 @@ export interface Page {
   guarantee: string | null
   wa_message: string | null
   body: string | null
+  active: boolean
+  noindex: boolean
+  og_image_url: string | null
+  alt_slug: string | null
+  legal_note: string | null
 }
 
 export interface Service {

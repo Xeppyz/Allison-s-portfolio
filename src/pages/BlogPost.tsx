@@ -9,13 +9,21 @@ export default function BlogPostPage() {
 
   if (!post) {
     return (
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main>
         <Seo title="Artículo no encontrado | Allison Silva Taxes & Accounting" description="El artículo que buscas no existe o fue movido." />
-        <h1 className="text-2xl font-bold mb-4">Artículo no encontrado</h1>
-        <p className="mb-6">El artículo que buscas no existe o fue movido.</p>
-        <Link to="/blog" className="text-green-600 hover:text-green-700 underline">
-          Volver al blog
-        </Link>
+        <section className="bg-ivory px-4 py-20 text-center sm:px-6 lg:py-28">
+          <div className="mx-auto max-w-2xl space-y-6">
+            <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+            <h1 className="text-4xl font-medium leading-tight text-navy lg:text-5xl">Artículo no encontrado</h1>
+            <p className="text-lg text-navy/70">El artículo que buscas no existe o fue movido.</p>
+            <Link
+              to="/blog"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-navy px-7 py-3 font-semibold text-white transition hover:bg-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
+            >
+              Volver al blog
+            </Link>
+          </div>
+        </section>
       </main>
     )
   }

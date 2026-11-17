@@ -7,6 +7,7 @@ test('código de campaña', () => {
   assert.equal(campaignCode({ utm_source: 'meta', utm_campaign: 'Conta Mensual!' }), '[M-CONTAMENSUAL]')
   assert.equal(campaignCode({ utm_source: 'google' }), '')
   assert.equal(campaignCode({}), '')
+  assert.equal(campaignCode({ gclid: 'x' }), '')
 })
 
 test('enlace de WhatsApp', () => {

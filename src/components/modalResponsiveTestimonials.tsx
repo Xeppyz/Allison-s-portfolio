@@ -15,18 +15,19 @@ interface ResponsiveModalProps {
 export function ResponsiveModal({ open, onClose, title, children }: ResponsiveModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto" style={{ backgroundColor: "#FBFCFF" }}>
+      <DialogContent className="mx-auto max-h-[90vh] max-w-lg overflow-y-auto rounded-2xl border-navy/10 bg-white p-6 sm:p-8">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold pr-8" style={{ color: "#1E3A5F" }}>
+          <span aria-hidden="true" className="mb-3 block h-px w-12 bg-taupe" />
+          <DialogTitle className="pr-10 font-serif text-xl font-medium leading-snug text-navy">
             {title}
           </DialogTitle>
           <button
+            type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 rounded-sm"
-            style={{ backgroundColor: "#4285F4" }}
+            className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-navy/70 transition hover:bg-sand hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
             aria-label="Cerrar modal"
           >
-            <X className="h-4 w-4" style={{ color: "#fff" }} />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </DialogHeader>
         <div className="mt-4">{children}</div>
