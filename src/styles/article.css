@@ -103,3 +103,17 @@
 @media (max-width: 640px) {
   .article-content { font-size: 1.0625rem; }
 }
+
+.article-content li > p { margin: 0; }
+.article-content figure { margin: 1.5rem 0; }
+
+/* Editor del panel */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: rgb(30 58 95 / 0.35);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.tiptap img.ProseMirror-selectednode { outline: 3px solid #A98467; outline-offset: 2px; }
+.article-content hr { border: 0; border-top: 1px solid rgb(30 58 95 / 0.12); margin: 2rem 0; }

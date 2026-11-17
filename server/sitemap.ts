@@ -1,13 +1,13 @@
-// Función edge: sitemap.xml dinámico a partir de la tabla `pages` y del blog.
+// Función edge: sitemap.xml dinámico a partir de las tablas `pages` y `posts`.
 import { absoluteUrl, escapeHtml, pagePath } from '../src/lib/seo-head.ts'
-import { blogPosts } from '../src/data/BlogPost.tsx'
 
 export const config = { runtime: 'edge' }
 
 declare const process: { env: Record<string, string | undefined> }
 
 type Row = { slug: string; lang: string | null; noindex: boolean | null; alt_slug: string | null }
-type Entry = { loc: string; alternates?: { hreflang: string; href: string }[] }
+type Entry = { loc: string; lastmod?: string; alternates?: { hreflang: string; href: string }[] }
+type PostRow = { slug: string; updated_at: string | null }
 
 function xml(entries: Entry[], maxAge: number): Response {
   const body = entries
@@ -15,7 +15,8 @@ function xml(entries: Entry[], maxAge: number): Response {
       const links = (e.alternates ?? [])
         .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${escapeHtml(a.href)}" />`)
         .join('\n')
-      return `  <url>\n    <loc>${escapeHtml(e.loc)}</loc>${links ? '\n' + links : ''}\n  </url>`
+      const lastmod = e.lastmod ? `\n    <lastmod>${escapeHtml(e.lastmod.slice(0, 10))}</lastmod>` : ''
+      return `  <url>\n    <loc>${escapeHtml(e.loc)}</loc>${lastmod}${links ? '\n' + links : ''}\n  </url>`
     })
     .join('\n')
   const doc =
@@ -32,28 +33,35 @@ function xml(entries: Entry[], maxAge: number): Response {
 }
 
 export default async function handler(): Promise<Response> {
-  const tail: Entry[] = [
-    { loc: absoluteUrl('/contacto') },
-    { loc: absoluteUrl('/blog') },
-    ...blogPosts.map((b) => ({ loc: absoluteUrl(`/blog/${b.slug}`) })),
-  ]
   const home: Entry = { loc: absoluteUrl('/') }
+  const fixed: Entry[] = [{ loc: absoluteUrl('/contacto') }, { loc: absoluteUrl('/blog') }]
 
   const base = process.env.VITE_SUPABASE_URL
   const key = process.env.VITE_SUPABASE_ANON_KEY
-  if (!base || !key) return xml([home, ...tail], 0)
+  if (!base || !key) return xml([home, ...fixed], 0)
 
-  let rows: Row[]
-  try {
-    const res = await fetch(`${base}/rest/v1/pages?active=eq.true&select=slug,lang,noindex,alt_slug`, {
+  const get = async <T,>(query: string): Promise<T> => {
+    const res = await fetch(`${base}/rest/v1/${query}`, {
       headers: { apikey: key, authorization: `Bearer ${key}` },
       signal: AbortSignal.timeout(3000),
     })
     if (!res.ok) throw new Error(String(res.status))
-    rows = (await res.json()) as Row[]
-  } catch {
-    return xml([home, ...tail], 0) // solo rutas estáticas, sin caché para recuperarse pronto
+    return (await res.json()) as T
   }
+
+  const [pagesRes, postsRes] = await Promise.allSettled([
+    get<Row[]>('pages?active=eq.true&select=slug,lang,noindex,alt_slug'),
+    get<PostRow[]>('posts?published=eq.true&select=slug,updated_at&order=published_at.desc'),
+  ])
+  const posts: Entry[] =
+    postsRes.status === 'fulfilled'
+      ? postsRes.value.map((p) => ({ loc: absoluteUrl(`/blog/${p.slug}`), lastmod: p.updated_at ?? undefined }))
+      : []
+  const tail = [...fixed, ...posts]
+  // Si algo falló: lo que se pudo leer, sin caché para recuperarse pronto.
+  if (pagesRes.status === 'rejected') return xml([home, ...tail], 0)
+  const rows = pagesRes.value
+  const maxAge = postsRes.status === 'fulfilled' ? 3600 : 0
 
   const indexable = rows.filter((r) => !r.noindex)
   const bySlug = new Map(indexable.map((r) => [r.slug, r]))
@@ -78,5 +86,5 @@ export default async function handler(): Promise<Response> {
 
   const homeRow = bySlug.get('inicio')
   const pages = indexable.filter((r) => r.slug !== 'inicio').map(entryFor)
-  return xml([homeRow ? entryFor(homeRow) : home, ...pages, ...tail], 3600)
+  return xml([homeRow ? entryFor(homeRow) : home, ...pages, ...tail], maxAge)
 }

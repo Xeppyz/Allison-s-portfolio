@@ -1,9 +1,10 @@
 // Función edge: sirve el index.html de Vite con el <head> correcto de cada URL.
 // Vercel reescribe cualquier ruta sin extensión (salvo /admin y /api) a
 // /api/render?__p=/<ruta>. Solo Web APIs; el SEO vive en src/lib/seo-head.ts.
-import { metaForPath, renderHead, routeForPath, stripIdentity } from '../src/lib/seo-head.ts'
-import type { FaqRow, PageRow, SettingsRow } from '../src/lib/seo-head.ts'
-import { blogPosts } from '../src/data/BlogPost.tsx'
+import {
+  blogIndexBody, metaForPath, postBody, renderBody, renderHead, routeForPath, stripIdentity,
+} from '../src/lib/seo-head.ts'
+import type { FaqRow, PageRow, PostMeta, PostSummary, SettingsRow } from '../src/lib/seo-head.ts'
 
 export const config = { runtime: 'edge' }
 
@@ -19,6 +20,24 @@ type AltRow = { slug: string; lang: string | null; noindex: boolean | null }
 type SlugData = { page: PageRow | null; faqs: FaqRow[]; settings: SettingsRow | null; alt: AltRow | null }
 // Resultados de Supabase por slug: los clics de anuncios llevan query y no pasan por la caché del CDN.
 const dataCache = new Map<string, { data: SlugData; at: number }>()
+const blogCache = new Map<string, { data: PostMeta | PostSummary[] | null; at: number }>()
+
+const POST_COLS = 'id,published,focus_keyword,slug,title,seo_title,excerpt,published_at,updated_at,cover_url,cover_alt,tags,content_html'
+
+/** Artículo (slug) o lista del blog (''); null = no existe. Lanza si Supabase falla. */
+async function blogData(base: string, key: string, slug: string): Promise<PostMeta | PostSummary[] | null> {
+  const cached = blogCache.get(slug)
+  if (cached && Date.now() - cached.at < DATA_TTL_MS) return cached.data
+  const data = slug
+    ? ((await rest<PostMeta[]>(base, key, `posts?slug=eq.${encodeURIComponent(slug)}&published=eq.true&select=${POST_COLS}&limit=1`))[0] ?? null)
+    : await rest<PostSummary[]>(base, key, 'posts?published=eq.true&select=id,slug,title,excerpt,published_at,cover_url,cover_alt&order=published_at.desc&limit=100')
+  // No se cachean los que no existen (un borrador recién publicado aparece enseguida) y el mapa tiene tope.
+  if (data !== null) {
+    if (blogCache.size > 200) blogCache.clear()
+    blogCache.set(slug, { data, at: Date.now() })
+  }
+  return data
+}
 
 const HTML_HEADERS = { 'content-type': 'text/html; charset=utf-8' }
 
@@ -135,16 +154,42 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  const post = route.type === 'post' ? (blogPosts.find((b) => b.slug === route.slug) ?? null) : null
-  const meta = metaForPath(path, { page, faqs, settings, post, alt })
-  if (!meta) return notFound()
+  let post: PostMeta | null = null
+  let body = ''
+  if (route.type === 'post' || route.type === 'blog') {
+    const base = process.env.VITE_SUPABASE_URL
+    const key = process.env.VITE_SUPABASE_ANON_KEY
+    if (!base || !key) return unmodified()
+    try {
+      const data = await blogData(base, key, route.type === 'post' ? route.slug : '')
+      if (route.type === 'post') {
+        post = data as PostMeta | null
+        if (post) body = postBody(post)
+      } else body = blogIndexBody((data as PostSummary[] | null) ?? [])
+    } catch {
+      if (route.type === 'post') return unmodified() // sin la fila no se sabe si existe
+      degraded = true // la lista es un extra: la cabecera de /blog no depende de ella
+    }
+  }
 
-  return new Response(renderHead(shell, meta), {
+  const meta = metaForPath(path, { page, faqs, settings, post, alt })
+  if (!meta) {
+    // Un borrador recién publicado no debe quedar como 404 en la CDN.
+    if (route.type === 'post') return new Response(noindexShell(shell), { status: 404, headers: { ...HTML_HEADERS, 'cache-control': 'no-store' } })
+    return notFound()
+  }
+
+  const head = renderHead(shell, meta)
+  return new Response(body ? renderBody(head, body) : head, {
     status: 200,
     headers: {
       ...HTML_HEADERS,
       // Si faltó algo secundario (FAQ/ajustes) no se cachea una cabecera incompleta.
-      'cache-control': degraded ? 'no-store' : 'public, s-maxage=300, stale-while-revalidate=86400',
+      'cache-control': degraded
+        ? 'no-store'
+        : body // el blog cambia más seguido: despublicar se nota en un minuto
+          ? 'public, s-maxage=60, stale-while-revalidate=300'
+          : 'public, s-maxage=300, stale-while-revalidate=86400',
     },
   })
 }

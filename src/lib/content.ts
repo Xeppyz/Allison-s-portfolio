@@ -102,6 +102,25 @@ export interface Lead {
   created_at: string | null
 }
 
+export interface Post {
+  id: string
+  slug: string
+  title: string
+  seo_title: string | null
+  excerpt: string | null
+  focus_keyword: string | null
+  content_html: string
+  cover_url: string | null
+  cover_alt: string | null
+  tags: string[]
+  published: boolean
+  published_at: string
+  created_at: string
+  updated_at: string
+}
+
+export type PostCard = Pick<Post, 'id' | 'slug' | 'title' | 'excerpt' | 'cover_url' | 'cover_alt' | 'published_at'>
+
 export interface QueryState<T> {
   data: T | null
   loading: boolean
@@ -111,6 +130,17 @@ export interface QueryState<T> {
 const TIMEOUT_MS = 8000
 const cache = new Map<string, unknown>()
 const inflight = new Map<string, Promise<unknown>>()
+
+// El servidor deja el artículo (o la lista) en #__seed: la primera pintura no espera a Supabase.
+if (typeof document !== 'undefined') {
+  const el = document.getElementById('__seed')
+  try {
+    const { key, data } = JSON.parse(el?.textContent ?? 'null') ?? {}
+    if (typeof key === 'string' && data) cache.set(key, data)
+  } catch {
+    // sin semilla: se consulta como siempre
+  }
+}
 
 function load<T>(key: string, fn: () => PromiseLike<T>): Promise<T> {
   let p = inflight.get(key) as Promise<T> | undefined
@@ -194,6 +224,23 @@ export function useServices(): QueryState<Service[]> {
         .order('sort').returns<Service[]>(),
     ) ?? [],
   )
+}
+
+/** Artículos publicados, del más nuevo al más viejo (sin el contenido). */
+export function usePosts(): QueryState<PostCard[]> {
+  return useQuery<PostCard[]>('posts', async () =>
+    unwrap(
+      await supabase!.from('posts').select('id,slug,title,excerpt,cover_url,cover_alt,published_at')
+        .eq('published', true).order('published_at', { ascending: false }).returns<PostCard[]>(),
+    ) ?? [],
+  )
+}
+
+/** Un artículo; los borradores solo los ve un admin con sesión (RLS). */
+export function usePost(slug: string): QueryState<Post | null> {
+  return useQuery<Post | null>(`post:${slug}`, async () =>
+    unwrap(await supabase!.from('posts').select('*').eq('slug', slug).maybeSingle<Post>()),
+  slug !== '')
 }
 
 export function useTestimonials(): QueryState<Testimonial[]> {
