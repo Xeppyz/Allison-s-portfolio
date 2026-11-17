@@ -1,17 +1,27 @@
 "use client"
 
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 
-import { Menu, X, Globe } from "lucide-react"
-import { useLanguage } from "./language-context"
+import { Menu, X } from "lucide-react"
+import { track } from "../lib/track"
+
+const navLinks = [
+  { to: "/", label: "Inicio" },
+  { to: "/planes", label: "Planes" },
+  { to: "/contabilidad-mensual", label: "Contabilidad mensual" },
+  { to: "/blog", label: "Blog" },
+  { to: "/contacto", label: "Contacto" },
+]
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
-  const { language, setLanguage, t } = useLanguage()
 
-  const toggleLanguage = () => {
-    setLanguage(language === "es" ? "en" : "es")
+  const closeMenu = () => setIsOpen(false)
+
+  const handleVerPlanes = () => {
+    track("ver_planes_click")
   }
 
   return (
@@ -26,86 +36,38 @@ export function Navigation() {
               Allison Silva Taxes and Accounting
             </span>
             <span className="block text-[10px] sm:text-xs text-gray-500" style={{ maxWidth: 300, lineHeight: 1.1 }}>
-              {t("nav.slogan")}
+              NO SOLO CIERRO LIBROS, ABRO OPORTUNIDADES
             </span>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a
-                href="#services"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
-              >
-                {t("nav.services")}
-              </a>
-              <a
-                href="#benefits"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
-               onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
-              >
-                {t("nav.benefits")}
-              </a>
-              <a
-                href="#testimonials"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
-              >
-                {t("nav.testimonials")}
-              </a>
-              <a
-                href="#blog"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
-               onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
-              >
-                {t("nav.blog")}
-              </a>
-              <a
-                href="#contact"
-                className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
-              >
-                {t("nav.contact")}
-              </a>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
+                  style={{ color: "#1E3A5F" }}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
+                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
           <div className="flex items-center">
-            {/* Language Toggle - Only visible on desktop */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleLanguage}
-              className="hidden md:flex items-center space-x-1 bg-transparent"
-              style={{
-                backgroundColor: "transparent",
-                borderColor: "#4285F4",
-                color: "#4285F4",
-              }}
-              aria-label={language === "es" ? "Cambiar a inglés" : "Cambiar a español"}
+            {/* Ver planes - Only visible on desktop */}
+            <Link
+              to="/planes"
+              onClick={handleVerPlanes}
+              className="hidden md:inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white"
+              style={{ backgroundColor: "#4285F4" }}
             >
-              <Globe className="h-4 w-4" />
-              <span className="text-sm font-medium">{language === "es" ? "EN" : "ES"}</span>
-              <style>
-                {`
-                  button:hover {
-                    background-color: #4285F4;
-                    color: white;
-                  }
-                `}
-              </style>
-            </Button>
+              Ver planes
+            </Link>
 
             {/* Mobile menu button - Only visible on mobile */}
             <Button
@@ -129,58 +91,30 @@ export function Navigation() {
             className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t"
             style={{ backgroundColor: "#F8F8F8", borderColor: "#F7F7F7" }}
           >
-            <div className="px-3 py-2 border-b" style={{ borderColor: "#F7F7F7" }}>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleLanguage}
-                className="w-full flex items-center justify-center space-x-2 bg-transparent"
-                style={{
-                  backgroundColor: "transparent",
-                  borderColor: "#4285F4",
-                  color: "#4285F4",
-                }}
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={closeMenu}
+                className="block px-3 py-2 text-base font-medium hover:opacity-80"
+                style={{ color: "#1E3A5F" }}
               >
-                <Globe className="h-4 w-4" />
-                <span className="text-sm font-medium">{language === "es" ? "English" : "Español"}</span>
-              </Button>
+                {link.label}
+              </Link>
+            ))}
+            <div className="px-3 py-2">
+              <Link
+                to="/planes"
+                onClick={() => {
+                  track("ver_planes_click")
+                  closeMenu()
+                }}
+                className="flex w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white"
+                style={{ backgroundColor: "#4285F4" }}
+              >
+                Ver planes
+              </Link>
             </div>
-
-            <a
-              href="#services"
-              className="block px-3 py-2 text-base font-medium hover:opacity-80"
-              style={{ color: "#1E3A5F" }}
-            >
-              {t("nav.services")}
-            </a>
-            <a
-              href="#benefits"
-              className="block px-3 py-2 text-base font-medium hover:opacity-80"
-              style={{ color: "#1E3A5F" }}
-            >
-              {t("nav.benefits")}
-            </a>
-            <a
-              href="#testimonials"
-              className="block px-3 py-2 text-base font-medium hover:opacity-80"
-              style={{ color: "#1E3A5F" }}
-            >
-              {t("nav.testimonials")}
-            </a>
-            <a
-              href="#blog"
-              className="block px-3 py-2 text-base font-medium hover:opacity-80"
-              style={{ color: "#1E3A5F" }}
-            >
-              {t("nav.blog")}
-            </a>
-            <a
-              href="#contact"
-              className="block px-3 py-2 text-base font-medium hover:opacity-80"
-              style={{ color: "#1E3A5F" }}
-            >
-              {t("nav.contact")}
-            </a>
           </div>
         </div>
       )}

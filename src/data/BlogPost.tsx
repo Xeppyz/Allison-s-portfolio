@@ -1,12 +1,10 @@
-export type Locale = "es" | "en"
-
 export type BlogPost = {
   slug: string
   date: string // YYYY-MM-DD
   imageKey: "placeholder" | "calendar" | "accounting"
-  title: Record<Locale, string>
-  excerpt: Record<Locale, string>
-  contentHtml: Record<Locale, string>
+  title: string
+  excerpt: string
+  contentHtml: string
   tags?: string[]
 }
 
@@ -15,16 +13,9 @@ export const blogPosts: BlogPost[] = [
     slug: "pasos-para-inscribirse-ante-la-dgi-de-nicaragua",
     date: "2024-02-01",
     imageKey: "calendar",
-    title: {
-      es: "Pasos para inscribirse ante la DGI de Nicaragua",
-      en: "Steps to Register with Nicaragua’s DGI",
-    },
-    excerpt: {
-      es: "Guía práctica para obtener tu RUC y cumplir con tus obligaciones fiscales ante la DGI.",
-      en: "Practical guide to obtain your RUC and meet tax obligations with the DGI.",
-    },
-    contentHtml: {
-      es: `
+    title: "Pasos para inscribirse ante la DGI de Nicaragua",
+    excerpt: "Guía práctica para obtener tu RUC y cumplir con tus obligaciones fiscales ante la DGI.",
+    contentHtml: `
         <p>Si estás por iniciar un negocio en Nicaragua, uno de los primeros requisitos legales es inscribirte ante la Dirección General de Ingresos (DGI). Este trámite te permite obtener tu RUC (Registro Único de Contribuyente) y cumplir con tus obligaciones fiscales según lo establece el Código Tributario y la Ley de Concertación Tributaria.</p>
         <h3>Pasos principales:</h3>
         <ol>
@@ -36,35 +27,15 @@ export const blogPosts: BlogPost[] = [
         </ol>
         <p>Cumplir con este paso es fundamental para que tu negocio opere legalmente en Nicaragua. En Allison Silva Taxes and Accounting acompañamos a nuestros clientes en cada etapa para garantizar un proceso correcto.</p>
       `,
-      en: `
-        <p>If you are starting a business in Nicaragua, one of the first legal requirements is registering with the Dirección General de Ingresos (DGI). This process allows you to obtain your RUC (Unique Taxpayer Registry) and comply with tax obligations as established by the Tax Code and the Tax Concertation Law.</p>
-        <h3>Main steps:</h3>
-        <ol>
-          <li><strong>Define the taxpayer type</strong> – Individual or legal entity, depending on your business.</li>
-          <li><strong>Gather the required documentation</strong> – National ID, registered Articles of Incorporation; this process must be carried out in person; proof of owned or leased premises; municipal RTN.</li>
-          <li><strong>Complete the registration form</strong> – Provided at DGI offices or available online.</li>
-          <li><strong>Submit and validate your information</strong> – An officer reviews documents and assigns your RUC number.</li>
-          <li><strong>Obtain your RUC and access key</strong> – You’ll then be able to file taxes, issue authorized invoices, and meet tax obligations.</li>
-        </ol>
-        <p>Completing this step is essential for operating legally in Nicaragua. At Allison Silva Taxes and Accounting, we support clients at every stage to ensure a correct process.</p>
-      `,
-    },
     tags: ["Nicaragua", "DGI", "RUC", "Cumplimiento fiscal"],
   },
   {
     slug: "ventajas-de-automatizar-e-integrar-quickbooks",
     date: "2024-02-10",
     imageKey: "accounting",
-    title: {
-      es: "Ventajas de automatizar e integrar QuickBooks como sistema contable",
-      en: "Benefits of Automating and Integrating QuickBooks as Your Accounting System",
-    },
-    excerpt: {
-      es: "Optimiza procesos, reduce errores y asegura cumplimiento fiscal con QuickBooks Online.",
-      en: "Optimize processes, reduce errors, and ensure tax compliance with QuickBooks Online.",
-    },
-    contentHtml: {
-      es: `
+    title: "Ventajas de automatizar e integrar QuickBooks como sistema contable",
+    excerpt: "Optimiza procesos, reduce errores y asegura cumplimiento fiscal con QuickBooks Online.",
+    contentHtml: `
         <p>La contabilidad manual puede ser ineficiente y propensa a errores. Con la adopción de sistemas tecnológicos como QuickBooks Online, tu empresa puede cumplir con la normativa fiscal y al mismo tiempo optimizar procesos.</p>
         <h3>Principales ventajas:</h3>
         <ul>
@@ -76,35 +47,15 @@ export const blogPosts: BlogPost[] = [
         </ul>
         <p>En Allison Silva Taxes and Accounting ayudamos a implementar QuickBooks de forma estratégica, asegurando eficiencia y cumplimiento fiscal.</p>
       `,
-      en: `
-        <p>Manual accounting can be inefficient and error-prone. By adopting technology such as QuickBooks Online, your company can stay compliant while optimizing processes.</p>
-        <h3>Key benefits:</h3>
-        <ul>
-          <li><strong>Task automation</strong> – Faster recording of income, expenses, and bank reconciliations.</li>
-          <li><strong>Tax compliance</strong> – Organized financial reports aligned with local and international obligations.</li>
-          <li><strong>Real-time access</strong> – Information available anywhere to support decision-making.</li>
-          <li><strong>Error reduction</strong> – Minimizes risks of omissions and duplicate records.</li>
-          <li><strong>Integrations</strong> – Connects with invoicing, banks, and payroll.</li>
-        </ul>
-        <p>At Allison Silva Taxes and Accounting, we implement QuickBooks strategically to ensure efficiency and tax compliance.</p>
-      `,
-    },
     tags: ["QuickBooks", "Automatización", "Contabilidad", "Tecnología"],
   },
   {
     slug: "como-prepararse-para-las-declaraciones-anuales-ca-y-eeuu",
     date: "2024-02-20",
     imageKey: "placeholder",
-    title: {
-      es: "Cómo prepararse para las declaraciones anuales en Centroamérica y Estados Unidos",
-      en: "How to Prepare for Annual Filings in Central America and the United States",
-    },
-    excerpt: {
-      es: "Claves para evitar sanciones y cumplir con obligaciones en CA y EE. UU.",
-      en: "Key steps to avoid penalties and stay compliant in Central America and the U.S.",
-    },
-    contentHtml: {
-      es: `
+    title: "Cómo prepararse para las declaraciones anuales en Centroamérica y Estados Unidos",
+    excerpt: "Claves para evitar sanciones y cumplir con obligaciones en CA y EE. UU.",
+    contentHtml: `
         <p>Las declaraciones anuales son una obligación establecida por las leyes fiscales en Centroamérica y en Estados Unidos. Prepararse con tiempo es la clave para evitar sanciones y garantizar el cumplimiento tributario.</p>
         <h3>Recomendaciones clave:</h3>
         <ol>
@@ -116,19 +67,6 @@ export const blogPosts: BlogPost[] = [
         </ol>
         <p>En Allison Silva Taxes and Accounting apoyamos a empresas y personas a cumplir con sus obligaciones fiscales tanto a nivel local como internacional, ofreciendo seguridad y tranquilidad tributaria.</p>
       `,
-      en: `
-        <p>Annual tax filings are required by law in both Central America and the United States. Preparing early is key to avoiding penalties and ensuring compliance.</p>
-        <h3>Key recommendations:</h3>
-        <ol>
-          <li><strong>Keep organized accounting records</strong> – Up-to-date invoices, receipts, and bank statements.</li>
-          <li><strong>Identify your tax obligations</strong> – In Central America: Income Tax and VAT/ITBMS; in the U.S.: Federal Income Tax, State Tax, and Sales Tax as applicable.</li>
-          <li><strong>Review allowable deductions</strong> – Operating expenses, depreciation, and country-specific benefits.</li>
-          <li><strong>Use technology tools</strong> – QuickBooks or other software to ease reporting.</li>
-          <li><strong>Consult an expert</strong> – Regulations change frequently; professional advice is recommended.</li>
-        </ol>
-        <p>At Allison Silva Taxes and Accounting, we support businesses and individuals in meeting their tax obligations locally and internationally, providing confidence and peace of mind.</p>
-      `,
-    },
     tags: ["Declaraciones anuales", "Centroamérica", "Estados Unidos", "Cumplimiento"],
   },
 ]

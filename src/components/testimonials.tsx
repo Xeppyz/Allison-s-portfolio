@@ -1,191 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { useLanguage } from "../components/language-context"
 import { Card, CardContent } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Star } from "lucide-react"
 import { ResponsiveModal } from "../components/modalResponsiveTestimonials"
-import professionalMan from "../assets/img/IGH_CEO.jpg"
-import professsionalWoman from "../assets/img/DEAN_LARGUESPADA.jpg"
-import professionalWomanEntrepreneur from "../assets/img/RAPIMARKET_CEO.jpg"
 import guest from "../assets/img/user_guest.png"
-
+import { useTestimonials } from "../lib/content"
 
 export function Testimonials() {
-  const { t, language } = useLanguage()
+  const { data } = useTestimonials()
   const [selectedTestimonial, setSelectedTestimonial] = useState<number | null>(null)
 
-  const testimonials = [
-    {
-      name: "David Silva Briceño",
-      position: "Founder & Managing Director",
-      company: "IGH Financial Advisors",
-      comment:
-        language === "es"
-          ? "Resultados satisfactorios, pues el tiempo de respuesta es el que requería."
-          : "Satisfactory results, since the response time is just what I needed.",
-      image: professionalMan,
-      details: {
-        problem:
-          language === "es"
-            ? "Necesitaba apoyo con unas certificaciones de ingresos, pero con un servicio ágil."
-            : "I needed support with some income certifications, but with a fast service.",
-        benefit:
-          language === "es"
-            ? "Resultados satisfactorios, pues el tiempo de respuesta es el que requería."
-            : "Satisfactory results, as the response time met my requirements.",
-        satisfaction:
-          language === "es"
-            ? "Si lo recomendaría, por la calidad de servicio y además por el profesionalismo con que realizó su trabajo."
-            : "I would definitely recommend it, because of the quality of service and the professionalism with which you carry out your work.",
-      },
+  const testimonials = (data ?? []).map((t) => ({
+    id: t.id,
+    name: t.name ?? "",
+    position: t.position ?? "",
+    company: t.company ?? "",
+    comment: t.quote ?? "",
+    image: t.photo_url || guest,
+    logo: t.logo_url || "",
+    details: {
+      problem: t.problem ?? "",
+      benefit: t.benefit ?? "",
+      satisfaction: t.satisfaction ?? "",
     },
-    {
-      name: "Dean Largaespada",
-      position: "Founder",
-      company: "ICONNECT GROUP LLC",
-      comment:
-        language === "es"
-          ? "Ahora puedo saber cuánto estamos facturando, gastando, en qué categorías y cuánto es nuestra rentabilidad."
-          : "Now I can see how much we are billing, spending, in which categories, and what our profitability is.",
-      image: professsionalWoman,
-      details: {
-        problem:
-          language === "es"
-            ? "No teníamos una contabilidad clara ni rentabilidad."
-            : "We did not have clear accounting and profitability.",
-        benefit:
-          language === "es"
-            ? "Ahora puedo saber cuánto estamos facturando, gastando, en qué categorías y cuánto es nuestra rentabilidad."
-            : "Now I can see how much we are billing, spending, in which categories, and what our profitability is",
-        satisfaction:
-          language === "es"
-            ? "Si, porque has realizado tu trabajo con transparencia y calidad."
-            : "Yes, because you have carried out your work with transparency and quality.",
-      },
-    },
-    {
-      name: "Bruce Lampson",
-      position: "CEO",
-      company: "RAPIMARKET",
-      comment:
-        language === "es"
-          ? "Logramos tener procesos contables mucho más organizados, información financiera al día y asesoría oportuna para la toma de decisiones."
-          : "We achieved much more organized accounting processes, up-to-date financial information, and timely advice for decision-making.",
-      image: professionalWomanEntrepreneur,
-      details: {
-        problem:
-          language === "es"
-            ? "Necesitábamos tener un control más claro y preciso de la contabilidad de la empresa, con reportes financieros confiables y cumplimiento fiscal sin errores ni atrasos."
-            : "We needed to have clearer and more precise control of the company’s accounting, with reliable financial reports and full tax compliance without errors or delays.",
-        benefit:
-          language === "es"
-            ? "Logramos tener procesos contables mucho más organizados, información financiera al día y asesoría oportuna para la toma de decisiones. Además, nos sentimos tranquilos al saber que todo está en orden con nuestras obligaciones fiscales."
-            : "We achieved much more organized accounting processes, up-to-date financial information, and timely advice for decision-making. In addition, we feel at ease knowing that everything is in order with our tax obligations.",
-        satisfaction:
-          language === "es"
-            ? "Definitivamente sí, porque ofrecen un servicio profesional, confiable y personalizado que realmente ayuda a las empresas a enfocarse en su crecimiento mientras ustedes se encargan de la parte contable."
-            : "Definitely yes, because they offer a professional, reliable, and personalized service that truly helps companies focus on their growth while they take care of the accounting side.",
-      },
-    },
-    {
-      name: "Leslie Xaviera Martínez Benavides",
-      position: language === "es"
-        ? "Gerente contable"
-        : "Manager Accounting",
-      company: "INGROMESA",
-      comment:
-        language === "es"
-          ? "Atención de calidad y personalizada para capacitación de personal en implementación de sistema contable"
-          : "Quality and personalized attention for staff training in accounting system implementation.",
-      image: guest,
-      details: {
-        problem:
-          language === "es"
-            ? "Sistemas contables."
-            : "Bookkeeping.",
-        benefit:
-          language === "es"
-            ? "Excelente servicio."
-            : "Excellent service.",
-        satisfaction:
-          language === "es"
-            ? "Si, porque es personalizado y de calidad."
-            : "Definitely yes, because it is personalized and of quality.",
-      },
-    },
-    {
-      name: language === "es"
-        ? "Anónimo"
-        : "Anonymous",
-      position: language === "es"
-        ? "COO"
-        : "COO",
-      company: language === "es"
-        ? "Empresa Regional - Sector Exportación de Materiales."
-        : "Regional Company - Materials Export Sector.",
-      comment:
-        language === "es"
-          ? "Nos guió a poder estructurar el departamento contable para tener una buena trazabilidad."
-          : "It guided us to structure the accounting department for good traceability.",
-      image: guest,
-      details: {
-        problem:
-          language === "es"
-            ? "Organización dentro del equipo contable, no teníamos definidos roles ni responsabilidades."
-            : "Organization within the accounting team, we did not have defined roles or responsibilities.",
-        benefit:
-          language === "es"
-            ? "Nos guió a poder estructurar el departamento contable para tener una buena trazabilidad."
-            : "It guided us to structure the accounting department for good traceability.",
-        satisfaction:
-          language === "es"
-            ? "Si, Allison se caracteriza por su profesionalismo y curiosidad. Ella quiere comprender cada paso en tu proceso operativo para así brindarte la mejor solución."
-            : "Definitely yes, because Allison is characterized by her professionalism and curiosity. She wants to understand every step in your operational process in order to provide you with the best solution.",
-      },
-    },
-    {
-      name: language === "es"
-        ? "Julio Rodriguez"
-        : "Julio Rodriguez",
-      position: language === "es"
-        ? "Gerente General"
-        : "General Manager",
-      company: language === "es"
-        ? "Omniprint International."
-        : "Omniprint International.",
-      comment:
-        language === "es"
-          ? "Puntualidad, asesoría pertinente y consistencia."
-          : "Timeliness, relevant advice, and consistency.",
-      image: guest,
-      details: {
-        problem:
-          language === "es"
-            ? "Necesitaba a alguien confiable que llevara la contabilidad de la empresa."
-            : "I needed someone reliable to handle the company's accounting.",
-        benefit:
-          language === "es"
-            ? "Puntualidad, asesoría pertinente y consistencia."
-            : "Timeliness, relevant advice, and consistency.",
-        satisfaction:
-          language === "es"
-            ? "Definitivamente SI. Por los valores que tienes como proveedor de servicios contables y el profesionalismo que te caracteriza."
-            : "Definitely yes. Because of the values you have as a provider of accounting services and the professionalism that characterizes you.",
-      },
-    },
-  ]
+  }))
+
+  if (testimonials.length === 0) return null
 
   return (
     <section id="testimonials" className="py-20" style={{ backgroundColor: "#F8F8F8" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: "#1E3A5F" }}>
-            {t("testimonials.title")}
+            Lo que dicen nuestros clientes
           </h2>
           <p className="text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F", opacity: 0.8 }}>
-            {t("testimonials.subtitle")}
+            Historias de éxito de empresarios que confían en nosotros
           </p>
         </div>
 
@@ -205,7 +57,7 @@ export function Testimonials() {
         >
           {testimonials.map((testimonial, index) => (
             <Card
-              key={index}
+              key={testimonial.id}
               style={{ backgroundColor: '#FBFCFF', minWidth: 320, maxWidth: 380, scrollSnapAlign: 'start', flex: '0 0 auto' }}
               className="shadow-md"
             >
@@ -231,10 +83,13 @@ export function Testimonials() {
                       {testimonial.name}
                     </h4>
                     <p className="text-sm" style={{ color: '#1E3A5F', opacity: 0.6 }}>
-                      {testimonial.position}, {testimonial.company}
+                      {[testimonial.position, testimonial.company].filter(Boolean).join(", ")}
                     </p>
                   </div>
                 </div>
+                {testimonial.logo && (
+                  <img src={testimonial.logo} alt={testimonial.company} loading="lazy" decoding="async" className="h-8 object-contain" />
+                )}
                 <Button
                   variant="outline"
                   size="sm"
@@ -246,7 +101,7 @@ export function Testimonials() {
                     backgroundColor: 'transparent',
                   }}
                 >
-                  {language === 'es' ? 'Ver más' : 'See more'}
+                  Ver más
                 </Button>
               </CardContent>
             </Card>
@@ -273,34 +128,44 @@ export function Testimonials() {
                     {testimonials[selectedTestimonial].name}
                   </h4>
                   <p style={{ color: "#1E3A5F", opacity: 0.7 }}>
-                    {testimonials[selectedTestimonial].position}, {testimonials[selectedTestimonial].company}
+                    {[testimonials[selectedTestimonial].position, testimonials[selectedTestimonial].company].filter(Boolean).join(", ")}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-4">
+                {testimonials[selectedTestimonial].details.problem && (
                 <div>
                   <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    {language === "es" ? "Problemática:" : "Problem:"}
+                    Problemática:
                   </h5>
                   <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.problem}</p>
                 </div>
+                )}
+
+                {testimonials[selectedTestimonial].details.benefit && (
 
                 <div>
                   <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    {language === "es" ? "Beneficio obtenido:" : "Benefit obtained:"}
+                    Beneficio obtenido:
                   </h5>
                   <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.benefit}</p>
                 </div>
 
+                )}
+
+                {testimonials[selectedTestimonial].details.satisfaction && (
+
                 <div>
                   <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    {language === "es" ? "Nivel de satisfacción:" : "Satisfaction level:"}
+                    Nivel de satisfacción:
                   </h5>
                   <p style={{ color: "#1E3A5F", opacity: 0.8 }}>
                     {testimonials[selectedTestimonial].details.satisfaction}
                   </p>
                 </div>
+
+                )}
               </div>
             </div>
           </ResponsiveModal>

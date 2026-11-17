@@ -1,0 +1,112 @@
+import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
+import { Check } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import WhatsAppButton from './WhatsAppButton'
+import { usePlans, useSettings, type Plan } from '../lib/content'
+import { track } from '../lib/track'
+
+const GROUPS: { key: NonNullable<Plan['group']>; title: string }[] = [
+  { key: 'empresa', title: 'Planes para empresas' },
+  { key: 'llc', title: 'LLC de EE. UU.' },
+  { key: 'personal', title: 'Finanzas personales' },
+  { key: 'certificacion', title: 'Certificaciones' },
+  { key: 'addon', title: 'Servicios adicionales' },
+]
+
+const linkClass =
+  'inline-flex w-full items-center justify-center rounded-full border border-[#4285F4] px-5 py-3 font-semibold text-[#4285F4] hover:bg-[#4285F4]/10'
+
+type WaState = 'loading' | 'yes' | 'no'
+
+function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlanesPage: boolean }) {
+  // Sin acción mientras carga la configuración, para que no cambie después.
+  const whatsappOrContact = (label: string, fallback: string) =>
+    wa === 'yes' ? (
+      <WhatsAppButton label={label} />
+    ) : wa === 'no' ? (
+      <Link to="/contacto" className={linkClass}>{fallback}</Link>
+    ) : null
+  let action: ReactNode = null
+  if (plan.cta === 'whatsapp') {
+    action = whatsappOrContact('Cotizar por WhatsApp', 'Cotizar')
+  } else if (plan.cta === 'planes') {
+    action = onPlanesPage ? (
+      whatsappOrContact('Consultar por WhatsApp', 'Consultar')
+    ) : (
+      <Link to="/planes" onClick={() => track('ver_planes_click')} className={linkClass}>Ver planes</Link>
+    )
+  }
+  const features = (plan.features ?? []).filter((f): f is string => typeof f === 'string')
+
+  return (
+    <Card className="flex flex-col" style={{ backgroundColor: '#FBFCFF' }}>
+      <CardHeader className="text-center">
+        <CardTitle className="text-xl font-semibold" style={{ color: '#1E3A5F' }}>{plan.name}</CardTitle>
+        {plan.price_text && <p className="text-2xl font-bold" style={{ color: '#4285F4' }}>{plan.price_text}</p>}
+        {plan.description && (
+          <CardDescription className="leading-relaxed" style={{ color: '#1E3A5F', opacity: 0.7 }}>
+            {plan.description}
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent className="flex flex-1 flex-col justify-between gap-6">
+        {features.length > 0 && (
+          <ul className="space-y-2">
+            {features.map((f, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <Check className="mt-0.5 h-5 w-5 flex-shrink-0" style={{ color: '#34A853' }} aria-hidden="true" />
+                <span style={{ color: '#1E3A5F', opacity: 0.9 }}>{f}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {action}
+      </CardContent>
+    </Card>
+  )
+}
+
+function Grid({ plans, wa, onPlanesPage }: { plans: Plan[]; wa: WaState; onPlanesPage: boolean }) {
+  return (
+    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {plans.map((p) => <PlanCard key={p.id} plan={p} wa={wa} onPlanesPage={onPlanesPage} />)}
+    </div>
+  )
+}
+
+export default function PlanCards({ pageSlug }: { pageSlug: string }) {
+  const { data } = usePlans(pageSlug)
+  const settings = useSettings()
+  const plans = data ?? []
+  if (plans.length === 0) return null
+
+  const wa: WaState = settings.loading ? 'loading' : settings.data?.whatsapp_number ? 'yes' : 'no'
+
+  return (
+    <section className="py-16" style={{ backgroundColor: '#F7F7F7' }}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl" style={{ color: '#1E3A5F' }}>
+          {pageSlug === 'planes' ? 'Nuestros planes' : 'Planes'}
+        </h2>
+        {pageSlug === 'planes' ? (
+          <div className="space-y-14">
+            {[...GROUPS, { key: null, title: 'Otros' }].map(({ key, title }) => {
+              const group = plans.filter((p) =>
+                key === null ? !GROUPS.some((g) => g.key === p.group) : p.group === key)
+              if (group.length === 0) return null
+              return (
+                <div key={key ?? 'otros'} className="space-y-6">
+                  <h3 className="text-2xl font-semibold" style={{ color: '#1E3A5F' }}>{title}</h3>
+                  <Grid plans={group} wa={wa} onPlanesPage />
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <Grid plans={plans} wa={wa} onPlanesPage={false} />
+        )}
+      </div>
+    </section>
+  )
+}
