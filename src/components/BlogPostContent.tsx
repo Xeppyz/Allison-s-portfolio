@@ -198,7 +198,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
             <div className="mt-12 grid gap-4 sm:grid-cols-2">
               {prev ? (
                 <Link to={`/blog/${prev.slug}`} className={cardLink}>
-                  <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                  <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                     <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                     Artículo anterior
                   </div>
@@ -207,7 +207,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
               ) : <div className="hidden sm:block" />}
               {next && (
                 <Link to={`/blog/${next.slug}`} className={`${cardLink} text-right`}>
-                  <div className="mb-1 flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                  <div className="mb-1 flex items-center justify-end gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                     Siguiente artículo
                     <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </div>
@@ -223,7 +223,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
                 <div className="grid gap-4 sm:grid-cols-2">
                   {related.map((r) => (
                     <Link key={r.slug} to={`/blog/${r.slug}`} className={cardLink}>
-                      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                      <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                         {new Date(r.date).toLocaleDateString(locale)}
                       </div>
                       <div className="line-clamp-2 font-serif text-lg text-navy">{r.title}</div>
@@ -237,7 +237,7 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
           {/* Índice */}
           <aside>
             <div className="border-t border-navy/10 pt-6 lg:sticky lg:top-24 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Contenido</p>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Contenido</p>
               {headings.length === 0 ? (
                 <p className="text-sm text-navy/60">Este artículo no tiene secciones</p>
               ) : (

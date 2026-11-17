@@ -40,13 +40,13 @@ export function About() {
           <div className="space-y-8">
             <div>
               <h3 className="font-serif text-2xl font-medium text-navy lg:text-3xl">Allison Silva, CPA</h3>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Fundadora y Directora</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Fundadora y Directora</p>
             </div>
             <p className="break-words leading-relaxed text-navy/75">
               Allison Silva es Contadora Pública Autorizada (CPA), graduada de la Universidad Centroamericana (UCA) y Máster en Finanzas. Cuenta con más de 10 años de experiencia en contabilidad, tributación y consultoría financiera, además de posgrados especializados en tributación en Estados Unidos, Panamá, Costa Rica y Nicaragua. Su sólida formación y visión estratégica le han permitido asesorar a empresas de diferentes sectores en la optimización fiscal, implementación de sistemas contables y elaboración de reportes financieros de alto valor para la toma de decisiones.
             </p>
             <div className="border-t border-navy/10 pt-6">
-              <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+              <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                 Educación y Certificaciones
               </h4>
               <ul className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ export function About() {
                     aria-hidden="true"
                     className="absolute -left-[2.2rem] top-2.5 h-2 w-2 rounded-full bg-taupe"
                   />
-                  <p className="font-serif text-xl text-taupe">{milestone.year}</p>
+                  <p className="font-serif text-xl text-taupe-deep">{milestone.year}</p>
                   <h5 className="mt-1 break-words text-lg font-semibold text-navy">{milestone.title}</h5>
                   <p className="mt-2 break-words leading-relaxed text-navy/75">{milestone.description}</p>
                 </li>

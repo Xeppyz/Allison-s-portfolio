@@ -31,7 +31,7 @@ export default function CookieBanner({ onChange }: Props) {
   return (
     <section
       role="region"
-      aria-label="Aviso de cookies"
+      aria-label={t.avisoCookies}
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-white p-4"
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

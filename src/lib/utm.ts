@@ -22,11 +22,24 @@ export function pickCampaignParams(search: string): Record<string, string> {
   return out
 }
 
+/** Los utm_* del primer contacto se conservan; los identificadores de clic siempre se actualizan. */
+export function mergeCampaignParams(
+  stored: Record<string, string>,
+  incoming: Record<string, string>,
+): Record<string, string> {
+  const hasUtm = Object.keys(stored).some((k) => k.startsWith('utm_'))
+  const out = { ...stored }
+  for (const [name, value] of Object.entries(incoming)) {
+    if (CLICK_IDS.includes(name) || (!hasUtm && name.startsWith('utm_'))) out[name] = value
+  }
+  return out
+}
+
 export function captureUtm(): void {
   try {
-    if (sessionStorage.getItem(KEY)) return
-    const utm = pickCampaignParams(location.search)
-    if (Object.keys(utm).length) sessionStorage.setItem(KEY, JSON.stringify(utm))
+    const incoming = pickCampaignParams(location.search)
+    if (Object.keys(incoming).length === 0) return
+    sessionStorage.setItem(KEY, JSON.stringify(mergeCampaignParams(getUtm() as Record<string, string>, incoming)))
   } catch {
     // sessionStorage no disponible (modo privado): se ignora
   }

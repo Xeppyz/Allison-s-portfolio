@@ -54,6 +54,7 @@
   --color-sand: #F3EEE7;
   --color-ivory: #FBF9F5;
   --color-taupe: #A98467;
+  --color-taupe-deep: #7A5C45;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

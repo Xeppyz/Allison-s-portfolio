@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { renderHead, metaForPath, type HeadMeta } from './seo-head.ts'
+import { renderHead, metaForPath, stripIdentity, type HeadMeta } from './seo-head.ts'
 
 const shell = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
 const count = (s: string, re: RegExp) => (s.match(re) ?? []).length
@@ -102,6 +102,7 @@ const page = (o: Record<string, unknown> = {}) => ({
 test('metaForPath /en/llc-bookkeeping', () => {
   const m = metaForPath('/en/llc-bookkeeping', {
     page: page({ slug: 'llc-bookkeeping', lang: 'en', alt_slug: 'contabilidad-mensual' }),
+    alt: { slug: 'contabilidad-mensual', lang: 'es', noindex: false },
   })
   assert.ok(m)
   assert.equal(m.canonical, 'https://www.allisonsilvacorp.com/en/llc-bookkeeping')
@@ -154,4 +155,38 @@ test('metaForPath rutas fijas, blog y admin', () => {
   assert.equal(p.type, 'article')
   assert.equal((p.jsonLd![0] as { '@type': string })['@type'], 'BlogPosting')
   assert.equal(metaForPath('/admin/pages', {})!.noindex, true)
+})
+
+test('metaForPath: kind y ruta deben coincidir (sin soft 404)', () => {
+  const home = page({ slug: 'inicio', kind: 'home' })
+  assert.equal(metaForPath('/inicio', { page: home }), null)
+  assert.ok(metaForPath('/', { page: home }))
+  assert.equal(metaForPath('/otra-legal', { page: page({ slug: 'otra-legal', kind: 'legal' }) }), null)
+  const legal = metaForPath('/privacidad', { page: page({ slug: 'privacidad', kind: 'legal' }) })
+  assert.ok(legal)
+  assert.equal(legal.canonical, 'https://www.allisonsilvacorp.com/privacidad')
+  assert.ok(metaForPath('/terminos', { page: page({ slug: 'terminos', kind: 'legal' }) }))
+  assert.equal(metaForPath('/en/privacidad', { page: page({ slug: 'privacidad', kind: 'legal', lang: 'en' }) }), null)
+  assert.equal(metaForPath('/planes', { page: page({ kind: 'home' }) }), null)
+})
+
+test('metaForPath: alternates solo con alt existente, indexable y de otro idioma', () => {
+  const p = page({ slug: 'llc-usa', alt_slug: 'llc-bookkeeping' })
+  assert.equal(metaForPath('/llc-usa', { page: p })!.alternates, undefined)
+  assert.equal(metaForPath('/llc-usa', { page: p, alt: null })!.alternates, undefined)
+  const alt = { slug: 'llc-bookkeeping', lang: 'en', noindex: false }
+  assert.deepEqual(metaForPath('/llc-usa', { page: p, alt })!.alternates, {
+    es: 'https://www.allisonsilvacorp.com/llc-usa',
+    en: 'https://www.allisonsilvacorp.com/en/llc-bookkeeping',
+  })
+  assert.equal(metaForPath('/llc-usa', { page: p, alt: { ...alt, noindex: true } })!.alternates, undefined)
+  assert.equal(metaForPath('/llc-usa', { page: p, alt: { ...alt, lang: 'es' } })!.alternates, undefined)
+})
+
+test('stripIdentity quita canonical, og:url y JSON-LD del servidor', () => {
+  const out = stripIdentity(shell)
+  assert.equal(count(out, /rel="canonical"/g), 0)
+  assert.equal(count(out, /property="og:url"/g), 0)
+  assert.equal(count(out, /data-ssr/g), 0)
+  assert.match(out, /<title>/)
 })

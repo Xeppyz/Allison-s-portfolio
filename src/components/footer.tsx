@@ -1,5 +1,3 @@
-"use client"
-
 import { Linkedin, Mail, Phone, MapPin } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useSettings } from "../lib/content"
@@ -11,7 +9,7 @@ const FALLBACK_PHONE = "+505 8767-3463"
 
 const linkClass =
   "rounded text-white/70 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
-const headingClass = "text-xs font-semibold uppercase tracking-[0.18em] text-taupe"
+const headingClass = "text-xs font-semibold uppercase tracking-[0.18em] text-white/60"
 
 export function Footer() {
   const { data: settings } = useSettings()
@@ -31,13 +29,13 @@ export function Footer() {
           <div className="space-y-4">
             <span aria-hidden="true" className="block h-px w-10 bg-taupe" />
             <h3 className="font-serif text-2xl font-medium text-white">Allison Silva</h3>
-            <p className="text-sm leading-relaxed text-white/70">Te ayudamos a organizar y optimizar las finanzas de tu negocio, para que tomes decisiones con claridad y crezcas con confianza.</p>
+            <p className="text-sm leading-relaxed text-white/70">{t.footerBlurb}</p>
             <div className="flex">
               <a
                 href="https://www.linkedin.com/in/allison-silva-2ab71a210/?originalSubdomain=ni"
                 target="_blank"
                 className={`${linkClass} -ml-3 flex h-11 w-11 items-center justify-center`}
-                aria-label="Ir a LinkedIn"
+                aria-label={t.ariaLinkedin}
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -46,11 +44,11 @@ export function Footer() {
 
           {/* Services */}
           <div className="space-y-4">
-            <h4 className={headingClass}>Servicios</h4>
+            <h4 className={headingClass}>{t.footerServicios}</h4>
             <ul className="space-y-1 text-sm">
               {["Contabilidad mensual", "Implementación de QuickBooks", "Control fiscal y cumplimiento", "Reportes financieros mensuales"].map((label) => (
                 <li key={label}>
-                  <a href="/#services" className={`${linkClass} inline-flex min-h-11 items-center`} aria-label="Ver servicios">
+                  <a href="/#services" className={`${linkClass} inline-flex min-h-11 items-center`}>
                     {label}
                   </a>
                 </li>
@@ -60,15 +58,15 @@ export function Footer() {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className={headingClass}>Contacto</h4>
+            <h4 className={headingClass}>{t.footerContacto}</h4>
             <div className="space-y-1 text-sm text-white/70">
               <div className="flex items-center gap-3">
                 <Phone className="h-4 w-4 flex-shrink-0 text-taupe" aria-hidden="true" />
-                <a href={phoneHref} onClick={() => track("phone_click")} className={`${linkClass} inline-flex min-h-11 items-center underline`} aria-label="Llamar por teléfono">{phone}</a>
+                <a href={phoneHref} onClick={() => track("phone_click")} className={`${linkClass} inline-flex min-h-11 items-center underline`} aria-label={t.ariaLlamar}>{phone}</a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 flex-shrink-0 text-taupe" aria-hidden="true" />
-                <a href={`mailto:${email}`} className={`${linkClass} inline-flex min-h-11 items-center break-all underline`} aria-label="Enviar correo">{email}</a>
+                <a href={`mailto:${email}`} className={`${linkClass} inline-flex min-h-11 items-center break-all underline`} aria-label={t.ariaCorreo}>{email}</a>
               </div>
               {address && (
                 <div className="flex items-center gap-3 py-2">
@@ -79,7 +77,7 @@ export function Footer() {
               {gbpUrl && (
                 <div>
                   <a href={gbpUrl} target="_blank" rel="noopener noreferrer" className={`${linkClass} inline-flex min-h-11 items-center underline`}>
-                    Encuéntranos en Google
+                    {t.footerGoogle}
                   </a>
                 </div>
               )}
@@ -89,7 +87,7 @@ export function Footer() {
           {/* Business Hours */}
           {hours && (
             <div className="space-y-4">
-              <h4 className={headingClass}>Horario de atención</h4>
+              <h4 className={headingClass}>{t.footerHorario}</h4>
               <div className="text-sm text-white/70">
                 <p>{hours}</p>
               </div>

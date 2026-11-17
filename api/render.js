@@ -44,6 +44,7 @@ function escapeHtml(value) {
 function serializeJsonLd(data) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
+var JSON_LD_SSR = /<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*\bdata-ssr\b[^>]*>[\s\S]*?<\/script\s*>\s*/gi;
 var HEAD_CLOSE = /<\/head\s*>/i;
 function insertBeforeHeadEnd(html, tag) {
   const m = HEAD_CLOSE.exec(html);
@@ -117,6 +118,9 @@ function renderHead(html, meta) {
     out = insertBeforeHeadEnd(out, `<script type="application/ld+json" data-ssr="1">${serializeJsonLd(block)}</script>`);
   }
   return out;
+}
+function stripIdentity(html) {
+  return removeMeta(html, "property", "og:url").replace(/<link\b[^>]*?\brel\s*=\s*["']canonical["'][^>]*>\s*/gi, "").replace(JSON_LD_SSR, "");
 }
 var other = (l) => l === "es" ? "en" : "es";
 function organization(settings, image = DEFAULT_IMAGE) {
@@ -211,6 +215,9 @@ function metaForPath(pathname, data = {}) {
   if (!page || page.active === false || page.slug !== route.slug) return null;
   const pageLang = page.lang === "en" ? "en" : "es";
   if (pageLang !== route.lang) return null;
+  const expectedKind = path === "/" ? "home" : path === "/privacidad" || path === "/terminos" ? "legal" : "service";
+  if (page.kind !== expectedKind) return null;
+  if (expectedKind === "legal" && pageLang !== "es") return null;
   const canonicalPath = pagePath(page.slug, pageLang);
   const canonical = absoluteUrl(canonicalPath);
   const image = page.og_image_url || DEFAULT_IMAGE;
@@ -241,7 +248,9 @@ function metaForPath(pathname, data = {}) {
   const faq = faqBlock(data.faqs, page.slug);
   if (faq) jsonLd.push(faq);
   const meta = { title, description, canonical, lang: pageLang, image, noindex: !!page.noindex, jsonLd };
-  if (page.alt_slug) {
+  const alt = data.alt;
+  const altLang = alt ? alt.lang === "en" ? "en" : "es" : null;
+  if (page.alt_slug && alt && alt.slug === page.alt_slug && !alt.noindex && altLang !== pageLang) {
     meta.alternates = {
       [pageLang]: canonical,
       [other(pageLang)]: absoluteUrl(pagePath(page.alt_slug, other(pageLang)))
@@ -318,7 +327,10 @@ var blogPosts = [
 export const config = { runtime: "edge" };
 var SHELL_TTL_MS = 6e4;
 var TIMEOUT_MS = 3e3;
+var REST_TIMEOUT_MS = 1500;
+var DATA_TTL_MS = 6e4;
 var shellCache = null;
+var dataCache = /* @__PURE__ */ new Map();
 var HTML_HEADERS = { "content-type": "text/html; charset=utf-8" };
 async function getShell(req) {
   if (shellCache && Date.now() - shellCache.at < SHELL_TTL_MS) return shellCache.text;
@@ -342,7 +354,7 @@ function validPath(p) {
 async function rest(base, key, query) {
   const res = await fetch(`${base}/rest/v1/${query}`, {
     headers: { apikey: key, authorization: `Bearer ${key}`, accept: "application/json" },
-    signal: AbortSignal.timeout(TIMEOUT_MS)
+    signal: AbortSignal.timeout(REST_TIMEOUT_MS)
   });
   if (!res.ok) throw new Error(`supabase ${res.status}`);
   return await res.json();
@@ -365,38 +377,59 @@ async function handler(req) {
     status: 404,
     headers: { ...HTML_HEADERS, "cache-control": "public, s-maxage=60" }
   });
-  const unmodified = () => new Response(shell, { status: 200, headers: { ...HTML_HEADERS, "cache-control": "no-store" } });
-  const path = new URL(req.url).searchParams.get("path");
+  const unmodified = () => new Response(stripIdentity(shell), { status: 200, headers: { ...HTML_HEADERS, "cache-control": "no-store" } });
+  const params = new URL(req.url).searchParams;
+  if (params.getAll("__p").length !== 1) return unmodified();
+  const path = params.get("__p");
   if (!validPath(path)) return notFound();
   const route = routeForPath(path);
   if (!route) return notFound();
   let page = null;
   let faqs = [];
   let settings = null;
+  let alt = null;
   let degraded = false;
   if (route.type === "page") {
     const base = process.env.VITE_SUPABASE_URL;
     const key = process.env.VITE_SUPABASE_ANON_KEY;
     if (!base || !key) return unmodified();
-    const slug = encodeURIComponent(route.slug);
-    const [p, f, s] = await Promise.allSettled([
-      rest(base, key, `pages?slug=eq.${slug}&select=${PAGE_COLS}&limit=1`),
-      rest(
-        base,
-        key,
-        `faqs?page_slug=eq.${slug}&active=eq.true&select=page_slug,question,answer,active,sort&order=sort.asc`
-      ),
-      rest(base, key, "site_settings?select=phone,email,address,hours&limit=1")
-    ]);
-    if (p.status === "rejected") return unmodified();
-    page = p.value[0] ?? null;
-    if (f.status === "fulfilled") faqs = f.value;
-    else degraded = true;
-    if (s.status === "fulfilled") settings = s.value[0] ?? null;
-    else degraded = true;
+    const cached = dataCache.get(route.slug);
+    if (cached && Date.now() - cached.at < DATA_TTL_MS) {
+      ;
+      ({ page, faqs, settings, alt } = cached.data);
+    } else {
+      const slug = encodeURIComponent(route.slug);
+      const [p, f, s] = await Promise.allSettled([
+        rest(base, key, `pages?slug=eq.${slug}&select=${PAGE_COLS}&limit=1`),
+        rest(
+          base,
+          key,
+          `faqs?page_slug=eq.${slug}&active=eq.true&select=page_slug,question,answer,active,sort&order=sort.asc`
+        ),
+        rest(base, key, "site_settings?select=phone,email,address,hours&limit=1")
+      ]);
+      if (p.status === "rejected") return unmodified();
+      page = p.value[0] ?? null;
+      if (f.status === "fulfilled") faqs = f.value;
+      else degraded = true;
+      if (s.status === "fulfilled") settings = s.value[0] ?? null;
+      else degraded = true;
+      if (page?.alt_slug) {
+        try {
+          alt = (await rest(
+            base,
+            key,
+            `pages?slug=eq.${encodeURIComponent(page.alt_slug)}&select=slug,lang,noindex&limit=1`
+          ))[0] ?? null;
+        } catch {
+          degraded = true;
+        }
+      }
+      if (!degraded) dataCache.set(route.slug, { data: { page, faqs, settings, alt }, at: Date.now() });
+    }
   }
   const post = route.type === "post" ? blogPosts.find((b) => b.slug === route.slug) ?? null : null;
-  const meta = metaForPath(path, { page, faqs, settings, post });
+  const meta = metaForPath(path, { page, faqs, settings, post, alt });
   if (!meta) return notFound();
   return new Response(renderHead(shell, meta), {
     status: 200,

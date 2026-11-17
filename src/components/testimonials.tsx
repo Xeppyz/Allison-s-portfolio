@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Star } from "lucide-react"
 import { ResponsiveModal } from "../components/modalResponsiveTestimonials"
@@ -111,19 +109,19 @@ export function Testimonials() {
               <div className="divide-y divide-navy/10 border-y border-navy/10">
                 {selected.details.problem && (
                   <div className="py-4">
-                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Problemática:</h5>
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Problemática:</h5>
                     <p className="text-navy/80">{selected.details.problem}</p>
                   </div>
                 )}
                 {selected.details.benefit && (
                   <div className="py-4">
-                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Beneficio obtenido:</h5>
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Beneficio obtenido:</h5>
                     <p className="text-navy/80">{selected.details.benefit}</p>
                   </div>
                 )}
                 {selected.details.satisfaction && (
                   <div className="py-4">
-                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Nivel de satisfacción:</h5>
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Nivel de satisfacción:</h5>
                     <p className="text-navy/80">{selected.details.satisfaction}</p>
                   </div>
                 )}

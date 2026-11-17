@@ -14,7 +14,7 @@ export function Hero({ h1, subheadline, credentials }: HeroProps) {
     <section className="bg-ivory">
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 pb-28 pt-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:pb-36 lg:pt-24">
         <div className="hero-in space-y-8">
-          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-taupe">
+          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-taupe-deep">
             <span aria-hidden="true" className="h-px w-10 bg-taupe" />
             Taxes &amp; Accounting · CPA
           </p>
