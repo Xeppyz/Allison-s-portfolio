@@ -10,8 +10,10 @@ import { Textarea } from './ui/textarea'
 
 const COUNTRIES = ['Nicaragua', 'Estados Unidos', 'Otro']
 const SELECT_CLASS =
-  'h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-base text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]'
-const LABEL_CLASS = 'mb-1 block text-sm font-medium text-[#1E3A5F]'
+  'min-h-12 w-full rounded-xl border border-navy/15 bg-white px-3 text-base text-navy focus-visible:border-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy'
+const FIELD_CLASS =
+  'min-h-12 rounded-xl border border-navy/15 bg-white px-3 text-navy shadow-none focus-visible:border-navy focus-visible:ring-2 focus-visible:ring-navy'
+const LABEL_CLASS = 'mb-1.5 block text-sm font-medium text-navy'
 
 export default function LeadForm() {
   const services = useServices()
@@ -61,25 +63,25 @@ export default function LeadForm() {
 
   if (status === 'success') {
     return (
-      <p role="status" className="rounded-lg bg-green-50 p-4 font-medium text-green-800">
+      <p role="status" className="rounded-2xl border border-taupe/50 bg-white p-6 font-medium text-navy">
         Recibimos tu mensaje. Te respondemos en menos de un día hábil.
       </p>
     )
   }
 
   return (
-    <form onSubmit={onSubmit} className="relative space-y-4">
+    <form onSubmit={onSubmit} className="relative space-y-5">
       <div>
         <label htmlFor="lead-name" className={LABEL_CLASS}>Nombre</label>
-        <Input id="lead-name" name="name" required maxLength={200} autoComplete="name" value={values.name} onChange={set('name')} />
+        <Input id="lead-name" name="name" className={FIELD_CLASS} required maxLength={200} autoComplete="name" value={values.name} onChange={set('name')} />
       </div>
       <div>
         <label htmlFor="lead-contact" className={LABEL_CLASS}>WhatsApp o correo</label>
-        <Input id="lead-contact" name="contact" required maxLength={200} value={values.contact} onChange={set('contact')} />
+        <Input id="lead-contact" name="contact" className={FIELD_CLASS} required maxLength={200} value={values.contact} onChange={set('contact')} />
       </div>
       <div>
         <label htmlFor="lead-company" className={LABEL_CLASS}>Empresa (opcional)</label>
-        <Input id="lead-company" name="company" maxLength={200} autoComplete="organization" value={values.company} onChange={set('company')} />
+        <Input id="lead-company" name="company" className={FIELD_CLASS} maxLength={200} autoComplete="organization" value={values.company} onChange={set('company')} />
       </div>
       <div>
         <label htmlFor="lead-country" className={LABEL_CLASS}>País</label>
@@ -100,7 +102,7 @@ export default function LeadForm() {
       </div>
       <div>
         <label htmlFor="lead-message" className={LABEL_CLASS}>Mensaje</label>
-        <Textarea id="lead-message" name="message" required maxLength={2000} rows={4} value={values.message} onChange={set('message')} />
+        <Textarea id="lead-message" name="message" className={FIELD_CLASS + ' py-3'} required maxLength={2000} rows={4} value={values.message} onChange={set('message')} />
       </div>
       <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
         <label htmlFor="lead-website">Sitio web</label>
@@ -111,7 +113,7 @@ export default function LeadForm() {
           No pudimos enviar tu mensaje. Escríbenos a info@allisonsilvacorp.com.
         </p>
       )}
-      <Button type="submit" disabled={sending} className="min-h-11 w-full bg-[#1E3A5F] text-white hover:bg-[#1E3A5F]/90">
+      <Button type="submit" disabled={sending} className="min-h-12 w-full rounded-full bg-navy px-7 py-3 font-semibold text-white transition hover:bg-navy-deep focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2">
         {sending ? 'Enviando…' : 'Enviar'}
       </Button>
     </form>

@@ -1,8 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent } from "../components/ui/card"
-import { Button } from "../components/ui/button"
 import { Star } from "lucide-react"
 import { ResponsiveModal } from "../components/modalResponsiveTestimonials"
 import guest from "../assets/img/user_guest.png"
@@ -29,142 +27,105 @@ export function Testimonials() {
 
   if (testimonials.length === 0) return null
 
+  const selected = selectedTestimonial !== null ? testimonials[selectedTestimonial] : null
+
   return (
-    <section id="testimonials" className="py-20" style={{ backgroundColor: "#F8F8F8" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold" style={{ color: "#1E3A5F" }}>
-            Lo que dicen nuestros clientes
-          </h2>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F", opacity: 0.8 }}>
-            Historias de éxito de empresarios que confían en nosotros
-          </p>
+    <section id="testimonials" className="bg-ivory py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-16 max-w-3xl space-y-5 text-center">
+          <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+          <h2 className="text-3xl font-medium text-navy lg:text-5xl">Lo que dicen nuestros clientes</h2>
+          <p className="text-lg text-navy/70">Historias de éxito de empresarios que confían en nosotros</p>
         </div>
 
-        <div
-          className=" flex gap-6 overflow-x-auto overflow-y-hidden pb-4 px-1 md:px-4 lg:px-8
-         scroll-smooth
-                    scrollbar scrollbar-thin
-                    scrollbar-track-slate-200
-                    scrollbar-thumb-[#4285F4]/70
-                    hover:scrollbar-thumb-[#4285F4]
-                    scrollbar-thumb-rounded-full scrollbar-track-rounded-full
-"
-          style={{
-            scrollSnapType: 'x mandatory',
-            WebkitOverflowScrolling: 'touch'
-          }}
+        <ul
+          className="flex gap-6 overflow-x-auto overflow-y-hidden scroll-smooth px-1 pb-4"
+          style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
         >
           {testimonials.map((testimonial, index) => (
-            <Card
+            <li
               key={testimonial.id}
-              style={{ backgroundColor: '#FBFCFF', minWidth: 320, maxWidth: 380, scrollSnapAlign: 'start', flex: '0 0 auto' }}
-              className="shadow-md"
+              className="flex w-[85%] max-w-sm flex-none flex-col rounded-2xl border border-navy/10 bg-white p-6 sm:w-80"
+              style={{ scrollSnapAlign: "start" }}
             >
-              <CardContent className="p-6 space-y-4">
-                <div className="flex space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" style={{ color: '#34A853' }} />
-                  ))}
+              <div className="flex gap-1 text-taupe" role="img" aria-label="5 de 5 estrellas">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" aria-hidden="true" />
+                ))}
+              </div>
+              <p className="mt-4 flex-1 font-serif text-lg leading-relaxed text-navy/80">
+                “{testimonial.comment}”
+              </p>
+              <div className="mt-6 flex items-center gap-4 border-t border-navy/10 pt-4">
+                <img
+                  src={testimonial.image || "/placeholder.svg"}
+                  alt={`${testimonial.name} - ${testimonial.company}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+                <div>
+                  <h3 className="font-semibold text-navy">{testimonial.name}</h3>
+                  <p className="text-sm text-navy/60">
+                    {[testimonial.position, testimonial.company].filter(Boolean).join(", ")}
+                  </p>
                 </div>
-                <p className="italic leading-relaxed" style={{ color: '#1E3A5F', opacity: 0.8 }}>
-                  "{testimonial.comment}"
-                </p>
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={testimonial.image || "/placeholder.svg"}
-                    alt={`${testimonial.name} - ${testimonial.company}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <h4 className="font-semibold" style={{ color: '#1E3A5F' }}>
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-sm" style={{ color: '#1E3A5F', opacity: 0.6 }}>
-                      {[testimonial.position, testimonial.company].filter(Boolean).join(", ")}
-                    </p>
-                  </div>
-                </div>
-                {testimonial.logo && (
-                  <img src={testimonial.logo} alt={testimonial.company} loading="lazy" decoding="async" className="h-8 object-contain" />
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedTestimonial(index)}
-                  className="w-full mt-4 border-2"
-                  style={{
-                    borderColor: '#4285F4',
-                    color: '#4285F4',
-                    backgroundColor: 'transparent',
-                  }}
-                >
-                  Ver más
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+              {testimonial.logo && (
+                <img src={testimonial.logo} alt={testimonial.company} loading="lazy" decoding="async" className="mt-4 h-8 object-contain object-left" />
+              )}
+              <button
+                type="button"
+                onClick={() => setSelectedTestimonial(index)}
+                className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-navy/25 px-5 py-3 font-semibold text-navy transition hover:border-navy hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+              >
+                Ver más
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {selectedTestimonial !== null && (
+        {selected && (
           <ResponsiveModal
             open={selectedTestimonial !== null}
             onClose={() => setSelectedTestimonial(null)}
-            title={`${testimonials[selectedTestimonial].name} - ${testimonials[selectedTestimonial].company}`}
+            title={`${selected.name} - ${selected.company}`}
           >
             <div className="space-y-6">
-              <div className="flex items-center space-x-4 mb-6">
+              <div className="flex items-center gap-4">
                 <img
-                  src={testimonials[selectedTestimonial].image || "/placeholder.svg"}
-                  alt={`${testimonials[selectedTestimonial].name} - ${testimonials[selectedTestimonial].company}`}
+                  src={selected.image || "/placeholder.svg"}
+                  alt={`${selected.name} - ${selected.company}`}
                   loading="lazy"
                   decoding="async"
-                  className="w-16 h-16 rounded-full object-cover"
+                  className="h-16 w-16 rounded-full object-cover"
                 />
                 <div>
-                  <h4 className="font-semibold text-lg" style={{ color: "#1E3A5F" }}>
-                    {testimonials[selectedTestimonial].name}
-                  </h4>
-                  <p style={{ color: "#1E3A5F", opacity: 0.7 }}>
-                    {[testimonials[selectedTestimonial].position, testimonials[selectedTestimonial].company].filter(Boolean).join(", ")}
+                  <h4 className="font-serif text-lg font-medium text-navy">{selected.name}</h4>
+                  <p className="text-navy/70">
+                    {[selected.position, selected.company].filter(Boolean).join(", ")}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                {testimonials[selectedTestimonial].details.problem && (
-                <div>
-                  <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    Problemática:
-                  </h5>
-                  <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.problem}</p>
-                </div>
+              <div className="divide-y divide-navy/10 border-y border-navy/10">
+                {selected.details.problem && (
+                  <div className="py-4">
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Problemática:</h5>
+                    <p className="text-navy/80">{selected.details.problem}</p>
+                  </div>
                 )}
-
-                {testimonials[selectedTestimonial].details.benefit && (
-
-                <div>
-                  <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    Beneficio obtenido:
-                  </h5>
-                  <p style={{ color: "#1E3A5F", opacity: 0.8 }}>{testimonials[selectedTestimonial].details.benefit}</p>
-                </div>
-
+                {selected.details.benefit && (
+                  <div className="py-4">
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Beneficio obtenido:</h5>
+                    <p className="text-navy/80">{selected.details.benefit}</p>
+                  </div>
                 )}
-
-                {testimonials[selectedTestimonial].details.satisfaction && (
-
-                <div>
-                  <h5 className="font-semibold mb-2" style={{ color: "#1E3A5F" }}>
-                    Nivel de satisfacción:
-                  </h5>
-                  <p style={{ color: "#1E3A5F", opacity: 0.8 }}>
-                    {testimonials[selectedTestimonial].details.satisfaction}
-                  </p>
-                </div>
-
+                {selected.details.satisfaction && (
+                  <div className="py-4">
+                    <h5 className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Nivel de satisfacción:</h5>
+                    <p className="text-navy/80">{selected.details.satisfaction}</p>
+                  </div>
                 )}
               </div>
             </div>

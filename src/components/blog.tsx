@@ -1,65 +1,63 @@
-import { Calendar, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Button } from "./ui/button"
-import { CardTitle, CardHeader, Card, CardContent, CardDescription } from "./ui/card"
 import placeHolder from "../assets/img/placeholder.png"
-import documentCalendar from "../assets/img/tax-documents-calendar.png"
-import accountingDocument from "../assets/img/accounting-software-screen.png"
+import documentCalendar from "../assets/img/tax-documents-calendar.webp"
+import accountingDocument from "../assets/img/accounting-software-screen.webp"
 import { getAllPosts } from "../data/BlogPost"
 
-const imageMap: Record<string, string> = {
-  placeholder: placeHolder,
-  calendar: documentCalendar,
-  accounting: accountingDocument,
+const imageMap: Record<string, { src: string; width: number; height: number }> = {
+  placeholder: { src: placeHolder, width: 1200, height: 675 },
+  calendar: { src: documentCalendar, width: 1200, height: 798 },
+  accounting: { src: accountingDocument, width: 1200, height: 899 },
 }
 
 export function Blog() {
   const posts = getAllPosts()
 
   return (
-    <section id="blog" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Consejos y Recursos</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">Artículos útiles sobre contabilidad y finanzas empresariales</p>
+    <section id="blog" className="bg-ivory py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-16 max-w-3xl space-y-5 text-center">
+          <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+          <h2 className="text-3xl font-medium text-navy lg:text-5xl">Consejos y Recursos</h2>
+          <p className="text-lg text-navy/70">Artículos útiles sobre contabilidad y finanzas empresariales</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => {
-            const imgSrc = imageMap[post.imageKey] || "/placeholder.svg"
+            const img = imageMap[post.imageKey] ?? { src: "/placeholder.svg", width: 1200, height: 675 }
             const title = post.title
             const excerpt = post.excerpt
 
             return (
-              <Card key={post.slug} className="bg-white hover:shadow-lg transition-shadow duration-300">
-                <div className="aspect-video overflow-hidden rounded-t-lg">
+              <Link
+                key={post.slug}
+                to={`/blog/${post.slug}`}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-navy/10 bg-white transition hover:-translate-y-px hover:border-taupe/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+              >
+                <div className="aspect-video overflow-hidden border-b border-navy/10">
                   <img
-                    src={imgSrc}
+                    src={img.src}
+                    width={img.width}
+                    height={img.height}
                     alt={title + " - Artículo de blog sobre contabilidad y finanzas"}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
-                <CardHeader>
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <Calendar className="h-4 w-4 mr-2" />
+                <div className="flex flex-1 flex-col p-6">
+                  <time dateTime={post.date} className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
                     {new Date(post.date).toLocaleDateString("es-ES")}
-                  </div>
-                  <CardTitle className="text-xl font-semibold text-gray-900 line-clamp-2">
-                    {title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <CardDescription className="text-gray-600 line-clamp-3">{excerpt}</CardDescription>
-                  <Link to={`/blog/${post.slug}`} className="inline-block" aria-label={title}>
-                    <Button className="text-white" style={{ backgroundColor: "#34A853" }}>
-                      Leer más
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+                  </time>
+                  <h3 className="mt-3 line-clamp-2 font-serif text-xl font-medium text-navy">{title}</h3>
+                  <p className="mt-3 line-clamp-3 flex-1 leading-relaxed text-navy/70">{excerpt}</p>
+                  <span className="mt-5 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-navy">
+                    Leer más
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
+                  </span>
+                </div>
+              </Link>
             )
           })}
         </div>

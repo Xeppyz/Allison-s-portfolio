@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import WhatsAppButton from './WhatsAppButton'
 import { usePlans, useSettings, type Plan } from '../lib/content'
 import { track } from '../lib/track'
+import { useStrings } from '../lib/strings'
 
 const GROUPS: { key: NonNullable<Plan['group']>; title: string }[] = [
   { key: 'empresa', title: 'Planes para empresas' },
@@ -15,11 +16,12 @@ const GROUPS: { key: NonNullable<Plan['group']>; title: string }[] = [
 ]
 
 const linkClass =
-  'inline-flex w-full items-center justify-center rounded-full border border-[#4285F4] px-5 py-3 font-semibold text-[#4285F4] hover:bg-[#4285F4]/10'
+  'inline-flex w-full items-center justify-center rounded-full border border-navy/25 px-5 py-3 font-semibold text-navy transition hover:border-navy hover:bg-navy hover:text-white'
 
 type WaState = 'loading' | 'yes' | 'no'
 
 function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlanesPage: boolean }) {
+  const { t } = useStrings()
   // Sin acción mientras carga la configuración, para que no cambie después.
   const whatsappOrContact = (label: string, fallback: string) =>
     wa === 'yes' ? (
@@ -29,21 +31,21 @@ function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlane
     ) : null
   let action: ReactNode = null
   if (plan.cta === 'whatsapp') {
-    action = whatsappOrContact('Cotizar por WhatsApp', 'Cotizar')
+    action = whatsappOrContact(t.cotizarWa, t.cotizar)
   } else if (plan.cta === 'planes') {
     action = onPlanesPage ? (
-      whatsappOrContact('Consultar por WhatsApp', 'Consultar')
+      whatsappOrContact(t.consultarWa, t.consultar)
     ) : (
-      <Link to="/planes" onClick={() => track('ver_planes_click')} className={linkClass}>Ver planes</Link>
+      <Link to="/planes" onClick={() => track('ver_planes_click')} className={linkClass}>{t.verPlanes}</Link>
     )
   }
   const features = (plan.features ?? []).filter((f): f is string => typeof f === 'string')
 
   return (
-    <Card className="flex flex-col" style={{ backgroundColor: '#FBFCFF' }}>
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl font-semibold" style={{ color: '#1E3A5F' }}>{plan.name}</CardTitle>
-        {plan.price_text && <p className="text-2xl font-bold" style={{ color: '#4285F4' }}>{plan.price_text}</p>}
+    <Card className="flex flex-col rounded-2xl border-navy/10 bg-ivory shadow-none transition hover:border-taupe/60">
+      <CardHeader>
+        <CardTitle className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe">{plan.name}</CardTitle>
+        {plan.price_text && <p className="font-serif text-2xl font-medium leading-snug text-navy">{plan.price_text}</p>}
         {plan.description && (
           <CardDescription className="leading-relaxed" style={{ color: '#1E3A5F', opacity: 0.7 }}>
             {plan.description}
@@ -76,6 +78,7 @@ function Grid({ plans, wa, onPlanesPage }: { plans: Plan[]; wa: WaState; onPlane
 }
 
 export default function PlanCards({ pageSlug }: { pageSlug: string }) {
+  const { t } = useStrings()
   const { data } = usePlans(pageSlug)
   const settings = useSettings()
   const plans = data ?? []
@@ -84,14 +87,14 @@ export default function PlanCards({ pageSlug }: { pageSlug: string }) {
   const wa: WaState = settings.loading ? 'loading' : settings.data?.whatsapp_number ? 'yes' : 'no'
 
   return (
-    <section className="py-16" style={{ backgroundColor: '#F7F7F7' }}>
+    <section className="border-y border-navy/10 bg-white py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-12 text-center text-3xl font-bold lg:text-4xl" style={{ color: '#1E3A5F' }}>
-          {pageSlug === 'planes' ? 'Nuestros planes' : 'Planes'}
+        <h2 className="mb-12 text-center text-3xl font-medium text-navy lg:text-5xl">
+          {pageSlug === 'planes' ? t.nuestrosPlanes : t.planes}
         </h2>
         {pageSlug === 'planes' ? (
           <div className="space-y-14">
-            {[...GROUPS, { key: null, title: 'Otros' }].map(({ key, title }) => {
+            {[...GROUPS, { key: null, title: t.otros }].map(({ key, title }) => {
               const group = plans.filter((p) =>
                 key === null ? !GROUPS.some((g) => g.key === p.group) : p.group === key)
               if (group.length === 0) return null

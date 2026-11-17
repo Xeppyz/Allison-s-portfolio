@@ -1,22 +1,26 @@
 "use client"
 
 import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "./ui/button"
+import { Link, NavLink } from "react-router-dom"
 
 import { Menu, X } from "lucide-react"
 import { track } from "../lib/track"
+import { useStrings } from "../lib/strings"
 
-const navLinks = [
-  { to: "/", label: "Inicio" },
-  { to: "/planes", label: "Planes" },
-  { to: "/contabilidad-mensual", label: "Contabilidad mensual" },
-  { to: "/blog", label: "Blog" },
-  { to: "/contacto", label: "Contacto" },
-]
+const focusRing =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const { t } = useStrings()
+
+  const navLinks = [
+    { to: "/", label: t.navInicio, end: true },
+    { to: "/planes", label: t.navPlanes },
+    { to: "/contabilidad-mensual", label: t.navContabilidad },
+    { to: "/blog", label: t.navBlog },
+    { to: "/contacto", label: t.navContacto },
+  ]
 
   const closeMenu = () => setIsOpen(false)
 
@@ -25,35 +29,36 @@ export function Navigation() {
   }
 
   return (
-    <nav
-      className="shadow-sm border-b sticky top-0 z-50"
-      style={{ backgroundColor: "#F8F8F8", borderColor: "#F7F7F7" }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <span className="block font-bold font-serif text-base" style={{ color: "#1E3A5F" }}>
+    <nav className="sticky top-0 z-50 border-b border-navy/10 bg-white/90 backdrop-blur">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link to="/" className={`flex-shrink-0 rounded ${focusRing}`}>
+            <span className="block font-serif text-base font-medium text-navy">
               Allison Silva Taxes and Accounting
             </span>
-            <span className="block text-[10px] sm:text-xs text-gray-500" style={{ maxWidth: 300, lineHeight: 1.1 }}>
-              NO SOLO CIERRO LIBROS, ABRO OPORTUNIDADES
+            <span className="block max-w-[300px] text-[10px] leading-tight text-navy/60 sm:text-xs">
+              {t.slogan}
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden lg:block">
+            <div className="ml-10 flex items-center space-x-6">
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.to}
                   to={link.to}
-                  className="px-3 py-2 text-sm font-medium transition-colors hover:opacity-80"
-                  style={{ color: "#1E3A5F" }}
-                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "#4285F4")}
-                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "#1E3A5F")}
+                  end={link.end}
+                  className={({ isActive }) =>
+                    `border-b-2 px-1 py-2 text-sm font-medium transition-colors ${focusRing} ${
+                      isActive
+                        ? "border-taupe text-navy"
+                        : "border-transparent text-navy/80 hover:text-navy"
+                    }`
+                  }
                 >
                   {link.label}
-                </Link>
+                </NavLink>
               ))}
             </div>
           </div>
@@ -63,56 +68,62 @@ export function Navigation() {
             <Link
               to="/planes"
               onClick={handleVerPlanes}
-              className="hidden md:inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-white"
-              style={{ backgroundColor: "#4285F4" }}
+              className={`hidden min-h-11 items-center rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white transition hover:bg-navy-deep lg:inline-flex ${focusRing}`}
             >
-              Ver planes
+              {t.verPlanes}
             </Link>
 
             {/* Mobile menu button - Only visible on mobile */}
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden"
-              style={{ color: "#1e5bbdff", backgroundColor: "transparent" }}
+              className={`-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-navy transition hover:bg-sand lg:hidden ${focusRing}`}
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
+              {isOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
+            </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden">
-          <div
-            className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t"
-            style={{ backgroundColor: "#F8F8F8", borderColor: "#F7F7F7" }}
-          >
+        <div className="border-t border-navy/10 bg-white lg:hidden">
+          <div className="mx-auto max-w-7xl divide-y divide-navy/10 px-4 sm:px-6">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
+                end={link.end}
                 onClick={closeMenu}
-                className="block px-3 py-2 text-base font-medium hover:opacity-80"
-                style={{ color: "#1E3A5F" }}
+                className={({ isActive }) =>
+                  `flex min-h-12 items-center gap-3 text-base font-medium ${focusRing} ${
+                    isActive ? "text-navy" : "text-navy/80 hover:text-navy"
+                  }`
+                }
               >
-                {link.label}
-              </Link>
+                {({ isActive }) => (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-taupe" : "bg-transparent"}`}
+                    />
+                    {link.label}
+                  </>
+                )}
+              </NavLink>
             ))}
-            <div className="px-3 py-2">
+            <div className="py-4">
               <Link
                 to="/planes"
                 onClick={() => {
                   track("ver_planes_click")
                   closeMenu()
                 }}
-                className="flex w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white"
-                style={{ backgroundColor: "#4285F4" }}
+                className={`flex min-h-12 w-full items-center justify-center rounded-full bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-navy-deep ${focusRing}`}
               >
-                Ver planes
+                {t.verPlanes}
               </Link>
             </div>
           </div>

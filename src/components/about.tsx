@@ -1,9 +1,3 @@
-"use client"
-
-import { Card, CardContent } from "./ui/card"
-import { Badge } from "./ui/badge"
-import avatar from "../assets/img/avatar.jpg"
-
 export function About() {
   const certifications = [
     "CPA (Certified Public Accountant)",
@@ -34,100 +28,55 @@ export function About() {
   ]
 
   return (
-    <section className="py-20 px-4 overflow-x-hidden" style={{ backgroundColor: "#F8F8F8" }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "#1E3A5F" }}>
-            Acerca de Nosotros
-          </h2>
-          <p className="text-lg sm:text-xl max-w-3xl mx-auto" style={{ color: "#1E3A5F" }}>
-            Nuestra Historia
-          </p>
+    <section id="about" className="bg-white py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-16 max-w-3xl space-y-5 text-center">
+          <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+          <h2 className="text-3xl font-medium text-navy lg:text-5xl">Acerca de Nosotros</h2>
+          <p className="text-lg text-navy/70">Nuestra Historia</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* Founder Profile Section */}
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-20">
           <div className="space-y-8">
-            <Card style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
-              <CardContent className="p-6 sm:p-8">
-                <div className="flex flex-col items-center text-justify space-y-6">
-                  <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4"
-                       style={{ borderColor: "#4285F4" }}>
-                    <img
-                      src={avatar}
-                      alt="Allison Silva CPA - Fundadora y Directora"
-                      loading="lazy"
-                      decoding="async"
-                      className="block w-full h-full object-cover max-w-full"
-                    />
-                  </div>
-                  <div className="w-full">
-                    <h3 className="text-2xl font-bold mb-2" style={{ color: "#1E3A5F" }}>
-                      Allison Silva, CPA
-                    </h3>
-                    <p className="text-base sm:text-lg mb-4" style={{ color: "#1E3A5F" }}>
-                      Fundadora y Directora
-                    </p>
-                    <p className="leading-relaxed break-words" style={{ color: "#1E3A5F" }}>
-                      Trayectoria Profesional Allison Silva, CPA Fundadora y Directora Allison Silva es Contadora Pública Autorizada (CPA), graduada de la Universidad Centroamericana (UCA) y Máster en Finanzas. Cuenta con más de 10 años de experiencia en contabilidad, tributación y consultoría financiera, además de posgrados especializados en tributación en Estados Unidos, Panamá, Costa Rica y Nicaragua. Su sólida formación y visión estratégica le han permitido asesorar a empresas de diferentes sectores en la optimización fiscal, implementación de sistemas contables y elaboración de reportes financieros de alto valor para la toma de decisiones.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Education & Certifications */}
-            <Card style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
-              <CardContent className="p-6 sm:p-8">
-                <h4 className="text-xl font-bold mb-6" style={{ color: "#1E3A5F" }}>
-                  Educación y Certificaciones
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {certifications.map((cert, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="px-3 py-2 text-sm font-medium whitespace-normal break-words text-center max-w-full"
-                      style={{
-                        backgroundColor: "#34A853",
-                        color: "white",
-                        border: "none",
-                      }}
-                    >
-                      {cert}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <div>
+              <h3 className="font-serif text-2xl font-medium text-navy lg:text-3xl">Allison Silva, CPA</h3>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Fundadora y Directora</p>
+            </div>
+            <p className="break-words leading-relaxed text-navy/75">
+              Allison Silva es Contadora Pública Autorizada (CPA), graduada de la Universidad Centroamericana (UCA) y Máster en Finanzas. Cuenta con más de 10 años de experiencia en contabilidad, tributación y consultoría financiera, además de posgrados especializados en tributación en Estados Unidos, Panamá, Costa Rica y Nicaragua. Su sólida formación y visión estratégica le han permitido asesorar a empresas de diferentes sectores en la optimización fiscal, implementación de sistemas contables y elaboración de reportes financieros de alto valor para la toma de decisiones.
+            </p>
+            <div className="border-t border-navy/10 pt-6">
+              <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                Educación y Certificaciones
+              </h4>
+              <ul className="flex flex-wrap gap-2">
+                {certifications.map((cert) => (
+                  <li
+                    key={cert}
+                    className="rounded-full border border-navy/15 px-3 py-1.5 text-sm text-navy/80"
+                  >
+                    {cert}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Company Growth Section */}
-          <div className="space-y-6">
-            <h4 className="text-2xl font-bold mb-8" style={{ color: "#1E3A5F" }}>
-              Nuestro Crecimiento
-            </h4>
-
-            {companyMilestones.map((milestone, index) => (
-              <Card key={index} style={{ backgroundColor: "#FBFCFF" }} className="w-full overflow-hidden rounded-xl border-0 shadow-lg">
-                <CardContent className="p-5 sm:p-6">
-                  <div className="flex items-start gap-4 text-justify">
-                    <div className="shrink-0 w-3 h-3 rounded-full mt-2" style={{ backgroundColor: "#4285F4" }} />
-                    <div className="flex-1 min-w-0">
-                      <h5 className="text-lg font-bold mb-1 break-words" style={{ color: "#1E3A5F" }}>
-                        {milestone.title}
-                      </h5>
-                      <p className="font-medium mb-2" style={{ color: "#1E3A5F" }}>
-                        {milestone.year}
-                      </p>
-                      <p className="text-sm leading-relaxed break-words" style={{ color: "#1E3A5F" }}>
-                        {milestone.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div>
+            <h4 className="mb-8 font-serif text-2xl font-medium text-navy">Nuestro Crecimiento</h4>
+            <ol className="space-y-10 border-l border-navy/15 pl-8">
+              {companyMilestones.map((milestone) => (
+                <li key={milestone.title} className="relative">
+                  <span
+                    aria-hidden="true"
+                    className="absolute -left-[2.2rem] top-2.5 h-2 w-2 rounded-full bg-taupe"
+                  />
+                  <p className="font-serif text-xl text-taupe">{milestone.year}</p>
+                  <h5 className="mt-1 break-words text-lg font-semibold text-navy">{milestone.title}</h5>
+                  <p className="mt-2 break-words leading-relaxed text-navy/75">{milestone.description}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </div>

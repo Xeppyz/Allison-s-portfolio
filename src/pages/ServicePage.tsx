@@ -1,5 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
-import { CheckCircle } from 'lucide-react'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import Seo, { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from '../components/Seo'
 import WhatsAppButton from '../components/WhatsAppButton'
 import PlanCards from '../components/PlanCards'
@@ -9,6 +8,7 @@ import NotFound from './NotFound'
 import { usePage, useTestimonials } from '../lib/content'
 import { isBonusActive, parseLocalDate } from '../lib/bonus'
 import { track } from '../lib/track'
+import { pagePath, useStrings } from '../lib/strings'
 
 interface Benefit { title: string; text?: string }
 
@@ -28,11 +28,17 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
   const slug = slugProp ?? params.slug ?? ''
   const page = usePage(slug)
   const testimonials = useTestimonials()
+  const { pathname } = useLocation()
+  const { t } = useStrings()
 
   if (page.loading) return <PageLoading />
   if (page.error) return <PageError />
   const p = page.data
   if (!p || p.kind !== 'service') return <NotFound />
+  const lang = p.lang === 'en' ? 'en' : 'es'
+  const other = lang === 'en' ? 'es' : 'en'
+  // Cada página solo existe en la ruta de su idioma
+  if (pathname.replace(/\/+$/, '') !== pagePath(p.slug, lang)) return <NotFound />
 
   const benefits = toBenefits(p.benefits)
   const testimonial = testimonials.data?.[0]
@@ -41,21 +47,32 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
 
   return (
     <main>
-      <Seo title={p.meta_title || DEFAULT_TITLE} description={p.meta_description || DEFAULT_DESCRIPTION} />
+      {p.active === false && (
+        <div role="status" className="bg-sand py-2 text-center text-sm text-navy">{t.borrador}</div>
+      )}
+      <Seo
+        title={p.meta_title || DEFAULT_TITLE}
+        description={p.meta_description || DEFAULT_DESCRIPTION}
+        lang={lang}
+        noindex={p.noindex}
+        image={p.og_image_url || undefined}
+        alternates={p.alt_slug ? { [lang]: pagePath(p.slug, lang), [other]: pagePath(p.alt_slug, other) } : undefined}
+      />
 
-      <section className="px-4 py-16 text-center sm:px-6 lg:py-24">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <h1 className="text-4xl font-bold lg:text-5xl" style={{ color: '#1E3A5F' }}>{p.h1 || DEFAULT_TITLE}</h1>
-          {p.subheadline && <p className="text-xl" style={{ color: '#1E3A5F', opacity: 0.8 }}>{p.subheadline}</p>}
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <WhatsAppButton label="Diagnóstico gratis por WhatsApp" />
+      <section className="bg-ivory px-4 py-20 text-center sm:px-6 lg:py-28">
+        <div className="hero-in mx-auto max-w-3xl space-y-7">
+          <span aria-hidden="true" className="mx-auto block h-px w-16 bg-taupe" />
+          <h1 className="text-4xl font-medium leading-tight text-navy lg:text-6xl">{p.h1 || DEFAULT_TITLE}</h1>
+          {p.subheadline && <p className="text-lg text-navy/70 lg:text-xl">{p.subheadline}</p>}
+          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <WhatsAppButton label={t.diagnosticoWa} />
             {slug !== 'planes' && (
               <Link
                 to="/planes"
                 onClick={() => track('ver_planes_click')}
-                className="inline-flex items-center justify-center rounded-full border border-[#4285F4] px-5 py-3 font-semibold text-[#4285F4] hover:bg-[#4285F4]/10"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-navy px-7 py-3 font-semibold text-white transition hover:bg-navy-deep"
               >
-                Ver planes
+                {t.verPlanesPrecios}
               </Link>
             )}
           </div>
@@ -63,18 +80,16 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
       </section>
 
       {benefits.length > 0 && (
-        <section className="px-4 py-12 sm:px-6" style={{ backgroundColor: '#F7F7F7' }}>
-          <ul className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+        <section className="px-4 py-16 sm:px-6">
+          <ol className="mx-auto grid max-w-5xl gap-10 md:grid-cols-3">
             {benefits.map((b, i) => (
-              <li key={i} className="flex items-start gap-3 rounded-lg p-4" style={{ backgroundColor: '#FBFCFF' }}>
-                <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0" style={{ color: '#34A853' }} aria-hidden="true" />
-                <div>
-                  <p className="font-bold" style={{ color: '#1E3A5F' }}>{b.title}</p>
-                  {b.text && <p className="mt-1" style={{ color: '#1E3A5F', opacity: 0.8 }}>{b.text}</p>}
-                </div>
+              <li key={i} className="border-t border-navy/15 pt-6">
+                <span className="font-serif text-3xl text-taupe" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <p className="mt-2 text-lg font-semibold text-navy">{b.title}</p>
+                {b.text && <p className="mt-1 text-navy/75">{b.text}</p>}
               </li>
             ))}
-          </ul>
+          </ol>
         </section>
       )}
 
@@ -99,7 +114,7 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
           <div className="mx-auto max-w-3xl rounded-lg border border-[#4285F4] p-6" style={{ backgroundColor: '#FBFCFF' }}>
             <p className="text-lg font-semibold" style={{ color: '#1E3A5F' }}>{p.bonus_text}</p>
             <p className="mt-2 text-sm" style={{ color: '#1E3A5F', opacity: 0.7 }}>
-              Válido hasta el {deadline.toLocaleDateString('es-NI', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {t.validoHasta} {deadline.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-NI', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
         </section>
@@ -112,6 +127,14 @@ export default function ServicePage({ slug: slugProp }: { slug?: string }) {
       )}
 
       <FaqList pageSlug={slug} />
+
+      {p.legal_note && (
+        <section className="px-4 pb-16 sm:px-6">
+          <aside aria-label={t.avisoLegal} className="mx-auto max-w-3xl whitespace-pre-line border-t border-navy/10 pt-6 text-xs leading-relaxed text-navy/60">
+            {p.legal_note}
+          </aside>
+        </section>
+      )}
     </main>
   )
 }

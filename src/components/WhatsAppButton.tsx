@@ -4,6 +4,7 @@ import { usePage, useSettings } from '../lib/content'
 import { getUtm } from '../lib/utm'
 import { track } from '../lib/track'
 import { buildWhatsAppUrl } from '../lib/whatsapp'
+import { slugFromPath, useStrings } from '../lib/strings'
 
 interface Props {
   floating?: boolean
@@ -13,7 +14,8 @@ interface Props {
 
 export default function WhatsAppButton({ floating = false, label, message }: Props) {
   const { pathname } = useLocation()
-  const slug = pathname.split('/').filter(Boolean)[0] ?? 'inicio'
+  const { t } = useStrings()
+  const slug = slugFromPath(pathname)
   const settings = useSettings()
   const page = usePage(slug)
   const home = usePage('inicio')
@@ -33,7 +35,7 @@ export default function WhatsAppButton({ floating = false, label, message }: Pro
         href={href}
         target="_blank"
         rel="noopener"
-        aria-label="Escribir por WhatsApp"
+        aria-label={t.escribirWa}
         onClick={onClick}
         className="fixed bottom-20 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 sm:bottom-6 sm:right-6"
       >
@@ -51,7 +53,7 @@ export default function WhatsAppButton({ floating = false, label, message }: Pro
       className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-white hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
     >
       <MessageCircle className="h-5 w-5" aria-hidden="true" />
-      {label ?? 'Escribir por WhatsApp'}
+      {label ?? t.escribirWa}
     </a>
   )
 }

@@ -1,5 +1,6 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@fontsource-variable/playfair-display/wght.css'
 import './index.css'
 import './styles/article.css'
 
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
         path: "/blog/:slug",
         element: <BlogPostPage />,
       },
+      { path: "/en/:slug", element: <ServicePage /> },
       { path: "/:slug", element: <ServicePage /> },
       { path: "*", element: <NotFound /> },
     ],

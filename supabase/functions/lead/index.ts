@@ -34,13 +34,15 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;')
 }
 
+const CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']
+
 function cleanUtm(value: unknown): Record<string, string> {
   const out: Record<string, string> = {}
   let count = 0
   if (!value || typeof value !== 'object' || Array.isArray(value)) return out
   for (const [key, v] of Object.entries(value)) {
     if (count >= 10) break
-    if (key.startsWith('utm_') && typeof v === 'string') {
+    if ((key.startsWith('utm_') || CLICK_IDS.includes(key)) && typeof v === 'string') {
       out[key.slice(0, 200)] = v.slice(0, 200)
       count++
     }
