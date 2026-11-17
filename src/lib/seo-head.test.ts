@@ -19,8 +19,8 @@ test('renderHead reemplaza title, description, canonical y og:url sin duplicar',
   assert.equal(count(out, /<title>/g), 1)
   assert.match(out, /<title>Planes \| Allison Silva<\/title>/)
   assert.equal(count(out, /rel="canonical"/g), 1)
-  assert.match(out, /<link rel="canonical" href="https:\/\/allisonsilvacorp.com\/planes"/)
-  assert.match(out, /property="og:url" content="https:\/\/allisonsilvacorp.com\/planes"/)
+  assert.match(out, /<link rel="canonical" href="https:\/\/www\.allisonsilvacorp\.com\/planes"/)
+  assert.match(out, /property="og:url" content="https:\/\/www\.allisonsilvacorp\.com\/planes"/)
   assert.match(out, /name="description" content="Descripción de planes\."/)
   assert.equal(count(out, /name="description"/g), 1)
   assert.equal(count(out, /property="og:title"/g), 1)
@@ -66,8 +66,8 @@ test('hreflang solo con alternates (>= 2) y se eliminan los previos', () => {
   })
   assert.equal(count(out, /hreflang="/g), 3)
   assert.doesNotMatch(out, /hreflang="fr"/)
-  assert.match(out, /hreflang="x-default" href="https:\/\/allisonsilvacorp.com\/planes"/)
-  assert.match(out, /hreflang="en" href="https:\/\/allisonsilvacorp.com\/en\/plans"/)
+  assert.match(out, /hreflang="x-default" href="https:\/\/www\.allisonsilvacorp\.com\/planes"/)
+  assert.match(out, /hreflang="en" href="https:\/\/www\.allisonsilvacorp\.com\/en\/plans"/)
 })
 
 test('noindex cambia robots', () => {
