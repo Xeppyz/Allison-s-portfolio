@@ -34,16 +34,17 @@ function setMeta(attr: 'name' | 'property', key: string, content: string) {
 }
 
 export default function Seo({ title, description, jsonLd, image, noindex, alternates, lang }: Props) {
-  const { pathname } = useLocation()
+  const { pathname, key } = useLocation()
   const effectiveLang = lang ?? (pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'es')
   const img = image ? toAbsolute(image) : DEFAULT_IMAGE
   const altEs = alternates?.es
   const altEn = alternates?.en
 
   useEffect(() => {
-    // El servidor ya inyectó su JSON-LD en la primera carga; el cliente toma el relevo.
+    // En la primera carga se conserva el JSON-LD del servidor; al navegar en el cliente, este toma el relevo.
+    if (key === 'default') return
     document.querySelectorAll('script[type="application/ld+json"][data-ssr]').forEach((n) => n.remove())
-  }, [])
+  }, [key])
 
   useEffect(() => {
     const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : '/'
@@ -89,5 +90,8 @@ export default function Seo({ title, description, jsonLd, image, noindex, altern
 }
 
 export function JsonLd({ data }: { data: object }) {
+  const { key } = useLocation()
+  // Primera carga: el JSON-LD del servidor ya describe esta URL; no se duplica desde el cliente.
+  if (key === 'default' && document.head.querySelector('script[data-ssr]')) return null
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }} />
 }

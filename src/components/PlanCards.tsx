@@ -5,14 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import WhatsAppButton from './WhatsAppButton'
 import { usePlans, useSettings, type Plan } from '../lib/content'
 import { track } from '../lib/track'
-import { useStrings } from '../lib/strings'
+import { useStrings, type Strings } from '../lib/strings'
 
-const GROUPS: { key: NonNullable<Plan['group']>; title: string }[] = [
-  { key: 'empresa', title: 'Planes para empresas' },
-  { key: 'llc', title: 'LLC de EE. UU.' },
-  { key: 'personal', title: 'Finanzas personales' },
-  { key: 'certificacion', title: 'Certificaciones' },
-  { key: 'addon', title: 'Servicios adicionales' },
+const GROUPS: { key: NonNullable<Plan['group']>; title: keyof Strings }[] = [
+  { key: 'empresa', title: 'grupoEmpresa' },
+  { key: 'llc', title: 'grupoLlc' },
+  { key: 'personal', title: 'grupoPersonal' },
+  { key: 'certificacion', title: 'grupoCertificacion' },
+  { key: 'addon', title: 'grupoAddon' },
 ]
 
 const linkClass =
@@ -21,7 +21,11 @@ const linkClass =
 type WaState = 'loading' | 'yes' | 'no'
 
 function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlanesPage: boolean }) {
-  const { t } = useStrings()
+  const { t, lang } = useStrings()
+  const en = lang === 'en'
+  const name = (en && plan.name_en) || plan.name
+  const priceText = (en && plan.price_text_en) || plan.price_text
+  const description = (en && plan.description_en) || plan.description
   // Sin acción mientras carga la configuración, para que no cambie después.
   const whatsappOrContact = (label: string, fallback: string) =>
     wa === 'yes' ? (
@@ -44,11 +48,11 @@ function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlane
   return (
     <Card className="flex flex-col rounded-2xl border-navy/10 bg-ivory shadow-none transition hover:border-taupe/60">
       <CardHeader>
-        <CardTitle className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe">{plan.name}</CardTitle>
-        {plan.price_text && <p className="font-serif text-2xl font-medium leading-snug text-navy">{plan.price_text}</p>}
-        {plan.description && (
-          <CardDescription className="leading-relaxed" style={{ color: '#1E3A5F', opacity: 0.7 }}>
-            {plan.description}
+        <CardTitle className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">{name}</CardTitle>
+        {priceText && <p className="font-serif text-2xl font-medium leading-snug text-navy">{priceText}</p>}
+        {description && (
+          <CardDescription className="leading-relaxed text-navy/70">
+            {description}
           </CardDescription>
         )}
       </CardHeader>
@@ -57,8 +61,8 @@ function PlanCard({ plan, wa, onPlanesPage }: { plan: Plan; wa: WaState; onPlane
           <ul className="space-y-2">
             {features.map((f, i) => (
               <li key={i} className="flex items-start gap-2">
-                <Check className="mt-0.5 h-5 w-5 flex-shrink-0" style={{ color: '#34A853' }} aria-hidden="true" />
-                <span style={{ color: '#1E3A5F', opacity: 0.9 }}>{f}</span>
+                <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-taupe" aria-hidden="true" />
+                <span className="text-navy/90">{f}</span>
               </li>
             ))}
           </ul>
@@ -94,13 +98,13 @@ export default function PlanCards({ pageSlug }: { pageSlug: string }) {
         </h2>
         {pageSlug === 'planes' ? (
           <div className="space-y-14">
-            {[...GROUPS, { key: null, title: t.otros }].map(({ key, title }) => {
+            {[...GROUPS.map((g) => ({ key: g.key as Plan['group'], title: t[g.title] })), { key: null, title: t.otros }].map(({ key, title }) => {
               const group = plans.filter((p) =>
                 key === null ? !GROUPS.some((g) => g.key === p.group) : p.group === key)
               if (group.length === 0) return null
               return (
                 <div key={key ?? 'otros'} className="space-y-6">
-                  <h3 className="text-2xl font-semibold" style={{ color: '#1E3A5F' }}>{title}</h3>
+                  <h3 className="text-2xl font-semibold text-navy">{title}</h3>
                   <Grid plans={group} wa={wa} onPlanesPage />
                 </div>
               )

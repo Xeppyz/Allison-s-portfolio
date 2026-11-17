@@ -53,6 +53,9 @@ export interface Plan {
   name: string | null
   price_text: string | null
   description: string | null
+  name_en: string | null
+  price_text_en: string | null
+  description_en: string | null
   features: unknown[] | null
   group: 'empresa' | 'llc' | 'personal' | 'certificacion' | 'addon' | null
   cta: 'planes' | 'whatsapp' | null
@@ -126,11 +129,11 @@ function load<T>(key: string, fn: () => PromiseLike<T>): Promise<T> {
   return p
 }
 
-function useQuery<T>(key: string, fn: () => PromiseLike<T>): QueryState<T> {
+function useQuery<T>(key: string, fn: () => PromiseLike<T>, enabled = true): QueryState<T> {
   const [state, setState] = useState<{ key: string; data: T | null; error: boolean } | null>(null)
 
   useEffect(() => {
-    if (cache.has(key) || !supabase) return
+    if (!enabled || cache.has(key) || !supabase) return
     let cancelled = false
     load(key, fn).then(
       (data) => { cache.set(key, data); if (!cancelled) setState({ key, data, error: false }) },
@@ -141,6 +144,7 @@ function useQuery<T>(key: string, fn: () => PromiseLike<T>): QueryState<T> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
 
+  if (!enabled) return { data: null, loading: false, error: false }
   if (!supabase) return { data: null, loading: false, error: true }
   if (cache.has(key)) return { data: cache.get(key) as T, loading: false, error: false }
   if (state && state.key === key) return { data: state.data, loading: false, error: state.error }
@@ -158,10 +162,11 @@ export function useSettings(): QueryState<Settings> {
   ) as QueryState<Settings>
 }
 
+/** Con slug vacío no consulta nada (data null, sin carga). */
 export function usePage(slug: string): QueryState<Page | null> {
   return useQuery<Page | null>(`page:${slug}`, async () =>
     unwrap(await supabase!.from('pages').select('*').eq('slug', slug).maybeSingle<Page>()),
-  )
+  slug !== '')
 }
 
 export function usePlans(pageSlug: string): QueryState<Plan[]> {

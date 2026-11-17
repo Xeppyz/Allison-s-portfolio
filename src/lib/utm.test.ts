@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { pickCampaignParams } from './utm.ts'
+import { mergeCampaignParams, pickCampaignParams } from './utm.ts'
 
 test('conserva utm_* e identificadores de clic, descarta el resto', () => {
   assert.deepEqual(
@@ -18,4 +18,13 @@ test('limita cada valor a 200 caracteres', () => {
 test('búsqueda vacía o sin parámetros de campaña', () => {
   assert.deepEqual(pickCampaignParams(''), {})
   assert.deepEqual(pickCampaignParams('?foo=1'), {})
+})
+
+test('mergeCampaignParams conserva utm_* guardados y actualiza los identificadores de clic', () => {
+  assert.deepEqual(
+    mergeCampaignParams({ utm_source: 'google', gclid: 'old' }, { utm_source: 'fb', utm_medium: 'cpc', gclid: 'new', fbclid: 'f' }),
+    { utm_source: 'google', gclid: 'new', fbclid: 'f' },
+  )
+  assert.deepEqual(mergeCampaignParams({}, { utm_source: 'x' }), { utm_source: 'x' })
+  assert.deepEqual(mergeCampaignParams({ utm_source: 'x' }, {}), { utm_source: 'x' })
 })

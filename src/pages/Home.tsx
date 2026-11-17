@@ -18,31 +18,38 @@ const FALLBACK_SUB =
 
 const FALLBACK_CREDENTIALS = ['CPA (CCPN, Nicaragua)', 'QuickBooks ProAdvisor', 'Máster en Finanzas', '11 años de experiencia']
 
-const ENTRIES: { title: string; text: string; to: string; Icon: LucideIcon }[] = [
-  { title: 'Tengo una empresa en Nicaragua', text: 'Contabilidad mensual y cumplimiento fiscal al día.', to: '/contabilidad-mensual', Icon: Building2 },
-  { title: 'Tengo una LLC en EE. UU.', text: 'Orden contable y obligaciones fiscales de tu LLC.', to: '/llc-usa', Icon: Flag },
-  { title: 'Quiero ordenar mis finanzas personales', text: 'Claridad sobre tus ingresos, gastos y obligaciones.', to: '/finanzas-personales', Icon: Wallet },
+const ENTRIES: { slug: string; title: string; text: string; Icon: LucideIcon }[] = [
+  { slug: 'contabilidad-mensual', title: 'Tengo una empresa en Nicaragua', text: 'Contabilidad mensual y cumplimiento fiscal al día.', Icon: Building2 },
+  { slug: 'llc-usa', title: 'Tengo una LLC en EE. UU.', text: 'Orden contable y obligaciones fiscales de tu LLC.', Icon: Flag },
+  { slug: 'finanzas-personales', title: 'Quiero ordenar mis finanzas personales', text: 'Claridad sobre tus ingresos, gastos y obligaciones.', Icon: Wallet },
 ]
+
+// Enlaza a la landing solo si esa página se puede leer (publicada); si no, a contacto.
+function EntryCard({ slug, title, text, Icon }: (typeof ENTRIES)[number]) {
+  const to = usePage(slug).data ? `/${slug}` : '/contacto'
+  return (
+    <Link
+      to={to}
+      className="group flex items-start gap-4 rounded-2xl border border-navy/10 bg-white p-6 shadow-[0_12px_40px_-18px_rgba(30,58,95,0.35)] transition hover:-translate-y-1 hover:border-taupe/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]"
+    >
+      <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-taupe/40 text-taupe">
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
+      <span className="flex-1">
+        <span className="block text-lg font-semibold text-navy">{title}</span>
+        <span className="mt-1 block text-sm text-navy/70">{text}</span>
+      </span>
+      <ArrowRight className="mt-1 h-5 w-5 flex-shrink-0 text-navy/40 transition group-hover:translate-x-1 group-hover:text-taupe" aria-hidden="true" />
+    </Link>
+  )
+}
 
 function EntryCards() {
   return (
     <section className="relative z-10 -mt-16 pb-20">
       <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
-        {ENTRIES.map(({ title, text, to, Icon }) => (
-          <Link
-            key={title}
-            to={to}
-            className="group flex items-start gap-4 rounded-2xl border border-navy/10 bg-white p-6 shadow-[0_12px_40px_-18px_rgba(30,58,95,0.35)] transition hover:-translate-y-1 hover:border-taupe/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]"
-          >
-            <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-taupe/40 text-taupe">
-              <Icon className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <span className="flex-1">
-              <span className="block text-lg font-semibold text-navy">{title}</span>
-              <span className="mt-1 block text-sm text-navy/70">{text}</span>
-            </span>
-            <ArrowRight className="mt-1 h-5 w-5 flex-shrink-0 text-navy/40 transition group-hover:translate-x-1 group-hover:text-taupe" aria-hidden="true" />
-          </Link>
+        {ENTRIES.map((e) => (
+          <EntryCard key={e.slug} {...e} />
         ))}
       </div>
     </section>

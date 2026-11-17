@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Link, NavLink } from "react-router-dom"
 
@@ -78,7 +76,7 @@ export function Navigation() {
               type="button"
               onClick={() => setIsOpen(!isOpen)}
               className={`-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-navy transition hover:bg-sand lg:hidden ${focusRing}`}
-              aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-label={isOpen ? t.cerrarMenu : t.abrirMenu}
               aria-expanded={isOpen}
             >
               {isOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}

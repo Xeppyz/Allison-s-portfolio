@@ -40,12 +40,16 @@ function cleanUtm(value: unknown): Record<string, string> {
   const out: Record<string, string> = {}
   let count = 0
   if (!value || typeof value !== 'object' || Array.isArray(value)) return out
-  for (const [key, v] of Object.entries(value)) {
+  // Los identificadores de clic primero: son lo que usan las campañas de pago y no deben quedar fuera del tope.
+  const entries = Object.entries(value).filter(([, v]) => typeof v === 'string') as [string, string][]
+  const ordered = [
+    ...entries.filter(([k]) => CLICK_IDS.includes(k)),
+    ...entries.filter(([k]) => k.startsWith('utm_')),
+  ]
+  for (const [key, v] of ordered) {
     if (count >= 10) break
-    if ((key.startsWith('utm_') || CLICK_IDS.includes(key)) && typeof v === 'string') {
-      out[key.slice(0, 200)] = v.slice(0, 200)
-      count++
-    }
+    out[key.slice(0, 200)] = v.slice(0, 200)
+    count++
   }
   return out
 }

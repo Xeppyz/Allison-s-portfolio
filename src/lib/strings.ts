@@ -58,6 +58,24 @@ const es = {
   preferenciasCookies: 'Preferencias de cookies',
   derechos: 'Todos los derechos reservados.',
   slogan: 'NO SOLO CIERRO LIBROS, ABRO OPORTUNIDADES',
+  footerBlurb:
+    'Te ayudamos a organizar y optimizar las finanzas de tu negocio, para que tomes decisiones con claridad y crezcas con confianza.',
+  footerServicios: 'Servicios',
+  footerContacto: 'Contacto',
+  footerHorario: 'Horario de atención',
+  footerGoogle: 'Encuéntranos en Google',
+  ariaLinkedin: 'Ir a LinkedIn',
+  ariaLlamar: 'Llamar por teléfono',
+  ariaCorreo: 'Enviar correo',
+  avisoCookies: 'Aviso de cookies',
+  abrirMenu: 'Abrir menú',
+  cerrarMenu: 'Cerrar menú',
+  noEncontradaTexto: 'La página que buscas no existe o fue movida.',
+  grupoEmpresa: 'Planes para empresas',
+  grupoLlc: 'LLC de EE. UU.',
+  grupoPersonal: 'Finanzas personales',
+  grupoCertificacion: 'Certificaciones',
+  grupoAddon: 'Servicios adicionales',
 }
 
 const en: typeof es = {
@@ -96,6 +114,24 @@ const en: typeof es = {
   preferenciasCookies: 'Cookie preferences',
   derechos: 'All rights reserved.',
   slogan: 'I DON’T JUST CLOSE THE BOOKS, I OPEN OPPORTUNITIES',
+  footerBlurb:
+    'We help you organize and optimize your business finances so you can make decisions with clarity and grow with confidence.',
+  footerServicios: 'Services',
+  footerContacto: 'Contact',
+  footerHorario: 'Business hours',
+  footerGoogle: 'Find us on Google',
+  ariaLinkedin: 'Go to LinkedIn',
+  ariaLlamar: 'Call by phone',
+  ariaCorreo: 'Send an email',
+  avisoCookies: 'Cookie notice',
+  abrirMenu: 'Open menu',
+  cerrarMenu: 'Close menu',
+  noEncontradaTexto: 'The page you are looking for does not exist or has been moved.',
+  grupoEmpresa: 'Plans for businesses',
+  grupoLlc: 'U.S. LLC',
+  grupoPersonal: 'Personal finance',
+  grupoCertificacion: 'Certifications',
+  grupoAddon: 'Additional services',
 }
 
 export const STRINGS: Record<Lang, typeof es> = { es, en }

@@ -78,7 +78,7 @@ export function Services() {
                       </DialogHeader>
 
                       <div className="mt-6 space-y-4">
-                        <h4 className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                        <h4 className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                           Este servicio incluye:
                         </h4>
                         <ul className="divide-y divide-navy/10 border-y border-navy/10">

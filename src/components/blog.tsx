@@ -47,7 +47,7 @@ export function Blog() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <time dateTime={post.date} className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe">
+                  <time dateTime={post.date} className="text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">
                     {new Date(post.date).toLocaleDateString("es-ES")}
                   </time>
                   <h3 className="mt-3 line-clamp-2 font-serif text-xl font-medium text-navy">{title}</h3>

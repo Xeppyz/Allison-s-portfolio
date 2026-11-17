@@ -43,25 +43,25 @@ export default function ContactPage() {
           <div className="space-y-8 text-navy">
             <ul className="divide-y divide-navy/10 border-y border-navy/10">
               <li className="py-4">
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Correo</span>
+                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Correo</span>
                 <span className="sr-only">: </span>
                 <a href={`mailto:${email}`} className={`mt-1 inline-block min-h-6 ${linkClass}`}>{email}</a>
               </li>
               <li className="py-4">
-                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Teléfono</span>
+                <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Teléfono</span>
                 <span className="sr-only">: </span>
                 <a href={phoneHref} onClick={() => track('phone_click')} className={`mt-1 inline-block min-h-6 ${linkClass}`}>{phone}</a>
               </li>
               {hours && (
                 <li className="py-4">
-                  <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Horario</span>
+                  <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Horario</span>
                   <span className="sr-only">: </span>
                   <span className="mt-1 block text-navy/80">{hours}</span>
                 </li>
               )}
               {address && (
                 <li className="py-4">
-                  <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe">Dirección</span>
+                  <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-taupe-deep">Dirección</span>
                   <span className="sr-only">: </span>
                   <span className="mt-1 block text-navy/80">{address}</span>
                 </li>

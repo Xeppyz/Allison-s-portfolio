@@ -117,6 +117,8 @@ function serializeJsonLd(data: unknown): string {
 
 /* --------------------------- renderHead ---------------------------- */
 
+const JSON_LD_SSR = /<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*\bdata-ssr\b[^>]*>[\s\S]*?<\/script\s*>\s*/gi
+
 const HEAD_CLOSE = /<\/head\s*>/i
 
 function insertBeforeHeadEnd(html: string, tag: string): string {
@@ -209,6 +211,13 @@ export function renderHead(html: string, meta: HeadMeta): string {
   return out
 }
 
+/** Quita lo que identifica una URL concreta (canonical, og:url, JSON-LD del servidor): para respuestas de respaldo. */
+export function stripIdentity(html: string): string {
+  return removeMeta(html, 'property', 'og:url')
+    .replace(/<link\b[^>]*?\brel\s*=\s*["']canonical["'][^>]*>\s*/gi, '')
+    .replace(JSON_LD_SSR, '')
+}
+
 /* --------------------------- metaForPath --------------------------- */
 
 type MetaData = {
@@ -216,6 +225,8 @@ type MetaData = {
   faqs?: FaqRow[]
   settings?: SettingsRow | null
   post?: PostMeta | null
+  /** Fila de la página enlazada por alt_slug (solo slug, lang y noindex). */
+  alt?: { slug: string; lang: Lang | string | null; noindex?: boolean | null } | null
 }
 
 const other = (l: Lang): Lang => (l === 'es' ? 'en' : 'es')
@@ -323,6 +334,12 @@ export function metaForPath(pathname: string, data: MetaData = {}): HeadMeta | n
   const pageLang: Lang = page.lang === 'en' ? 'en' : 'es'
   if (pageLang !== route.lang) return null
 
+  // El `kind` debe coincidir con lo que el cliente pinta en esta ruta; si no, sería un soft 404.
+  const expectedKind =
+    path === '/' ? 'home' : path === '/privacidad' || path === '/terminos' ? 'legal' : 'service'
+  if (page.kind !== expectedKind) return null
+  if (expectedKind === 'legal' && pageLang !== 'es') return null
+
   const canonicalPath = pagePath(page.slug, pageLang)
   const canonical = absoluteUrl(canonicalPath)
   const image = page.og_image_url || DEFAULT_IMAGE
@@ -356,7 +373,9 @@ export function metaForPath(pathname: string, data: MetaData = {}): HeadMeta | n
   if (faq) jsonLd.push(faq)
 
   const meta: HeadMeta = { title, description, canonical, lang: pageLang, image, noindex: !!page.noindex, jsonLd }
-  if (page.alt_slug) {
+  const alt = data.alt
+  const altLang: Lang | null = alt ? (alt.lang === 'en' ? 'en' : 'es') : null
+  if (page.alt_slug && alt && alt.slug === page.alt_slug && !alt.noindex && altLang !== pageLang) {
     meta.alternates = {
       [pageLang]: canonical,
       [other(pageLang)]: absoluteUrl(pagePath(page.alt_slug, other(pageLang))),
